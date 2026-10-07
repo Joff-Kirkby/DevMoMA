@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="{{ shop.locale }}">
+<head>
+  {% comment %} Sentry {% endcomment %}
+  {% render 'sentry' %}
+
+  {%- if product.metafields.seo.hidden == 1 or (product and product.selected_variant and product.selected_variant.metafields.seo.hidden == 1) -%}
+    <meta name="robots" content="noindex">
+  {%- endif -%}
+  {% comment %} Cookie Banner {% endcomment %}
+  {% unless settings.disable_legacy_cookie_banner %}
+    {% render 'cookie-banner-js' %}
+  {% endunless %}
+
+  {%- if request.path == '/collections/vendors' and collection.all_products_count == 0 -%}
+    <meta name="robots" content="noindex">
+  {%- endif -%}
+
+  {% comment %} Meta Data {% endcomment %}
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  {% if template contains 'customers' and template.name == 'login' %}
+    <meta http-equiv="refresh" content="0; url='{% render 'h-auth0-url' %}'" />
+  {% endif %}
+  <link rel="canonical" href="{{ canonical_url }}">
+
+  {%- capture seo_title -%}
+    {{ page_title }}{% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% assign escaped_page_title = page_title | escape %}{% unless escaped_page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
+  {%- endcapture -%}
+  <title>{{ seo_title | strip }}</title>
+
+  {% if template == 'index' %}
+    {% assign meta_desc = settings.homepage_meta | default: shop.name %}
+    <meta name="description" content="{{ meta_desc }}">
+  {% elsif template == 'page.gift-guide' %}
+    {% assign meta_desc = settings.gglp_meta | default: shop.name %}
+    <meta name="description" content="{{ meta_desc }}">
+  {% else %}
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+  {% endif %}
+
+  {% comment %} Homepage Redirects {% endcomment %}
+  {% assign path = canonical_url | replace: shop.url, '' %}
+  {% if path == '/collections' or path == '/products' %}
+    <meta http-equiv="refresh" content="0;URL='{{ shop.url }}'" />
+  {% endif %}
+
+  {% comment %} Social Meta {% endcomment %}
+  {% render 'social-meta-tags' %}
+
+  {% comment %} Favicons {% endcomment %}
+  {% render 'favicons' %}
+
+  {% comment %} JS Namespaces {% endcomment %}
+  {% assign asset_url = 'temp' | asset_url | split: 'temp?' | first %}
+  {% assign file_url = 'temp' | file_url | split: 'temp?' | first %}
+
+  {% comment %} Yotpo library {% endcomment %}
+  <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/FYFMgnh-TMastBprKsic_A" async></script>
+  <script>
+    window.SDG = window.SDG || {};
+    window._ = window._ || {};
+    window.__webpack_public_path__ = '{{ asset_url }}';
+    SDG.Data = {};
+    SDG.Data.assetUrl = '{{ asset_url }}';
+    SDG.Data.fileUrl = '{{ file_url }}';
+    SDG.Data.sq = [];
+    SDG.Data.permanentDomain = '{{ shop.permanent_domain }}';
+    SDG.Data.isProductionStore = {% if shop.permanent_domain contains 'staging' %}false{% else %}true{% endif %};
+    SDG.moneyFormat = {{ shop.money_format | json }};
+    SDG.rootUrl = '{{ routes.root_url }}';
+    SDG.bopisApiUrl = '{{ settings.bopis_api_url }}';
+    SDG.Data.auth0Login = {};
+    SDG.Data.auth0Login.baseUrl = '{{ settings.auth0_login_base_url }}';
+    SDG.Data.auth0Login.clientId = '{{ settings.auth0_login_client_id }}';
+    SDG.Data.customerLoggedIn = {% if customer.id != blank %}true{% else %}false{% endif %};
+    SDG.Data.giftWrapItemId = {{ settings.checkout_gift_wrap_item_id | default: '' | json }};
+    SDG.Data.mini_cart = {
+      empty: {{ 'cart.general.empty' | t | json }},
+      gift_message: {
+          enabled: {{ settings.mini_cart_enable_gift_message | json }},
+          heading: {{ settings.mini_cart_gift_message_heading | json }},
+          subheading: {{ settings.mini_cart_gift_message_subheading | json }},
+          smalltext: {{ settings.mini_cart_gift_message_smalltext | json }},
+          addButtonText: {{ settings.mini_cart_gift_message_add | json }},
+          cancelButtonText: {{ settings.mini_cart_gift_message_cancel | json }},
+          saveButtonText: {{ settings.mini_cart_gift_message_save | json }},
+          removeButtonText: {{ settings.mini_cart_gift_message_remove | json }},
+          editButtonText: {{ settings.mini_cart_gift_message_edit | json }},
+      },
+      membership: {
+        enabled: {{ settings.mini_cart_enable_membership | json }},
+        heading: {{ settings.mini_cart_membership_heading | json }},
+        cta_text: {{ settings.mini_cart_membership_cta_text | json }},
+        background: {{ settings.mini_cart_membership_background | json }},
+        text_color: {{ settings.mini_cart_membership_text_color | json }}
+      },
+      recommendations: {
+        enabled: {{ settings.mini_cart_enable_recommendations | json }}
+      },
+      flatShippingFeeMessage: {{ settings.flat_shipping_fee_message | json }}
+    };
+    SDG.Data.product_availability = {
+      unavailable: {{ 'products.product.availability.unavailable' | t | json }},
+      backordered: {{ 'products.product.availability.backordered' | t | json }},
+      backorderedUntil: {{ 'products.product.availability.backordered_until' | t | json }},
+    }
+
+    {% if customer != nil %}
+      {% assign customer_email_domain = customer.email | split: '@' | last | downcase %}
+      {% if customer_email_domain == 'moma.org' %}
+        SDG.Data.customerIsEmployee = true;
+      {% endif %}
+    {% endif %}
+  </script>
+
+  {% comment %}
+    Product Satisfaction Guarantee used in:
+    - PDP
+    - Collection Grid Item Modal
+  {% endcomment %}
+  <script>
+    SDG.Data.productSatisfactionGuarantee = {
+      title: "{{- settings.product_satisfaction_guarantee_title -}}",
+      text: `{{- settings.product_satisfaction_guarantee_text | newline_to_br -}}`
+    };
+  </script>
+
+  {% comment %}
+    Global Searchspring Settings
+  {% endcomment %}
+  <script>
+    SDG.Data.ssRecommendationsTagCartEmpty = "{{- settings.ss_recommendations_tag_cart_empty -}}";
+    SDG.Data.ssRecommendationsTagCart = "{{- settings.ss_recommendations_tag_cart -}}";
+    SDG.Data.ssYouMayAlsoLikeProfileId = "{{- settings.ss_you_may_also_like_profile_id -}}";
+    SDG.Data.ssYouMayAlsoLikeProduct = {
+      product_id: "{% if product != blank %} {{- product.id -}} {% else %} {{- settings.ss_you_may_also_like_product.id -}} {% endif %}",
+      handle: "{% if product != blank %} {{- product.handle -}} {% else %} {{- settings.ss_you_may_also_like_product.handle -}} {% endif %}",
+      sku: "{% if product != blank %}{{- product.variants[0].sku -}}{% else %}{{- settings.ss_you_may_also_like_product.variants[0].sku -}}{% endif %}",
+    };
+    SDG.Data.ssRecentlyViewedProfileId = "{{- settings.ss_recently_viewed_profile_id -}}";
+    SDG.Data.ssRecentlyViewedPlacement = "{{- settings.ss_recently_viewed_placement -}}";
+    SDG.Data.ssMiniCartSimilarProductsProfileId = "{{- settings.ss_mini_cart_similar_products_profile_id -}}";
+    SDG.Data.enableFromYourWishlist = "{{- settings.enable_from_your_wishlist -}}";
+    SDG.Data.fromYourWishlistPlacement = "{{- settings.from_your_wishlist_placement -}}";
+  </script>
+
+  {% comment %} CSS {% endcomment %}
+  {% render 'theme-styles-variables' %}
+  {% render 'stylesheets' %}
+
+  {% comment %} Account JS {% endcomment %}
+  {% if template contains 'customers' %}
+    {{ 'shopify_common.js' | shopify_asset_url | script_tag }}
+  {% endif %}
+
+  {% comment %} App JS {% endcomment %}
+  {% render 'js' %}
+
+  {% comment %} IntelliSuggest {% endcomment %}
+  {% if template contains 'cart' or template contains 'product' %}
+    <script type="text/javascript" src="//cdn.searchspring.net/intellisuggest/is.min.js"></script>
+  {% endif %}
+
+  <link rel="alternate" hreflang="en" href="https://store.moma.org{{ request.path }}">
+
+  {{ content_for_header }}
+
+  {% include "globale-js.liquid" %}
+  {% render 'ss-script' %}
+  {% comment %} Commented out as this is in GTM {% endcomment %}
+  {% comment %} {% render 'heap-snippet' %} {% endcomment %}
+</head>
+
+{%- comment -%} Hide body when redirecting {%- endcomment -%}
+{% assign hide_body = false %}
+{% if template contains 'customers' and template.name == 'login' %}
+  {% assign hide_body = true %}
+{% endif %}
+{% if page.handle == 'checkout-login' and customer != nil %}
+  {% assign hide_body = true %}
+{% endif %}
+{% liquid
+  assign is_member = false
+  if customer and customer.tags contains 'moma-membership-active'
+    assign is_member = true
+  endif
+%}
+<body id="{{ page_title | handle }}" class="template-{{ template.name | handle }}{% if hide_body %} hide{% endif %}{% if is_member %} is-member{% endif %}{% if template.name == 'page' %} template-{{ template.name | handle }}-{{page_title | handle }}{% endif %} {% if settings.ss_enable and collection.handle and collection.handle == settings.ss_collection_handle %} ss-shop{% endif %}">
+  <a
+    class="skip-to-content screenreader"
+    id="skipToContent"
+    href="#main"
+    title="/#main"
+  >
+    Skip to Content
+  </a>
+  {% section 'top-banner' %}
+  {% render 'header' %}
+  <main id="main" class="page-wrap" role="main">
+    {%- render 'c-breadcrumbs' -%}
+    {{ content_for_layout }}
+  </main>
+  {% liquid
+    section 'footer'
+    if template != 'cart'
+      render 'bag', modifier: 'mini'
+    endif
+
+    unless settings.disable_legacy_cookie_banner
+      render 'cookie-banner'
+    endunless
+
+    render 'modals'
+
+    render 'member-number-script'
+    unless template == 'cart'
+      section 'mini-cart'
+    endunless
+  %}
+
+  <!-- Logo Schema -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "url": "{{ shop.url }}",
+      "logo": "{{ settings.structured_data_logo | img_url: 'original' }}",
+      "sameAs": [
+          "https://www.instagram.com/momadesignstore/",
+          "https://www.facebook.com/momadesignstore/",
+          "https://www.youtube.com/SHOPMoMADesignStore",
+          "https://x.com/MoMAstore"
+        ]
+    }
+  </script>
+  <!-- END Logo Schema -->
+
+  <!-- LocalBusiness Schema -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Store",
+      "name": "{{ shop.name }} - Museum Store",
+      "url": "{{ shop.url }}",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "{{ shop.address.address1 }}",
+        "addressLocality": "{{ shop.address.province }}",
+        "addressRegion": "{{ shop.address.province_code }}",
+        "postalCode": "{{ shop.address.zip }}",
+        "addressCountry": "{{ shop.address.country_code }}"
+      },
+      "department": [
+        {
+          "@type": "Store",
+          "name": "{{ shop.name }} - 53rd St. NYC",
+          "url": "{{ shop.url }}",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "44 West 53rd Street",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "postalCode": "10019",
+            "addressCountry": "US"
+          }
+        },
+        {
+          "@type": "Store",
+          "name": "{{ shop.name }} - Soho NYC",
+          "url": "{{ shop.url }}",
+          "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "81 Spring Street",
+            "addressLocality": "New York",
+            "addressRegion": "NY",
+            "postalCode": "10012",
+            "addressCountry": "US"
+          }
+        }
+      ]
+    }
+  </script>
+  <!-- END LocalBusiness Schema -->
+
+  {% render 'tracking' %}
+  <!-- Start of moma Zendesk Widget script -->
+  <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=fc6bfd3e-5faa-47cc-a6d0-43ef4ed40016"> </script>
+  <!-- End of moma Zendesk Widget script -->
+  {% render 'forter-snippet' %}
+  </body>
+</html>

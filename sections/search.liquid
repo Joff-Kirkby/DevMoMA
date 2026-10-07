@@ -1,0 +1,21 @@
+{%- liquid
+  capture valid_promotional_messages_array
+    render 'template-messages'
+  endcapture
+
+  render 'collection-app', is_search: true, section: section, collection_messages: valid_promotional_messages_array
+-%}
+
+{% schema %}
+  {
+    "name": "Search",
+    "settings": [
+      {
+        "id": "no_results_text",
+        "type": "richtext",
+        "label": "No Results Text",
+        "info": "Messaging that appears when there are no results found"
+      }
+    ]
+  }
+{% endschema %}

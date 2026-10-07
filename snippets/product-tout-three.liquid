@@ -1,0 +1,38 @@
+{% assign touts = product.metafields.pdp['3_up_tout'].value %}
+{% assign touts_first_characters = product.metafields.pdp['3_up_tout'] | slice: 0, 2 %}
+
+{%- comment -%}
+  Check if 'touts' is an array of arrays or an array of objects (for backwards compatibility)
+{%- endcomment -%}
+{% assign is_arrays = false %}
+{% assign is_objects = false %}
+{% if touts_first_characters == '[[' %}
+  {% assign is_arrays = true %}
+{% elsif touts_first_characters == '[{' %}
+  {% assign is_objects = true %}
+{% endif %}
+
+{% if is_arrays %}
+  <section id="product-tout" class="pv-tout-three container">
+    {% for tout in touts %}
+      <div class="pv-tout-three__items pv-tout-three__flickity-carousel js-product-tout-carousel">
+        {% for item in tout %}
+          {%- render 'product-tout-three-item', {
+            item: item
+          } -%}
+        {% endfor %}
+      </div>
+    {% endfor %}
+  </section>
+{% elsif is_objects %}
+  {% assign tout = touts %}
+  <section id="product-tout" class="pv-tout-three container">
+    <div class="pv-tout-three__items pv-tout-three__flickity-carousel js-product-tout-carousel">
+      {% for item in tout %}
+        {%- render 'product-tout-three-item', {
+          item: item
+        } -%}
+      {% endfor %}
+    </div>
+  </section>
+{% endif %}

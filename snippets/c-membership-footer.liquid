@@ -1,0 +1,18 @@
+{%- comment -%}
+  Membership Footer Section
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="membership-footer">
+  {% if ss.footer_text != blank and ss.url != blank and ss.link_text != blank %}
+    <div class="membership-footer__inner">
+      <p class="membership-footer__inner-text">{{ ss.footer_text }}</p>
+      <div class="membership-footer__inner-link-wrapper">
+        <a class="membership-footer__inner-link" href="{{ ss.url }}">
+          {{ ss.link_text }}
+        </a>
+      </div>
+    </div>
+  {% endif %}
+</section>

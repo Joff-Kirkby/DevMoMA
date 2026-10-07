@@ -1,0 +1,51 @@
+{% assign header = settings.international_shipping_notification_header %}
+{% assign subheader = settings.international_shipping_notification_subheader %}
+
+{% if header != blank %}
+  <aside
+    id="intShippingNotifModal"
+    class="int-shipping-notif-modal modal js-modal"
+  >
+    <button
+      id="intShippingNotifModalCloseBackground"
+      class="int-shipping-notif-modal__background-button"
+    >
+    </button>
+    <div
+      id="intShippingNotifModalInner"
+      class="int-shipping-notif-modal__inner modal__inner"
+    >
+      <button
+        type="button"
+        id="intShippingNotifModalClose"
+        class="int-shipping-notif-modal__close btn-icon modal__close js-modal-close"
+      >
+        <span class="screenreader">Close</span>
+        <i class="icon icon--close"></i>
+      </button>
+      <div class="int-shipping-notif-modal__title">
+        {{ header }}
+      </div>
+      <div class="int-shipping-notif-modal__title">
+        {{ subheader }}
+      </div>
+      <div
+        id="intShippingNotifModalEmailSignupForm"
+        class="email-signup"
+      >
+        {% render 'email-signup-form' %}
+      </div>
+    </div>
+  </aside>
+  <div
+    id="intShippingNotifModalOverlay"
+    class="modal-overlay"
+  ></div>
+  {%- comment -%}
+    Hidden trigger. Modal is triggered on page load.
+  {%- endcomment -%}
+  <div
+    id="intShippingNotifModalTrigger"
+    class="hide"
+  ></div>
+{% endif %}

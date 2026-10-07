@@ -1,0 +1,90 @@
+{%- comment -%}
+  Double Wide Image + Text
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+{% assign has_video = false %}
+{% if ss.video != blank %}
+  {% assign has_video = true %}
+{% endif %}
+<section
+  class="
+    wide-image-text
+    {%- if ss.image_position == 'right' %} wide-image-text--right-side{% endif -%}
+    {%- if has_video %} wide-image-text--video{%- else %} wide-image-text--image{% endif %}
+    container
+  "
+  style="
+    --headline-text-alignment-desktop: {{ ss.headline_text_alignment_desktop | default: 'left' }};
+    --headline-text-alignment-mobile: {{ ss.headline_text_alignment_mobile | default: 'left' }};
+    --text-alignment-desktop: {{ ss.text_copy_alignment_desktop | default: 'left' }};
+    --text-alignment-mobile: {{ ss.text_copy_alignment_mobile | default: 'left' }};
+    --cta-alignment-desktop: {{ ss.cta_text_alignment_desktop | default: 'left' }};
+    --cta-alignment-mobile: {{ ss.cta_text_alignment_mobile | default: 'left' }};
+  "
+>
+  <div class="wide-image-text__text {% unless has_video %}wide-image-text__text--image{% endunless %}">
+    {% if ss.anchor != blank %}
+      <span id="{{ss.anchor}}" class="wide-image-text__anchor-offset"></span>
+    {% endif %}
+    {% if ss.eyebrow != blank %}
+      <p class="wide-image-text__text-eyebrow">{{ ss.eyebrow }}</p>
+    {% endif %}
+    {% if ss.headline != blank %}
+      <h2 class="wide-image-text__text-headline">{{ ss.headline }}</h2>
+    {% endif %}
+    {{ ss.text }}
+    {% if ss.cta_text != blank and ss.cta_url != blank %}
+      {% if ss.custom_cta_styles %}
+        <style>
+          .wide-image-text .btn--primary {
+            background-color: {{ ss.cta_background_color }};
+            color: {{ ss.cta_text_color }};
+            border: 2px solid {{ ss.cta_border_color }};
+          }
+
+          .wide-image-text .btn--primary:hover {
+            background-color: {{ ss.cta_hover_background_color }};
+            color: {{ ss.cta_hover_text_color }};
+            border: 2px solid {{ ss.cta_hover_border_color }};
+          }
+        </style>
+      {% endif %}
+      <div class="wide-image-text__cta-wrapper">
+        <a class="btn btn--primary" href="{{ ss.cta_url }}">
+          {{ ss.cta_text }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+  <div class="wide-image-text__{% if has_video %}video{% else %}image{% endif %}">
+    {%- if has_video -%}
+      <iframe
+        class="wide-image-text__video-iframe"
+        width="100%"
+        height="100%"
+        src="https://www.youtube.com/embed/{{ ss.video.id }}"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        data-src="https://www.youtube.com/embed/{{ ss.video.id }}"
+        {% if has_video %}data-video-id="{{ ss.video.id }}"{% endif %}
+      >
+      </iframe>
+      <button
+        class="wide-image-text__video-play js-play-video"
+        type="button"
+        {% if has_video %}data-video-id="{{ ss.video.id }}"{% endif %}
+      >
+        <i class="icon icon--play"></i>
+      </button>
+    {%- endif -%}
+    {%- render 'c-responsive-image', {
+      image: ss.image,
+      inline_ir: true,
+      wrapper_class: 'wide-image-text__image-wrapper',
+      link: ss.cta_url
+    } -%}
+  </div>
+</section>

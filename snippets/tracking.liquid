@@ -1,0 +1,7 @@
+{% if template contains 'collection' %}
+{% if collection.metafields.collection.datalayer_category %}<script>
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({'collection_category': '{{ collection.metafields.collection.datalayer_category.value }}'});
+</script>
+{% endif %}
+{% endif %}

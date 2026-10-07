@@ -1,0 +1,101 @@
+{%- comment -%}
+  Collection Banner Section
+{%- endcomment -%}
+{% assign s = section.settings %}
+
+{%- capture section_settings -%}
+{%- comment -%}
+  - Use `url_escape` to avoid JSON parsing errors from newlines
+  - Do not use single quotes in `decodeURIComponent`
+{%- endcomment -%}
+<script>
+  SDG.Data.collectionSimpleBannerSettings = {
+    ...JSON.parse(decodeURIComponent("{{ s | json | url_escape }}")),
+    description: '{{ s.description | newline_to_br }}',
+  };
+</script>
+{%- endcapture -%}
+{%- render 'h-minify', variable: section_settings -%}
+
+{% schema %}
+  {
+    "name": "Collection Simple Banner",
+    "presets": [
+      {
+        "category": "Components",
+        "name": "Collection Simple Banner"
+      }
+    ],
+    "limit": 1,
+    "settings": [
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Banner Background Color"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "text",
+        "id": "header",
+        "label": "Header"
+      },
+      {
+        "type": "color",
+        "id": "header_text_color",
+        "label": "Header Text Color"
+      },
+      {
+        "type": "number",
+        "id": "header_font_size_desktop",
+        "label": "Header Font Size (Desktop)",
+        "default": 30
+      },
+      {
+        "type": "number",
+        "id": "header_font_size_mobile",
+        "label": "Header Font Size (Mobile)",
+        "default": 18
+      },
+      {
+        "type": "textarea",
+        "id": "description",
+        "label": "Description"
+      },
+      {
+        "type": "color",
+        "id": "description_text_color",
+        "label": "Description Text Color"
+      },
+      {
+        "type": "number",
+        "id": "description_font_size_desktop",
+        "label": "Description Font Size (Desktop)",
+        "default": 17
+      },
+      {
+        "type": "number",
+        "id": "description_font_size_mobile",
+        "label": "Description Font Size (Mobile)",
+        "default": 13
+      },
+      {
+        "type": "header",
+        "content": "Link Info"
+      },
+      {
+        "type": "checkbox",
+        "id": "is_link",
+        "label": "Is the entire banner a link?"
+      },
+      {
+        "type": "url",
+        "id": "url",
+        "label": "URL",
+        "info": "If the entire banner is a link, this is the page it leads to."
+      }
+    ]
+  }
+{% endschema %}

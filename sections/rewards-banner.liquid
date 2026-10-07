@@ -1,0 +1,98 @@
+{%- comment -%}
+  Banner Section
+{%- endcomment -%}
+
+{%- render 'c-rewards-banner', {
+  section: section
+} -%}
+
+{% schema %}
+  {
+    "name": "Rewards Banner",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "background_image_desktop",
+        "label": "Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 3840px; height: 1371px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_mobile",
+        "label": "Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 750px; height: 1075px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "small_blocks",
+        "label": "Small Blocks",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 100px; height: 100px;"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_heading_text",
+        "label": "Sub-Heading Text",
+        "default": "Sub-Heading text here",
+        "info": "Descriptive keyword or phrase placed above the main heading. Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "textarea",
+        "id": "heading_text",
+        "label": "Heading Text",
+        "default": "Rewards",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "header",
+        "content": "CTA (Logged In)"
+      },
+      {
+        "type": "textarea",
+        "id": "body_text_logged_in",
+        "label": "Body Text",
+        "default": "Body text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "text",
+        "id": "cta_text_logged_in",
+        "label": "CTA Text (Logged In)",
+        "default": "Sign in or create an account"
+      },
+      {
+        "type": "text",
+        "id": "cta_url_logged_in",
+        "label": "CTA URL (Logged In)",
+        "default": "/account"
+      },
+      {
+        "type": "header",
+        "content": "CTA (Logged Out)"
+      },
+      {
+        "type": "textarea",
+        "id": "body_text_logged_out",
+        "label": "Body Text (Logged Out)",
+        "default": "Join our free Rewards program and enjoy everyday perks!",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "text",
+        "id": "cta_text_logged_out",
+        "label": "CTA Text (Logged Out)",
+        "default": "Sign in or create an account"
+      },
+      {
+        "type": "text",
+        "id": "cta_url_logged_out",
+        "label": "CTA URL (Logged Out)",
+        "default": "/pages/rewards"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Rewards Banner"
+      }
+    ]
+  }
+{% endschema %}

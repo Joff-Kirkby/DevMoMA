@@ -1,0 +1,37 @@
+{% assign mobile_image_width = mobile_image_width | default: 600 %}
+{% assign tablet_image_width = tablet_image_width | default: 600 %}
+{% assign image_width = image_width | default: 600 %}
+{% assign lazy = lazy | default: true %}
+
+{% if image != blank %}
+  <picture>
+    {% if mobile_image != false %}
+      <source
+        media="(max-width: 767px)"
+        srcset="{{ mobile_image | image_url: width: mobile_image_width }} 1x,
+                      {{ mobile_image | image_url: width: mobile_image_width }} 2x">
+    {% endif %}
+
+    {% if image != false %}
+      <source
+        media="(min-width: 1024px)"
+        srcset="{{ image | image_url: width: image_width }} 1x,
+                      {{ image | image_url: width: image_width }} 2x">
+    {% endif %}
+
+    {% if tablet_image != false %}
+      <source
+        media="(min-width: 768px)"
+        srcset="{{ tablet_image | image_url: width: image_width }} 1x,
+                      {{ tablet_image | image_url: width: image_width }} 2x">
+    {% endif %}
+
+
+    {% comment %} Legacy browser and search engine fallback image {% endcomment %}
+    <img
+      class="img-responsive {% if class != blank %}{{ class }}{% endif %}"
+      src="{{ image | image_url: width: image_width }}"
+      {% if lazy == true %}loading="lazy"{% endif %}
+      {% if image.alt != blank %}alt="{{ image.alt | escape }}"{% endif %}>
+  </picture>
+{% endif %}

@@ -1,0 +1,51 @@
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-text-block-{{ ai_gen_id }} {
+    display: block;
+    width: 100%;
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 0 30px 50px; /* 0px top, 30px left/right, 50px bottom */
+  }
+
+  .ai-text-block-content-{{ ai_gen_id }} {
+    margin-top: 30px;
+    margin-left: 30px;
+    text-align: left;
+  }
+
+  /* Force the font size and line height on the inner paragraph tags */
+  .ai-text-block-content-{{ ai_gen_id }} p {
+    margin: 0;
+    font-size: 10px !important;
+    line-height: 12px !important;
+    color: {{ block.settings.text_color }} !important;
+  }
+{% endstyle %}
+
+<div class="ai-text-block-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-text-block-content-{{ ai_gen_id }}">
+    {{ block.settings.text_content }}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Text only block",
+  "settings": [
+    {
+      "type": "richtext",
+      "id": "text_content",
+      "label": "Text content",
+      "default": "<p>Add your text content here</p>"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    }
+  ]
+}
+{% endschema %}

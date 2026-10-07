@@ -1,0 +1,263 @@
+{%- assign ss = section.settings -%}
+
+{%- unless ss.image_1 == blank -%}
+  <section class="six-up-section six-up-section--{{ ss.mobile_block_type }} container">
+    <h2 class="six-up-section__heading">{{ ss.title }}</h2>
+    <div class="six-up-section__wrapper six-up-section__wrapper--{{ ss.mobile_block_type }}">
+      {% comment %} Six Up Section 1 {% endcomment %}
+      {% render 'c-six-up-section', {
+        image: ss.image_1,
+        header: ss.header_1,
+        cta_text: ss.cta_text_1,
+        cta_link: ss.cta_link_1,
+        image_link: ss.image_link_1
+      } %}
+      {% comment %} Six Up Section 2 {% endcomment %}
+      {% render 'c-six-up-section', {
+        image: ss.image_2,
+        header: ss.header_2,
+        cta_text: ss.cta_text_2,
+        cta_link: ss.cta_link_2,
+        image_link: ss.image_link_2
+      } %}
+      {% comment %} Six Up Section 3 {% endcomment %}
+      {% render 'c-six-up-section', {
+        image: ss.image_3,
+        header: ss.header_3,
+        cta_text: ss.cta_text_3,
+        cta_link: ss.cta_link_3,
+        image_link: ss.image_link_3
+      } %}
+      {% comment %} Six Up Section 4 {% endcomment %}
+      {% render 'c-six-up-section', {
+        image: ss.image_4,
+        header: ss.header_4,
+        cta_text: ss.cta_text_4,
+        cta_link: ss.cta_link_4,
+        image_link: ss.image_link_4
+      } %}
+      {% comment %} Six Up Section 5 {% endcomment %}
+      {% render 'c-six-up-section', {
+        image: ss.image_5,
+        header: ss.header_5,
+        cta_text: ss.cta_text_5,
+        cta_link: ss.cta_link_5,
+        image_link: ss.image_link_5
+      } %}
+      {% comment %} Six Up Section 6 {% endcomment %}
+      {% render 'c-six-up-section', {
+        image: ss.image_6,
+        header: ss.header_6,
+        cta_text: ss.cta_text_6,
+        cta_link: ss.cta_link_6,
+        image_link: ss.image_link_6
+      } %}
+    </div>
+    <a
+      class="six-up-section__cta btn btn--senary"
+      href="{{ ss.section_cta_link }}"
+    >
+      {{ ss.section_cta_text }}
+    </a>
+  </section>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "6-Up",
+  "presets": [
+    {
+      "category": "Components",
+      "name": "6-Up"
+    }
+  ],
+  "settings": [
+    {
+      "type": "select",
+      "id": "mobile_block_type",
+      "label": "Mobile Block Type",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Heading Text",
+      "default": "Plus, discover our other new cards for holidays..."
+    },
+    {
+      "type": "text",
+      "id": "section_cta_text",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "section_cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "First Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "url",
+      "id": "image_link_1",
+      "label": "Section Image Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_1",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_1",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Second Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "url",
+      "id": "image_link_2",
+      "label": "Section Image Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_2",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_2",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Third Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "url",
+      "id": "image_link_3",
+      "label": "Section Image Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_3",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_3",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Fourth Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_4",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "url",
+      "id": "image_link_4",
+      "label": "Section Image Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_4",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_4",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Fifth Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_5",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "url",
+      "id": "image_link_5",
+      "label": "Section Image Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_5",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_5",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Six Section"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_6",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "url",
+      "id": "image_link_6",
+      "label": "Section Image Link"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_6",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_6",
+      "label": "CTA Link"
+    }
+  ]
+}
+{% endschema %}

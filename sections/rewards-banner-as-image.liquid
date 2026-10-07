@@ -1,0 +1,118 @@
+{%- comment -%}
+  Rewards Hero One Image
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="rewards-banner-as-image container">
+  {% unless customer %}
+    {% if ss.logged_out_desktop != blank %}
+      <div class="rewards-banner-as-image__image-desktop hide-mobile">
+        {% render 'c-responsive-image', {
+          image: ss.logged_out_desktop,
+          inline_ir: true,
+          link: ss.logged_out_url
+        } %}
+      </div>
+    {% endif %}
+  {% endunless %}
+
+  {% if customer %}
+    {% if ss.logged_in_desktop != blank %}
+      <div class="rewards-banner-as-image__image-desktop hide-mobile">
+        {% render 'c-responsive-image', {
+          image: ss.logged_in_desktop,
+          inline_ir: true,
+          link: ss.logged_in_url
+        } %}
+      </div>
+    {% endif %}
+  {% endif %}
+
+  {% unless customer %}
+    {% if ss.logged_out_mobile != blank %}
+      <div class="rewards-banner-as-image__image-mobile hide-desktop">
+        {% render 'c-responsive-image', {
+          image: ss.logged_out_mobile,
+          inline_ir: true,
+          link: ss.logged_out_url
+        } %}
+      </div>
+    {% endif %}
+  {% endunless %}
+
+  {% if customer %}
+    {% if ss.logged_in_mobile != blank %}
+      <div class="rewards-banner-as-image__image-mobile hide-desktop">
+        {% render 'c-responsive-image', {
+          image: ss.logged_in_mobile,
+          inline_ir: true,
+          link: ss.logged_in_url
+        } %}
+      </div>
+    {% endif %}
+  {% endif %}
+</section>
+
+{% schema %}
+  {
+    "name": "Rewards Banner As Image",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Logged out view"
+      },
+      {
+        "type": "url",
+        "id": "logged_out_url",
+        "label": "Logged-out URL Link"
+      },
+      {
+        "type": "textarea",
+        "id": "logged_out_url_title",
+        "label": "URL Link Description",
+        "info": "URL Link's explicit description for accessibility purposes"
+      },
+      {
+        "type": "image_picker",
+        "id": "logged_out_desktop",
+        "label": "Logged-out Desktop Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "logged_out_mobile",
+        "label": "Logged-out Mobile Image"
+      },
+      {
+        "type": "header",
+        "content": "Logged in view"
+      },
+      {
+        "type": "url",
+        "id": "logged_in_url",
+        "label": "Logged-in URL Link"
+      },
+      {
+        "type": "textarea",
+        "id": "logged_in_url_title",
+        "label": "URL Link Description",
+        "info": "URL Link's explicit description for accessibility purposes"
+      },
+      {
+        "type": "image_picker",
+        "id": "logged_in_desktop",
+        "label": "Logged-in Desktop Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "logged_in_mobile",
+        "label": "Logged-in Mobile Image"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Rewards Banner As Image"
+      }
+    ]
+  }
+{% endschema %}

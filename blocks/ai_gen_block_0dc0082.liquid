@@ -1,0 +1,264 @@
+{% doc %}
+  @prompt
+    Please create a clean text block module with adjustable desktop/mobile side paddings, a fixed desktop container cap, customizable font styling based on the site font, and a full-bleed colored background.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  /* The outermost wrapper handles the full-width background color */
+  .ai-text-block-wrapper-{{ ai_gen_id }} {
+    width: 100% !important;
+    background-color: {{ block.settings.background_color }} !important;
+    display: block !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* The inner layout container locks onto the max-width and centers itself */
+  text-block-container-{{ ai_gen_id }},
+  .ai-text-block-container-{{ ai_gen_id }} {
+    display: block !important;
+    width: {{ block.settings.desktop_width_percent }}% !important;
+    /* max-width is 1280px + 80px + 80px = 1440px */
+    max-width: 1440px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-top: {{ block.settings.top_bottom_padding }}px !important;
+    padding-bottom: {{ block.settings.top_bottom_padding }}px !important;
+    padding-left: {{ block.settings.desktop_side_padding }}px !important;
+    padding-right: {{ block.settings.desktop_side_padding }}px !important;
+    box-sizing: border-box !important;
+    float: none !important;
+    clear: both !important;
+  }
+
+  /* Enforce structural clean layout rules for the typography elements */
+  .ai-text-content-{{ ai_gen_id }} {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .ai-text-heading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.heading_font_size }}px;
+    margin-top: 0;
+    margin-bottom: 20px;
+    text-align: {{ block.settings.text_alignment }};
+    color: {{ block.settings.heading_color }};
+    font-weight: 600;
+  }
+
+  .ai-text-paragraph-{{ ai_gen_id }} {
+    font-size: {{ block.settings.paragraph_font_size }}px;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    text-align: {{ block.settings.text_alignment }};
+    color: {{ block.settings.paragraph_color }};
+  }
+
+  .ai-text-paragraph-{{ ai_gen_id }} a {
+    color: {{ block.settings.link_color }};
+    text-decoration: underline;
+  }
+
+  .ai-text-paragraph-{{ ai_gen_id }} a:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  @media screen and (max-width: 749px) {
+    text-block-container-{{ ai_gen_id }},
+    .ai-text-block-container-{{ ai_gen_id }} {
+      padding-left: {{ block.settings.mobile_side_padding }}px !important;
+      padding-right: {{ block.settings.mobile_side_padding }}px !important;
+      width: 100% !important;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-text-block-wrapper-{{ ai_gen_id }}">
+  <text-block-container-{{ ai_gen_id }} class="ai-text-block-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+    <div class="ai-text-content-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-text-heading-{{ ai_gen_id }}">{{ block.settings.heading }}</h2>
+      {% endif %}
+
+      {% if block.settings.paragraph_text != blank %}
+        <div class="ai-text-paragraph-{{ ai_gen_id }}">
+          {{ block.settings.paragraph_text }}
+        </div>
+      {% endif %}
+    </div>
+  </text-block-container-{{ ai_gen_id }}>
+</div>
+
+<script>
+  (function() {
+    class TextBlockContainer{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+    }
+    if (!customElements.get('text-block-container-{{ ai_gen_id }}')) {
+      customElements.define('text-block-container-{{ ai_gen_id }}', TextBlockContainer{{ ai_gen_id }});
+    }
+  })();
+</script>
+
+{% schema %}
+{
+  "name": "Pure Text Block",
+  "tag": null,
+  "class": "pure-text-section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Layout"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width (fallback %)",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading (Optional)"
+    },
+    {
+      "type": "richtext",
+      "id": "paragraph_text",
+      "label": "Paragraph text",
+      "default": "<p>This is a paragraph of pure text styled exactly to your requirements. It maintains full responsivity and site custom formatting layout guidelines.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Typography Settings"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading size",
+      "min": 16,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "paragraph_font_size",
+      "label": "Paragraph size",
+      "min": 12,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "header",
+      "content": "Spacing Sliders"
+    },
+    {
+      "type": "range",
+      "id": "top_bottom_padding",
+      "label": "Top & Bottom padding",
+      "min": 10,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "desktop_side_padding",
+      "label": "Desktop side padding",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "range",
+      "id": "mobile_side_padding",
+      "label": "Mobile side padding",
+      "min": 0,
+      "max": 50,
+      "step": 5,
+      "unit": "px",
+      "default": 20
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background Color",
+      "default": "#eeeeee"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "paragraph_color",
+      "label": "Paragraph Color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover",
+      "default": "#666666"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Pure Text Block"
+    }
+  ]
+}
+{% endschema %}

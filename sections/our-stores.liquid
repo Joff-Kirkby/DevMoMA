@@ -1,0 +1,62 @@
+{%- comment -%}
+  Our Stores
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="our-stores container">
+  {% render 'c-page-navigation', {
+    title: ss.sidebar_title,
+    store_links: ss.store_links,
+    store_links_title: ss.store_links_title,
+    wrapper_id: 'storesAcc',
+  } %}
+
+  <div class="our-stores__content">
+    {% if page.handle == 'stores' %}
+      {% render 'stores-list' %}
+    {% else %}
+      {% unless page.title == 'Stores Events' %}
+        {% render 'our-stores-main' %}
+      {% endunless %}
+
+      {% if page.metafields.store.events %}
+        {% render 'our-stores-events', {
+          payload: page.metafields.store.events.value
+        } %}
+      {% endif %}
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Our Stores",
+    "settings": [
+      {
+        "type": "text",
+        "id": "page_title",
+        "label": "Page Title"
+      },
+      {
+        "type": "header",
+        "content": "Sidebar"
+      },
+      {
+        "type": "text",
+        "id": "sidebar_title",
+        "label": "Sidebar Title"
+      },
+      {
+        "type": "link_list",
+        "id": "store_links",
+        "label": "Store Links"
+      },
+      {
+        "type": "text",
+        "id": "store_links_title",
+        "label": "Accordion Title for Store Links"
+      }
+    ]
+  }
+{% endschema %}

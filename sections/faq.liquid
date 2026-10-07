@@ -1,0 +1,56 @@
+{%- comment -%}
+  FAQ Section
+{%- endcomment -%}
+
+{%- render 'c-faq', {
+  section: section
+} -%}
+
+{% schema %}
+  {
+    "name": "FAQ",
+    "presets": [
+      {
+        "name": "FAQ"
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Section Heading",
+        "default": "Frequently Asked Questions"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "CTA URL"
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Question/Answer",
+        "type": "question_answer",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Question",
+            "default": "Question?"
+          },
+          {
+            "type": "richtext",
+            "id": "answer",
+            "label": "Answer",
+            "default": "<p>The <b>answer</b> to the question.</p>"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,32 @@
+{%- comment -%}
+  Available Locations
+  @param {object} variant
+  @param {string} type - "html" or "json"
+{%- endcomment -%}
+
+{%- assign type = type | default: 'html' -%}
+{%- assign bopis_data = shop.metafields.bopis.data.value -%}
+{%- assign available_locations = variant.store_availabilities | where: 'pick_up_enabled', true -%}
+{%- assign available_locations_array = '' | split: '' -%}
+{%- assign available_locations_text = '' -%}
+{%- for available_location in available_locations -%}
+  {%- assign location_id = available_location.location.name | split: ' - ' | first -%}
+  {%- assign location_data = bopis_data.locations[location_id] -%}
+  {% if location_data %}
+    {%- if type == 'html' -%}
+      {%- capture location_text -%}
+        <span class="pv-bopis__short-titles-item">{{ location_data.shortTitle }}</span>
+      {%- endcapture -%}
+      {%- assign available_locations_text = available_locations_text | append: location_text -%}
+    {%- else -%}
+      {%- assign location_id_array = location_id | split: ' ' -%}
+      {%- assign available_locations_array = available_locations_array | concat: location_id_array -%}
+    {%- endif -%}
+  {%- endif %}
+{%- endfor -%}
+{%- if type == 'html' -%}
+  {{- available_locations_text -}}
+{%- else -%}
+  {{- available_locations_array | json -}}
+{%- endif -%}
+

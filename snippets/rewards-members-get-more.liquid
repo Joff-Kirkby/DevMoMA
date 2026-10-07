@@ -1,0 +1,82 @@
+{% comment %}
+  Rewards - Members Get More
+{% endcomment %}
+
+{% assign is_member = false %}
+{% if customer.tags contains 'moma-membership-active' %}
+  {% assign is_member = true %}
+{% endif %}
+
+<section class="rewards-members container">
+  <div class="rewards-members__container">
+    <div class="rewards-members__wrapper">
+      <div class="rewards-members__header">
+        {% if is_member %}
+          <p class="rewards-members__title">As a MoMA member, you also enjoy these benefits:</p>
+        {% else %}
+          <p class="rewards-members__title">MoMA Members Get Even More.</p>
+          <p class="rewards-members__subtitle">Enhance your Rewards with a membership!</p>
+        {% endif %}
+      </div>
+      <div class="rewards-members__grid js-rewards-members-carousel">
+        <div class="rewards-members__grid-item rewards-members__carousel-cell">
+          <div class="rewards-members__grid-item--icon">
+            <i class="icon icon--10-off"></i>
+          </div>
+          <p class="rewards-members__grid-item--text">10% Off Every Day</p>
+        </div>
+        <div class="rewards-members__grid-item rewards-members__carousel-cell">
+          <div class="rewards-members__grid-item--icon">
+            <i class="icon icon--birthday"></i>
+          </div>
+          <p class="rewards-members__grid-item--text">Extra Birthday Bonus</p>
+        </div>
+        <div class="rewards-members__grid-item rewards-members__carousel-cell">
+          <div class="rewards-members__grid-item--icon rewards-members__grid-item--icon-triple-point">
+            <i class="icon icon--triple-point"></i>
+          </div>
+          <p class="rewards-members__grid-item--text">Triple Point Day <br>2x Per Year</p>
+        </div>
+        <div class="rewards-members__grid-item rewards-members__carousel-cell">
+          <div class="rewards-members__grid-item--icon">
+            <i class="icon icon--20-off"></i>
+          </div>
+          <div class="rewards-members__text-wrap">
+            <p class="rewards-members__grid-item--text">
+              20% Off During <br>Member Shopping <br>Days
+            </p>
+            <i
+              data-tooltip="Become a member at checkout to save 20% on your first purchase and get free shipping."
+              class="icon icon--question hide-mobile">
+            </i>
+          </div>
+        </div>
+        <div class="rewards-members__grid-item rewards-members__carousel-cell">
+          <div class="rewards-members__grid-item--icon rewards-members__grid-item--icon-shipping">
+            <i class="icon icon--shipping"></i>
+          </div>
+          <div class="rewards-members__text-wrap">
+            <p class="rewards-members__grid-item--text">Free Shipping Over <br>$50</p>
+            <i
+              data-tooltip="Members at the Access category and above get free standard shipping in the contiguous 48 states on purchases over $50. Surcharges may apply for oversized or special items. Exclusions apply."
+              class="icon icon--question hide-mobile">
+            </i>
+          </div>
+        </div>
+        <div class="rewards-members__grid-item rewards-members__carousel-cell">
+          <div class="rewards-members__grid-item--icon rewards-members__grid-item--icon-early-access">
+            <i class="icon icon--early-access"></i>
+          </div>
+          <p class="rewards-members__grid-item--text">First To Shop Select <br>Artist Designs</p>
+        </div>
+      </div>
+      {% unless is_member %}
+        <div class="rewards-members__join">
+          <p class="rewards-members__join--text">Not a member?
+            <a class="rewards-members__join--link" href="/pages/memberships">Join today!</a>
+          </p>
+        </div>
+      {% endunless %}
+    </div>
+  </div>
+</section>

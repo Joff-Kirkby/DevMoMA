@@ -1,0 +1,31 @@
+{%- comment -%}
+  FAQ Section
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="faq container">
+  <div class="faq__heading">
+    {{- ss.heading -}}
+  </div>
+  {% for block in section.blocks %}
+    {% assign bs = block.settings %}
+    {% if bs.title != blank %}
+      <div class="faq__question">
+        {{- bs.title -}}
+      </div>
+    {% endif %}
+    {% if bs.answer != blank %}
+      <div class="faq__answer">
+        {{- bs.answer -}}
+      </div>
+    {% endif %}
+  {% endfor %}
+  {% if ss.cta_text != blank and ss.cta_url != blank %}
+    <div class="faq__cta">
+      <a class="btn btn--senary" href="{{- ss.cta_url -}}">
+        {{- ss.cta_text -}}
+      </a>
+    </div>
+  {% endif %}
+</section>

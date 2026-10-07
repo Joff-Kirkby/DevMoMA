@@ -1,0 +1,95 @@
+{% comment %}
+  Video Highlight
+{% endcomment %}
+{%- assign ss = section.settings -%}
+
+<section class="video-highlight container">
+  {%- if ss.video != blank -%}
+    <div
+      class="video-highlight__video-wrapper js-video-highlight"
+      data-video-player="youtube"
+      data-video-id="{{- ss.video -}}"
+    >
+      {%- if ss.poster_image -%}
+        <div class="js-vid-image">
+          {%- render 'c-responsive-image', {
+            image: ss.poster_image,
+            modifier: 'video',
+            wrapper_class: 'js-vid-image video-highlight__video-poster',
+          } -%}
+          <button type="button" class="video-highlight__play-btn btn-icon">
+            <i class="icon icon--play"></i>
+            <span class="screenreader">Play video</span>
+          </button>
+        </div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+  <div class="video-highlight__content">
+    <h3 class="video-highlight__header">{{ ss.heading_text }}</h3>
+    <p class="video-highlight__body">{{ ss.body_text }}</p>
+    <a href="{{ ss.cta_url }}" class="btn btn--primary">
+      {{ ss.cta_text }}
+    </a>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Video Highlight",
+    "settings": [
+      {
+        "type": "text",
+        "id": "video",
+        "label": "Video ID",
+        "info": "Accepts YouTube Video ID"
+      },
+      {
+        "type": "image_picker",
+        "id": "poster_image",
+        "label": "Poster Image"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "header",
+        "content": "Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "heading_text",
+        "label": "Heading Text",
+        "default": "Heading text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "header",
+        "content": "Body Text"
+      },
+      {
+        "type": "textarea",
+        "id": "body_text",
+        "label": "Body Text",
+        "default": "Body text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "header",
+        "content": "CTA"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text",
+        "default": "Default CTA text"
+      },
+      {
+        "type": "text",
+        "id": "cta_url",
+        "label": "CTA URL"
+      }
+    ]
+  }
+{% endschema %}

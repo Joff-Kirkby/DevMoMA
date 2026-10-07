@@ -1,0 +1,60 @@
+{% comment %}
+  Gift Section Alt
+  @param {Object} section required
+{% endcomment %}
+
+{%- assign ss = section.settings -%}
+{%- assign blocks = section.blocks -%}
+<section class="gift-section-alt container">
+  {% if ss.heading_text %}
+    <h2
+      class="gift-section-alt__heading"
+      style="--text-align: {{ ss.heading_alignment | default: 'center' }}"
+    >
+      {{ ss.heading_text }}
+    </h2>
+  {% endif %}
+
+  {% if ss.use_search_spring %}
+    {% render 'c-gift-section-alt-search-spring' %}
+  {% else %}
+    <div class="gift-section-alt__products">
+      {% if ss.use_collection %}
+        {% for product in ss.collection.products limit: ss.product_count %}
+          {% if product != blank %}
+            {% assign index = forloop.index %}
+            {% render 'c-gift-section-alt-product-item', {
+              product: product,
+              index: index,
+            } %}
+          {% endif %}
+        {% endfor %}
+      {% elsif blocks.size > 0 %}
+        {% for block in blocks limit: ss.product_count %}
+          {% assign bs = block.settings %}
+          {% if bs.product != blank %}
+            {% assign index = forloop.index %}
+            {% render 'c-gift-section-alt-product-item', {
+              product: bs.product,
+              index: index,
+            } %}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+    </div>
+  {% endif %}
+  <div class="gift-section-alt__cta-wrapper">
+    <a
+      href="{{ ss.cta_link }}"
+      class="gift-section-alt__cta btn btn--quinary"
+      style="
+        --cta-text-color: {{ ss.cta_text_color | default: '#fff' }};
+        --cta-background-color: {{ ss.cta_bg_color | default: '#000' }};
+        --cta-hover-text-color: {{ ss.cta_hover_text_color | default: '#000' }};
+        --cta-hover-background-color: {{ ss.cta_hover_bg_color | default: '#fff' }};
+      "
+    >
+      {{ ss.cta_text }}
+    </a>
+  </div>
+</section>

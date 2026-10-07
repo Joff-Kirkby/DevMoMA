@@ -1,0 +1,86 @@
+{%- liquid
+  assign promotional_message = product.metafields.pdp.promotional_message.value
+  assign discount_promotional_message = product.metafields.pdp.discount_promotional_message.value
+  assign employee_promotional_message = 'MoMA Employee Discount Applied at Checkout'
+  assign eligible_for_discount = false
+  assign is_employee = false
+
+  for tag in product.tags
+    assign tag_downcase = tag | downcase
+    if tag_downcase == 'eligiblefordiscount'
+      assign eligible_for_discount = true
+      break
+    endif
+  endfor
+
+  if customer != nil
+    assign customer_email_domain = customer.email | split: '@' | last | downcase
+    if customer_email_domain == 'moma.org'
+      assign is_employee = true
+    endif
+  endif
+
+  assign promo_message_text = ''
+-%}
+
+{%- if is_employee -%}
+  {%- capture promo_message_text -%}
+    <div class="pv-promotional-message__text">
+      {{- employee_promotional_message -}}
+    </div>
+  {%- endcapture -%}
+{%- elsif discount_promotional_message != blank and eligible_for_discount == true -%}
+  {%- capture promo_message_text -%}
+    <div class="pv-promotional-message__text">
+      {{- discount_promotional_message -}}
+    </div>
+  {%- endcapture -%}
+{%- elsif promotional_message != blank -%}
+  {%- capture promo_message_text -%}
+    <div class="pv-promotional-message__text">
+      {{- promotional_message -}}
+    </div>
+  {%- endcapture -%}
+{%- else -%}
+  {%- liquid
+    assign metaobject_message = nil
+
+    for promotional_message in shop.metaobjects['promotional_messaging'].values
+      if promotional_message.enable
+        assign filter_tags = promotional_message.filters_tags
+        assign filter_vendors = promotional_message.filters_vendor
+
+        assign is_valid = false
+        assign valid_tags_array = ''
+        assign valid_vendors_array = ''
+
+        for filter_tag in filter_tags.value
+          if product.tags contains filter_tag
+            assign metaobject_message = promotional_message.discount_promotional_message
+            break
+          endif
+        endfor
+
+        for filter_vendor in filter_vendors.value
+          if product.vendor == filter_vendor
+            assign metaobject_message = promotional_message.discount_promotional_message
+            break
+          endif
+        endfor
+
+        if metaobject_message != nil
+          break
+        endif
+      endif
+    endfor
+  -%}
+  {%- capture promo_message_text -%}
+    <div class="pv-promotional-message__text">
+      {{- metaobject_message -}}
+    </div>
+  {%- endcapture -%}
+{%- endif -%}
+
+<div class="pv-promotional-message js-promotional-message">
+  {%- render 'h-minify', variable: promo_message_text -%}
+</div>

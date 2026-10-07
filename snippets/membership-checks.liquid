@@ -1,0 +1,43 @@
+{%- comment -%}
+  Checks if product has member discount properties already applied
+
+   @param {Boolean} product_page
+{%- endcomment -%}
+{% assign is_member = false %}
+{% assign discount_id = '' %}
+{% assign customer_status = 'logged_out' %}
+
+{%- comment -%} Get customer status {%- endcomment -%}
+{% if customer %}
+  {% assign customer_status = 'logged_in' %}
+{% endif %}
+
+{%- comment -%} Check items in cart {%- endcomment -%}
+{% for line_item in cart.items %}
+  {% for prop in line_item.properties %}
+    {% if prop.first == '_discount' %}
+      {% assign is_member = true %}
+      {% assign discount_id = prop.last %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+{% assign is_member_with_tag = false %}
+
+{% if customer and customer.tags contains 'moma-membership-active' %}
+  {% assign is_member_with_tag = true %}
+{% endif %}
+
+{% if is_member and product_page %}
+  {%- comment -%} For product configurables in PDP {%- endcomment -%}
+  <input type="hidden" name="properties[_discount]" value="{{ discount_id }}" />
+  <input type="hidden" name="properties[_customer]" value="{{ customer_status }}" />
+{% else %}
+  {%- comment -%} For Quickviews {%- endcomment -%}
+  <script>
+    SDG.Data.isMemberApplied = {{ is_member }};
+    SDG.Data.isMemberAppliedWithTag = {{ is_member_with_tag }};
+    SDG.Data.discountID = {{ discount_id | json }};
+    SDG.Data.customerStatus = {{ customer_status | json }};
+  </script>
+{% endif %}

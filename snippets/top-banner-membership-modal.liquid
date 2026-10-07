@@ -1,0 +1,44 @@
+{% comment %}
+  Top banner membership modal
+  @param {Object} block
+  @param {Array} membership_cards
+{% endcomment %}
+
+<aside class="top-banner__membership-modal" id="topBannerMembershipMenu_{{ block.id }}">
+  <div class="container">
+    <div class="top-banner__membership-modal-inner">
+      <button
+        type="button"
+        class="top-banner__membership-modal-close btn-icon"
+        id="topBannerMembershipMenuClose_{{ block.id }}"
+      >
+        <span class="screenreader">Close</span>
+        <i class="icon icon--close"></i>
+      </button>
+      <header>
+        <h3 class="top-banner__membership-modal-header">{{ block.settings.modal_header }}</h3>
+      </header>
+      <div class="top-banner__membership-modal-cards" id="topBannerMembershipCards">
+        {%- for card in membership_cards -%}
+          <div class="top-banner__membership-modal-card">
+            <h5 class="top-banner__membership-modal-card-header">
+              {{ card.settings.header }}
+            </h5>
+            <div class="top-banner__membership-modal-card-body">
+              {{ card.settings.body }}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+      <div class="top-banner__membership-modal-cta-wrapper">
+        <a
+          href="{{ block.settings.modal_cta_link }}"
+          class="top-banner__membership-modal-cta btn btn--quaternary"
+          style="color: {{ section.settings.text_color }};"
+        >
+          {{ block.settings.modal_cta_text }}
+        </a>
+      </div>
+    </div>
+  </div>
+</aside>

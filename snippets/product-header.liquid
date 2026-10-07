@@ -1,0 +1,74 @@
+{% assign current_variant = product.selected_or_first_available_variant | default: product.variants.first %}
+{% assign tags = product.tags | join: ',' | downcase | split: ',' %}
+{% assign is_new = current_variant.metafields.teamwork.New | default: current_variant.metafields.teamwork.new %}
+{% assign is_moma_exclusive = current_variant.metafields.teamwork.MoMAExclusive %}
+{% assign is_in_momas_collection = current_variant.metafields.teamwork.InMoMAsCollection %}
+{% assign is_online_only = current_variant.metafields.teamwork.OnlineOnly %}
+{% assign best_seller_tag = 'BestSeller:Best Seller' %}
+{% assign is_clearance = current_variant.metafields.custom.clearance %}
+
+{%- assign is_sale = false -%}
+{%- assign current_variant = product.selected_or_first_available_variant | default: product.variants.first -%}
+{%- if current_variant.compare_at_price > current_variant.price -%}
+  {%- assign is_sale = true -%}
+{%- endif -%}
+
+{% assign badge_modifier = '' %}
+{% assign badge_text = '' %}
+
+{% if is_clearance %}
+  {% assign badge_modifier = 'clearance' %}
+  {% assign badge_text = 'Clearance' %}
+{% elsif is_sale %}
+  {% assign badge_modifier = 'sale' %}
+  {% assign badge_text = 'Sale' %}
+{% elsif is_new == true %}
+  {% assign badge_modifier = 'new' %}
+  {% assign badge_text = 'New' %}
+{% elsif is_moma_exclusive == true %}
+  {% assign badge_modifier = 'moma-exclusive' %}
+  {% assign badge_text = 'MoMA Exclusive' %}
+{% elsif tags contains best_seller_tag %}
+  {% assign badge_modifier = 'best-seller' %}
+  {% assign badge_text = 'Best Seller' %}
+{% elsif is_in_momas_collection == true %}
+  {% assign badge_modifier = 'moma-collection' %}
+  {% assign badge_text = "In MoMA's Collection" %}
+{% endif %}
+
+<header class="pv-header js-product-header">
+  <div class="pv-header__wrapper">
+    <span class="pv-header__badge pv-header__badge--{{ badge_modifier }} js-product-badge{% if badge_modifier == blank and badge_text == blank %} hide{% endif %}">
+      {{ badge_text }}
+    </span>
+
+    <span class="pv-header__badge pv-header__badge--online-only js-product-badge-online-only{% if is_online_only != true or is_sale %} hide{% endif %}">
+      Online Only
+    </span>
+  </div>
+
+<h1 class="pv-title" {% if not_main_heading %} aria-hidden="true"{% endif %}>
+    {%- render 'h-product-title-without-variant', product: product -%}
+  </h1>
+
+  {% if settings.yotpo_enable %}
+    {% unless template contains 'e-gift-card' %}
+      <div class="pv-header__reviews js-pv-reviews">
+        <div class="yotpo bottomLine"
+          data-appkey="{{ settings.yotpo_appkey }}"
+          data-domain="{{shop.permanent_domain | escape }}"
+          data-product-id="{{ product.id }}"
+          data-product-models="{{ product.id }}"
+          data-name="{{ product.title | escape }}"
+          data-url="{{ shop.url }}{{ product.url }}"
+          data-image-url="{{ product.featured_image | product_img_url: 'large' |replace: '?', '%3F' | replace: '&','%26'}}"
+          data-description="{{ product.description | escape }}"
+          data-bread-crumbs="{% for tag in product.tags %}{{ tag | escape }};{% endfor %}"
+        >
+        </div>
+      </div>
+    {% endunless %}
+  {% endif %}
+
+  {% render 'product-price' %}
+</header>

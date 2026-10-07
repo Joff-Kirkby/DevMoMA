@@ -1,0 +1,67 @@
+{% doc %}
+  One question/answer row of the FAQ accordion.
+
+  Rendered closed; the <faq-accordion> custom element (lib/faq-accordion.js)
+  toggles `is-open`, `aria-expanded` and `inert`. Pure: reads only its params,
+  so it can be fed from section blocks, metaobjects or any other source.
+
+  @param {string} question - Question text, plain or already entity-encoded (it
+    is escaped once). A row with a blank question is still rendered when `attrs`
+    is given, so a block being drafted stays selectable in the theme editor
+  @param {string} answer - Answer HTML: a richtext setting or a rich text metafield already rendered to HTML
+  @param {string} id - Unique id for the answer region, referenced by aria-controls (required)
+  @param {string} [attrs] - Extra attributes for the root element, e.g. block.shopify_attributes
+
+  @example
+  {% render 'c-faq-accordion-item',
+    question: block.settings.title,
+    answer: block.settings.answer,
+    id: answer_id,
+    attrs: block.shopify_attributes
+  %}
+{% enddoc %}
+
+{%- liquid
+  assign render_item = false
+  if id != blank
+    if question != blank or attrs != blank
+      assign render_item = true
+    endif
+  endif
+-%}
+
+{%- if render_item -%}
+  <div class="faq-accordion__item" {{ attrs }}>
+    <button
+      class="faq-accordion__question"
+      type="button"
+      aria-expanded="false"
+      aria-controls="{{ id }}"
+    >
+      <span class="faq-accordion__question-text">{{ question | escape_once }}</span>
+      <svg
+        class="faq-accordion__icon"
+        xmlns="http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+        focusable="false"
+      >
+        <polyline points="6 9 12 15 18 9"></polyline>
+      </svg>
+    </button>
+    <div class="faq-accordion__answer" id="{{ id }}" inert>
+      <div class="faq-accordion__answer-inner">
+        <div class="faq-accordion__answer-content">
+          <div class="faq-accordion__answer-text">{{ answer }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%- else -%}
+  {% # c-faq-accordion-item: id is required, and a question unless attrs is given %}
+{%- endif -%}

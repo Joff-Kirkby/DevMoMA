@@ -1,0 +1,1244 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "MoMA",
+    "theme_author": "Domaine",
+    "theme_version": "1.31.2",
+    "theme_documentation_url": "https://meetdomaine.com/",
+    "theme_support_url": "https://meetdomaine.com/"
+  },
+  {
+    "name": "Development Environment",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Choose an environment"
+      },
+      {
+        "type": "select",
+        "id": "env",
+        "label": "Development Environment",
+        "options": [
+          {
+            "value": "staging",
+            "label": "Staging"
+          },
+          {
+            "value": "production",
+            "label": "Production"
+          }
+        ],
+        "default": "production"
+      },
+      {
+        "type": "checkbox",
+        "id": "env_enable_js_minify",
+        "label": "Enable JS Minification",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "BOPIS API URL (Optional)",
+    "settings": [
+      {
+        "type": "text",
+        "id": "bopis_api_url",
+        "label": "BOPIS API URL (Optional)",
+        "info": "If left blank, the BOPIS API will be set to moma-order-history.netlify.app"
+      }
+    ]
+  },
+  {
+    "name": "Sentry",
+    "settings": [
+      {
+        "type": "text",
+        "id": "sentry_loader_key",
+        "label": "Sentry Loader Script key",
+        "info": "Public key from the project's Loader Script URL (js.sentry-cdn.com/<key>.min.js). Leave blank to use the built-in default key."
+      },
+      {
+        "type": "range",
+        "id": "sentry_sample_rate_percent",
+        "label": "Sentry sampling rate",
+        "min": 0,
+        "max": 100,
+        "step": 1,
+        "unit": "%",
+        "default": 5,
+        "info": "Share of error events sent to Sentry. 0 sends nothing, 100 sends everything. Themes without a saved value use 5%."
+      },
+      {
+        "type": "textarea",
+        "id": "sentry_ignored_resources",
+        "label": "Ignored resource URLs",
+        "default": "bat.bing.com/*\n*.smarterhq.io/*\nfonts.googleapis.com/*\nfonts.gstatic.com/*\n*.google-analytics.com/*\n*.googletagmanager.com/*\n*.doubleclick.net/*\nconnect.facebook.net/*",
+        "info": "Images, scripts and stylesheets whose load failures are never reported to Sentry. One pattern per line, matched against the URL without protocol and query string; * matches any characters. Example: cdn.shopify.com/extensions/*. Themes without a saved value use the default list."
+      }
+    ]
+  },
+  {
+    "name": "Meta Descriptions",
+    "settings": [
+      {
+        "type": "text",
+        "id": "homepage_meta",
+        "label": "Homepage meta description",
+        "default": "Classic modern and cutting-edge design products for adults and kids, including items produced exclusively for The Museum of Modern Art and items represented in its collection."
+      },
+      {
+        "type": "text",
+        "id": "gglp_meta",
+        "label": "Gift Guide Landing Page meta description",
+        "default": "Find the perfect gift for every occasion with MoMA's thoughtfully chosen gift guide, featuring unique and artful selections inspired by modern design and creativity."
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "link_list",
+        "id": "mobile_exposed_nav",
+        "label": "Mobile Exposed Nav"
+      }
+    ]
+  },
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Satisfaction Guarantee"
+      },
+      {
+        "type": "text",
+        "id": "product_satisfaction_guarantee_title",
+        "label": "Satisfaction Guarantee Title",
+        "default": "90 Day Satisfaction Guarantee"
+      },
+      {
+        "type": "textarea",
+        "id": "product_satisfaction_guarantee_text",
+        "label": "Satisfaction Guarantee Text",
+        "default": "Your satisfaction is our goal. If for any reason you are not satisfied with your purchase, you may return the merchandise within 90 days for an exchange or refund in the form of the original payment for contiguous U.S orders."
+      },
+      {
+        "type": "header",
+        "content": "Gift Card Check Balance Link"
+      },
+      {
+        "type": "text",
+        "id": "product_gift_card_check_balance_link_text",
+        "label": "Check Balance Link Text",
+        "default": "Check Gift Card Balance"
+      },
+      {
+        "type": "url",
+        "id": "product_gift_card_check_balance_link_url",
+        "label": "Check Balance Link URL"
+      },
+      {
+        "type": "header",
+        "content": "Membership Savings"
+      },
+      {
+        "type": "text",
+        "id": "product_membership_savings_text",
+        "label": "Membership Savings Text",
+        "default": "Members save up to 20% & free shipping $50+"
+      },
+      {
+        "type": "richtext",
+        "id": "product_membership_savings_tooltip_text",
+        "label": "Membership Savings Tooltip Text",
+        "default": "<p>Become a member at checkout to save 20% on your first purchase and get free shipping.</p><p>Members also save 10% every day and 20% during Member Shopping Days.</p><p>Members get free standard shipping in the contiguous 48 states on purchases over $50. Surcharges may apply for oversized or special items. Exclusions apply.</p>"
+      }
+    ]
+  },
+  {
+    "name": "Searchspring",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "ss_enable",
+        "label": "Enable Searchspring",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "ss_site_id",
+        "label": "Site ID",
+        "default": "08n4pt"
+      },
+      {
+        "type": "text",
+        "id": "ss_collection_handle",
+        "label": "Search collection handle",
+        "default": "shop"
+      },
+      {
+        "type": "text",
+        "id": "ss_branch_name",
+        "label": "Branch Name"
+      },
+      {
+        "type": "collection_list",
+        "id": "ss_early_access_list",
+        "label": "Select a collection to include early access"
+      },
+      {
+        "type": "text",
+        "id": "ss_id",
+        "label": "Site ID",
+        "default": "08n4pt"
+      },
+      {
+        "type": "header",
+        "content": "Product Page"
+      },
+      {
+        "type": "text",
+        "id": "bundle_profile_id",
+        "label": "Bundle Profile ID",
+        "default": "easy-add-bundle-test"
+      },
+      {
+        "type": "header",
+        "content": "Product Recommendations Tags"
+      },
+      {
+        "type": "text",
+        "id": "ss_recommendations_tag_default",
+        "label": "Recommendations Tag: Default ",
+        "default": "cross-sell"
+      },
+      {
+        "type": "text",
+        "id": "ss_recommendations_tag_product_page",
+        "label": "Recommendations Tag: Product Page",
+        "default": "cross-sell"
+      },
+      {
+        "type": "text",
+        "id": "ss_recommendations_tag_add_to_cart_success",
+        "label": "Recommendations Tag: Add To Cart Success",
+        "default": "cross-sell"
+      },
+      {
+        "type": "text",
+        "id": "ss_recommendations_tag_cart",
+        "label": "Recommendations Tag: Cart",
+        "default": "cross-sell"
+      },
+      {
+        "type": "text",
+        "id": "ss_recommendations_tag_cart_empty",
+        "label": "Recommendations Tag: Cart Empty",
+        "default": "homepage-best-sellers"
+      },
+      {
+        "type": "text",
+        "id": "ss_hidden_filters",
+        "label": "Hidden Filters",
+        "info": "Searchspring filters to hide sitewide. Possible filters can be found in the Filtering settings in Searchspring under the Filter column. Please separate multiple values with a comma.",
+        "default": "collection_handle"
+      },
+      {
+        "type": "header",
+        "content": "You May Also Like"
+      },
+      {
+        "type": "text",
+        "id": "ss_you_may_also_like_profile_id",
+        "label": "Profile ID",
+        "default": "cross-sell"
+      },
+      {
+        "type": "product",
+        "id": "ss_you_may_also_like_product",
+        "label": "Default Product",
+        "info": "This is the product that will be used to generate the recommendations on the empty cart."
+      },
+      {
+        "type": "header",
+        "content": "Recently Viewed"
+      },
+      {
+        "type": "text",
+        "id": "ss_recently_viewed_profile_id",
+        "label": "Profile ID",
+        "default": "recently-viewed"
+      },
+      {
+        "type": "select",
+        "id": "ss_recently_viewed_placement",
+        "label": "Placement",
+        "options": [
+          {
+            "value": "empty_cart",
+            "label": "Empty Cart"
+          },
+          {
+            "value": "cart",
+            "label": "Cart"
+          }
+        ],
+        "default": "empty_cart"
+      },
+      {
+        "type": "header",
+        "content": "Mini cart recommendations"
+      },
+      {
+        "type": "text",
+        "id": "ss_mini_cart_similar_products_profile_id",
+        "label": "Similar products profile ID",
+        "info": "Searchspring personalized recommendations profile for the mini cart \u201cYou may also like\u201d block (seeded by the last cart item).",
+        "default": "mini-cart"
+      },
+      {
+        "type": "header",
+        "content": "From Your Wishlist"
+      },
+      {
+        "type": "checkbox",
+        "id": "enable_from_your_wishlist",
+        "label": "Enable From Your Wishlist",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "from_your_wishlist_placement",
+        "label": "Placement",
+        "options": [
+          {
+            "value": "empty_cart",
+            "label": "Empty Cart"
+          },
+          {
+            "value": "cart",
+            "label": "Cart"
+          }
+        ],
+        "default": "empty_cart"
+      }
+    ]
+  },
+  {
+    "name": "Account",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Account Login and Registration"
+      },
+      {
+        "type": "text",
+        "id": "auth0_login_base_url",
+        "label": "Auth0 Login Base URL",
+        "default": "login.moma.org",
+        "info": "Base URL without protocol (https://) or trailing slash"
+      },
+      {
+        "type": "text",
+        "id": "auth0_login_client_id",
+        "label": "Auth0 Login Client ID",
+        "default": "7ExEnnrtTjjLmRDZOsX42j6f63H0vrQU"
+      },
+      {
+        "type": "text",
+        "id": "auth0_login_url",
+        "label": "Auth0 Login URL",
+        "default": "https://login.moma.org/authorize?response_type=code&client_id=7ExEnnrtTjjLmRDZOsX42j6f63H0vrQU&return_to=https://moma-design-store.myshopify.com/account&screen_hint=retail&scope=SCOPE&state=STATE"
+      },
+      {
+        "type": "text",
+        "id": "auth0_logout_url",
+        "label": "Auth0 Logout URL",
+        "default": "https://login.moma.org/v2/logout?returnTo=https://moma-design-store.myshopify.com/&client_id=7ExEnnrtTjjLmRDZOsX42j6f63H0vrQU"
+      },
+      {
+        "type": "textarea",
+        "id": "account_registration_success",
+        "label": "Registration Success Message",
+        "default": "Your account has been successfully created, click the button below to login."
+      },
+      {
+        "type": "header",
+        "content": "Account Page Sidebar"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_heading",
+        "label": "Sidebar Heading",
+        "default": "My Account"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_menu_label",
+        "label": "Sidebar Account Menu Label",
+        "default": "Account Menu",
+        "info": "Mobile only"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_settings_heading",
+        "label": "Sidebar Settings Heading",
+        "default": "Account Settings"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_memberships_heading",
+        "label": "Sidebar Memberships Heading",
+        "default": "Memberships"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_order_information_heading",
+        "label": "Sidebar Order Information Heading",
+        "default": "Order Information"
+      },
+      {
+        "type": "header",
+        "content": "Account Page Sidebar Links"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_links_heading",
+        "label": "Sidebar Links Heading",
+        "default": "Shop Confidently"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_link_1_text",
+        "label": "Sidebar Link 1 Text",
+        "default": "Privacy Policy"
+      },
+      {
+        "type": "url",
+        "id": "account_page_sidebar_link_1_url",
+        "label": "Sidebar Link 1 URL"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_link_2_text",
+        "label": "Sidebar Link 2 Text",
+        "default": "Secure Shopping"
+      },
+      {
+        "type": "url",
+        "id": "account_page_sidebar_link_2_url",
+        "label": "Sidebar Link 2 URL"
+      },
+      {
+        "type": "header",
+        "content": "Account Page Sidebar Help"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_us_orders_heading",
+        "label": "Sidebar Help - US Orders Heading",
+        "default": "Need Help with U.S. Orders?"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_us_orders_subheading",
+        "label": "Sidebar Help - US Orders Subheading",
+        "default": "Our Customer Service Team is ready to assist you."
+      },
+      {
+        "type": "inline_richtext",
+        "id": "account_page_sidebar_help_us_orders_body",
+        "label": "Sidebar Help - US Orders Body",
+        "default": "<a href=\"https://storehelpcenter.moma.org/hc/en-us/requests/new\">Email us</a> or call us during business hours."
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_us_orders_schedule_days",
+        "label": "Sidebar Help - US Orders Schedule (Days)",
+        "default": "Monday to Friday"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_us_orders_schedule_hours",
+        "label": "Sidebar Help - US Orders Schedule (Hours)",
+        "default": "9:30 a.m. - 5:00 p.m. ET"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_us_orders_phone_number",
+        "label": "Sidebar Help - US Orders Phone Number",
+        "info": "Suggested format: 555.555.5555",
+        "default": "800.793.3167"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_international_orders_heading",
+        "label": "Sidebar Help - International Orders Heading",
+        "default": "Need Help with International Orders?"
+      },
+      {
+        "type": "text",
+        "id": "account_page_sidebar_help_international_phone_number",
+        "label": "Sidebar Help - International Phone Number",
+        "info": "Suggested format: 555.555.5555",
+        "default": "212.708.9888"
+      }
+    ]
+  },
+  {
+    "name": "Share Image",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "share_image",
+        "label": "Share Image",
+        "info": "Format: JPG; Width: 1200px; Height: 630px;"
+      }
+    ]
+  },
+  {
+    "name": "Password Page",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Design"
+      },
+      {
+        "type": "image_picker",
+        "id": "logo",
+        "label": "Logo"
+      },
+      {
+        "type": "color",
+        "id": "bgcolor",
+        "label": "Background Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "input_bgcolor",
+        "label": "Input Background Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "input_border_color",
+        "label": "Input Border Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "input_text_color",
+        "label": "Input Text Color",
+        "default": "#000000"
+      }
+    ]
+  },
+  {
+    "name": "Mini Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Membership"
+      },
+      {
+        "type": "checkbox",
+        "id": "mini_cart_enable_membership",
+        "label": "Enable Membership Upsell in Mini Cart",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_membership_heading",
+        "label": "Membership heading",
+        "default": "Become a MoMA member and save {{savings}} ({{memberDiscount}})!"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_membership_cta_text",
+        "label": "Membership CTA Text",
+        "default": "View Plans & Purchase"
+      },
+      {
+        "type": "color",
+        "id": "mini_cart_membership_background",
+        "label": "Background Color",
+        "default": "#8ce2d0"
+      },
+      {
+        "type": "color",
+        "id": "mini_cart_membership_text_color",
+        "label": "Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Message"
+      },
+      {
+        "type": "checkbox",
+        "id": "mini_cart_enable_gift_message",
+        "label": "Enable Gift Message in Mini Cart",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_heading",
+        "label": "Gift message heading",
+        "default": "Include a FREE gift message?"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_subheading",
+        "label": "Gift message subheading",
+        "default": "Include a FREE gift message with this order:"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_smalltext",
+        "label": "Gift message small text",
+        "default": "Only one gift message can be printed per shipment."
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_add",
+        "label": "Add Button Text",
+        "default": "Add Now"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_cancel",
+        "label": "Cancel Button Text",
+        "default": "Cancel"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_save",
+        "label": "Save Button Text",
+        "default": "Save Message"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_remove",
+        "label": "Remove Button Text",
+        "default": "Remove"
+      },
+      {
+        "type": "text",
+        "id": "mini_cart_gift_message_edit",
+        "label": "Edit Button Text",
+        "default": "Edit"
+      },
+      {
+        "type": "header",
+        "content": "Recommended Products"
+      },
+      {
+        "type": "checkbox",
+        "id": "mini_cart_enable_recommendations",
+        "label": "Enable Recommended Products",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "OOS Messaging"
+      },
+      {
+        "type": "text",
+        "id": "oos_messaging",
+        "label": "OOS Messaging",
+        "default": "This product is currently out of stock",
+        "info": "If left blank, the OOS messaging will not be displayed."
+      },
+      {
+        "type": "header",
+        "content": "OOS Modal"
+      },
+      {
+        "type": "checkbox",
+        "id": "bag_oos_modal_enabled",
+        "label": "Enable Out Of Stock Modal",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "bag_oos_modal_title",
+        "label": "Out Of Stock Modal Title",
+        "default": "Some items are out of stock"
+      },
+      {
+        "type": "text",
+        "id": "bag_oos_modal_subtitle",
+        "label": "Out Of Stock Modal Subtitle",
+        "default": "Would you like to remove them from your cart?"
+      },
+      {
+        "type": "header",
+        "content": "Gift wrapping message"
+      },
+      {
+        "type": "text",
+        "id": "gift_wrapping_text",
+        "label": "Text content",
+        "default": "You can't to pick up this item locally"
+      },
+      {
+        "type": "color",
+        "id": "gift_wrapping_color",
+        "label": "Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Shipping Details Modal"
+      },
+      {
+        "type": "text",
+        "id": "bag_shipping_details_modal_title",
+        "label": "Shipping Details Modal Title",
+        "default": "SPECIAL DELIVERY SHIPPING DETAILS"
+      },
+      {
+        "type": "html",
+        "id": "bag_shipping_details_modal_content",
+        "label": "Shipping Details Modal Content (HTML)",
+        "info": "Valid HTML code is required for this field."
+      },
+      {
+        "type": "text",
+        "id": "cart_rewards_message_loggedin_title",
+        "label": "Rewards Message Logged In Title"
+      },
+      {
+        "type": "richtext",
+        "id": "cart_rewards_message_loggedin_copy",
+        "label": "Rewards Message Logged In Copy",
+        "info": "In order to create register flyout button, write text and highlight (B) it"
+      },
+      {
+        "type": "text",
+        "id": "cart_rewards_message_loggedout_title",
+        "label": "Rewards Message Logged Out Title"
+      },
+      {
+        "type": "richtext",
+        "id": "cart_rewards_message_loggedout_copy",
+        "label": "Rewards Message Logged Out Copy",
+        "info": "In order to create register flyout button, write text and highlight (B) it"
+      },
+      {
+        "type": "header",
+        "content": "Membership Banner"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_membership_banner_title",
+        "label": "Title",
+        "default": "Become a member and save {member_discount} (20%)!",
+        "info": "{member_discount} will be replaced to display the discount amount."
+      },
+      {
+        "type": "text",
+        "id": "cart_membership_banner_benefits_label",
+        "label": "Benefits"
+      },
+      {
+        "type": "text",
+        "id": "cart_membership_banner_btn_label",
+        "label": "Button Label",
+        "info": "If left blank, the button will not be displayed."
+      },
+      {
+        "type": "header",
+        "content": "Cart Shipping"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_shipping_cut_off_message_enabled",
+        "label": "Enable Shipping Cut Off Message",
+        "default": false
+      },
+      {
+        "type": "textarea",
+        "id": "cart_shipping_cut_off_message_bold_copy",
+        "label": "Shipping Cut Off Message Bold Copy",
+        "info": "Shipping Cut Off Bold Copy"
+      },
+      {
+        "type": "textarea",
+        "id": "cart_shipping_cut_off_message_copy",
+        "label": "Shipping Cut Off Message Copy",
+        "info": "Shipping Cut Off Copy"
+      },
+      {
+        "type": "image_picker",
+        "id": "cart_shipping_cut_off_icon",
+        "label": "Shipping Cut Off Icon",
+        "info": "Format: SVG/PNG; Width: 50px; Height: 50px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "cart_gift_wrap_image",
+        "label": "Gift Wrap Image",
+        "info": "Format: JPG/PNG"
+      },
+      {
+        "type": "text",
+        "id": "flat_shipping_fee_message",
+        "label": "Flat Shipping Fee Message",
+        "default": "$7.95 Flat standard shipping fee available."
+      },
+      {
+        "type": "header",
+        "content": "Wishlist"
+      },
+      {
+        "type": "checkbox",
+        "id": "cart_display_wishlist",
+        "label": "Display Wishlist in Cart?",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Membership Upsell",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Header & Bottom Content"
+      },
+      {
+        "type": "text",
+        "id": "membership_upsell_title",
+        "label": "Title",
+        "default": "Become a Member"
+      },
+      {
+        "type": "text",
+        "id": "membership_upsell_subtitle",
+        "label": "Subtitle",
+        "default": "Join now to save 20% on your first purchase, get free shipping, and access exclusive product launches."
+      },
+      {
+        "type": "html",
+        "id": "membership_upsell_bottom_content",
+        "label": "Bottom Content (HTML)",
+        "info": "Valid HTML code is required for this field."
+      },
+      {
+        "type": "header",
+        "content": "Product Upsell #1"
+      },
+      {
+        "type": "product",
+        "id": "membership_product_upsell_1",
+        "label": "Product"
+      },
+      {
+        "type": "textarea",
+        "id": "membership_product_upsell_1_description",
+        "label": "Description"
+      },
+      {
+        "type": "select",
+        "id": "membership_product_upsell_1_type",
+        "label": "Type",
+        "options": [
+          {
+            "value": "one",
+            "label": "One Member"
+          },
+          {
+            "value": "two",
+            "label": "Two Members"
+          }
+        ],
+        "default": "one"
+      },
+      {
+        "type": "header",
+        "content": "Product Upsell #2"
+      },
+      {
+        "type": "product",
+        "id": "membership_product_upsell_2",
+        "label": "Product"
+      },
+      {
+        "type": "textarea",
+        "id": "membership_product_upsell_2_description",
+        "label": "Description"
+      },
+      {
+        "type": "select",
+        "id": "membership_product_upsell_2_type",
+        "label": "Type",
+        "options": [
+          {
+            "value": "one",
+            "label": "One Member"
+          },
+          {
+            "value": "two",
+            "label": "Two Members"
+          }
+        ],
+        "default": "two"
+      },
+      {
+        "type": "header",
+        "content": "Product Upsell #3"
+      },
+      {
+        "type": "product",
+        "id": "membership_product_upsell_3",
+        "label": "Product"
+      },
+      {
+        "type": "textarea",
+        "id": "membership_product_upsell_3_description",
+        "label": "Description"
+      },
+      {
+        "type": "select",
+        "id": "membership_product_upsell_3_type",
+        "label": "Type",
+        "options": [
+          {
+            "value": "one",
+            "label": "One Member"
+          },
+          {
+            "value": "two",
+            "label": "Two Members"
+          }
+        ],
+        "default": "two"
+      }
+    ]
+  },
+  {
+    "name": "Membership",
+    "settings": [
+      {
+        "type": "collection",
+        "id": "membership_collection",
+        "label": "Membership Collection"
+      }
+    ]
+  },
+  {
+    "name": "Footer - Youtube Section",
+    "settings": [
+      {
+        "type": "text",
+        "id": "membership_section_text",
+        "label": "Header Text"
+      },
+      {
+        "type": "text",
+        "id": "membership_cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "text",
+        "id": "membership_cta_url",
+        "label": "CTA URL"
+      },
+      {
+        "type": "text",
+        "id": "membership_video_embed_url",
+        "label": "Video Embed URL",
+        "info": "If video embed URL is not provided than the images be responsively rendered in its place"
+      },
+      {
+        "type": "image_picker",
+        "id": "membership_image",
+        "label": "Placeholder Image ",
+        "info": "Placeholder image dimensions: 333x183"
+      }
+    ]
+  },
+  {
+    "name": "Yotpo Settings",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "yotpo_enable",
+        "label": "Enable",
+        "default": false
+      },
+      {
+        "type": "text",
+        "id": "yotpo_appkey",
+        "label": "App Key",
+        "default": "NfKdoRfdCpl5laJX6XfdneIEwd89pa337H9xwjml"
+      },
+      {
+        "type": "checkbox",
+        "id": "yotpo_pdp_rewards_enable",
+        "label": "Enable PDP Rewards Section",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "yotpo_account_rewards_enable",
+        "label": "Enable Account Rewards Section",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "yotpo_checkout_rewards_enable",
+        "label": "Enable Checkout Rewards Section",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "yotpo_cart_rewards_enable",
+        "label": "Enable Cart Rewards Section",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "yotpo_refer_friend_enable",
+        "label": "Enable Refer a Friend Section",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "Checkout Confirmation Rewards Message",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "checkout_confirmation_rewards_enable",
+        "label": "Enable Checkout Confirmation Rewards?"
+      },
+      {
+        "type": "text",
+        "id": "checkout_confirmation_rewards_title",
+        "label": "Checkout Confirmation Rewards Title"
+      },
+      {
+        "type": "richtext",
+        "id": "checkout_confirmation_rewards",
+        "label": "Checkout Confirmation Rewards Message"
+      }
+    ]
+  },
+  {
+    "name": "Checkout Shipping & Returns Policy",
+    "settings": [
+      {
+        "type": "textarea",
+        "id": "checkout_shipping_and_returns_modal_content",
+        "label": "Shipping & Returns Modal Content"
+      }
+    ]
+  },
+  {
+    "name": "Checkout Gift Wrap Item ID",
+    "settings": [
+      {
+        "type": "text",
+        "id": "checkout_gift_wrap_item_id",
+        "label": "Gift Wrap Item ID",
+        "default": "43159845929190"
+      }
+    ]
+  },
+  {
+    "name": "Customer Service / Help",
+    "settings": [
+      {
+        "type": "text",
+        "id": "cs_title_1",
+        "label": "Title 1"
+      },
+      {
+        "type": "richtext",
+        "id": "cs_description_1",
+        "label": "Description 1"
+      },
+      {
+        "type": "text",
+        "id": "cs_schedule_days",
+        "label": "Schedule - Days"
+      },
+      {
+        "type": "text",
+        "id": "cs_schedule_time",
+        "label": "Schedule - Time"
+      },
+      {
+        "type": "text",
+        "id": "cs_schedule_phone",
+        "label": "Schedule - Phone"
+      },
+      {
+        "type": "text",
+        "id": "cs_schedule_phone_link",
+        "label": "Schedule - Phone Link"
+      },
+      {
+        "type": "text",
+        "id": "cs_title_2",
+        "label": "Title 2"
+      },
+      {
+        "type": "richtext",
+        "id": "cs_description_2",
+        "label": "Description 2"
+      }
+    ]
+  },
+  {
+    "name": "Checkout Country Selector Modal",
+    "settings": [
+      {
+        "type": "text",
+        "id": "checkout_country_selector_trigger_copy",
+        "label": "Copy to display next to the modal trigger",
+        "default": "Shipping Internationally?"
+      },
+      {
+        "type": "text",
+        "id": "checkout_country_selector_trigger_cta",
+        "label": "Copy for the modal trigger CTA",
+        "default": "Click Here"
+      },
+      {
+        "type": "text",
+        "id": "checkout_country_selector_modal_title",
+        "label": "Modal title",
+        "default": "Select Your Shipping Location"
+      },
+      {
+        "type": "text",
+        "id": "checkout_country_selector_modal_description",
+        "label": "Modal desription",
+        "default": "We make it easy to shop from just about anywhere!"
+      }
+    ]
+  },
+  {
+    "name": "Checkout Special Delivery Required",
+    "settings": [
+      {
+        "type": "text",
+        "id": "checkout_special_delivery_required_copy",
+        "label": "Copy to show to non-members with additional delivery charges",
+        "default": "*One or more items in your cart will require additional delivery charges"
+      },
+      {
+        "type": "text",
+        "id": "checkout_special_delivery_required_subcopy",
+        "label": "Subcopy to show to non-members with additional delivery charges",
+        "default": "*One or more items will require additional time for delivery and will be shipped separately."
+      }
+    ]
+  },
+  {
+    "name": "Structured Data",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Site Logo"
+      },
+      {
+        "type": "image_picker",
+        "id": "structured_data_logo",
+        "label": "Site Logo"
+      },
+      {
+        "type": "header",
+        "content": "Merchant Return Policy"
+      },
+      {
+        "type": "text",
+        "id": "return_policy_category",
+        "label": "Return Policy Category",
+        "default": "https://schema.org/MerchantReturnFiniteReturnWindow"
+      },
+      {
+        "type": "text",
+        "id": "return_policy_country",
+        "label": "Return Policy Country",
+        "default": "US"
+      },
+      {
+        "type": "number",
+        "id": "merchant_return_days",
+        "label": "Merchant Return Days",
+        "default": 90
+      },
+      {
+        "type": "text",
+        "id": "return_method",
+        "label": "Return Method"
+      },
+      {
+        "type": "text",
+        "id": "return_fees",
+        "label": "Return Fees",
+        "default": "https://schema.org/MerchantReturnFiniteReturnWindow"
+      },
+      {
+        "type": "header",
+        "content": "Cookie Banner"
+      },
+      {
+        "type": "checkbox",
+        "id": "disable_legacy_cookie_banner",
+        "label": "Disable Legacy Cookie Banner",
+        "info": "When enabled, the legacy cookie banner scripts will not be rendered. Use this when the new Usercentrics CMP banner is active via GTM.",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Footer Privacy Settings",
+        "info": "Adds a 'Privacy Settings' link to the footer sub-nav that opens the Usercentrics consent popup. The Privacy Policy link remains unchanged."
+      },
+      {
+        "type": "checkbox",
+        "id": "show_privacy_settings_link",
+        "label": "Show Privacy Settings link in footer",
+        "default": false
+      }
+    ]
+  },
+  {
+    "name": "International Shipping Notification",
+    "settings": [
+      {
+        "type": "header",
+        "content": "International Shipping Notification",
+        "info": "A pop-up displayed when the user changes to a non-US country in the global nav 'Ship to' menu."
+      },
+      {
+        "type": "text",
+        "id": "international_shipping_notification_header",
+        "label": "Header Text",
+        "info": "Required"
+      },
+      {
+        "type": "text",
+        "id": "international_shipping_notification_subheader",
+        "label": "Subheader Text"
+      }
+    ]
+  }
+]

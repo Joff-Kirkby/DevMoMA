@@ -1,0 +1,15 @@
+{% assign menu = settings.mobile_exposed_nav %}
+
+{% if menu.links.size > 0 %}
+  <nav class="header__exposed-nav hide-desktop hide-tablet js-exposed-nav">
+    <ul>
+      {% for link in menu.links %}
+        <li>
+          <a href="{{ link.url }}">
+            {{ link.title }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+{% endif %}

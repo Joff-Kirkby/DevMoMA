@@ -1,0 +1,91 @@
+<section id="product" class="pv{% if template contains 'e-gift-card' %} pv--e-gift-card{% endif %}">
+  {% render 'product-data' %}
+  {% render 'product-meta' %}
+  {% render 'product-essentials', section: section %}
+  {% render 'product-why-we-chose-this' %}
+  {% render 'product-tout-three' %}
+  {% render 'product-video-full' %}
+  {% render 'product-designer-background' %}
+  {% render 'product-authenticity-guarantee' %}
+  {% unless template contains 'malachyte' %}
+    <section
+    class="ss-product-recommendations-snippet container"
+    >
+      <script type="searchspring/personalized-recommendations" profile="bundle">
+        product = "{{ product.sku }}";
+      </script>
+    </section>
+    {% render 'ss-pdp-recommendations' %}
+  {% endunless %}
+</section>
+
+<!-- Searchspring IntelliSuggest Tracking -->
+<script type="text/javascript">
+  try{
+      var product_code = "{{ product.variants[0].sku }}";
+      IntelliSuggest.init({siteId:`${SDG.Data.ssId}`, context:"Product/" + product_code, seed:product_code});
+      IntelliSuggest.viewItem({sku:product_code});
+
+      {% assign variants_i =  0 %}
+      {% assign variants_size =  product.variants | size %}
+      SDG.Data.productVariantsPoData = [
+        {% for variant in product.variants %}
+          {% assign variants_i = variants_i | plus: 1 %}
+          {
+            "sku": "{{ variant.sku }}",
+            "po_date": {{ variant.metafields.teamwork.po_date | json }},
+          }{% if variants_i < variants_size %},{% endif %}
+        {% endfor %}
+      ]
+  } catch(err) {}
+</script>
+<!-- END Searchspring IntelliSuggest -->
+{% schema %}
+  {
+    "name": "Product",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "hide_1st_option",
+        "label": "Hide 1st option values",
+        "info": "This will hide 1st option values, if only one value available.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_2nd_option",
+        "label": "Hide 2nd option values",
+        "info": "This will hide 2nd option values, if only one value available.",
+        "default": false
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_3rd_option",
+        "label": "Hide 3rd option values",
+        "info": "This will hide 3rd option values, if only one value available.",
+        "default": false
+      },
+      {
+        "type": "header",
+        "content": "Final Sale"
+      },
+      {
+        "type": "text",
+        "id": "final_sale_text",
+        "label": "Final Sale Text",
+        "default": "This item is final sale and non-returnable."
+      },
+      {
+        "type": "color",
+        "id": "final_sale_text_color",
+        "label": "Final Sale Text Color",
+        "default": "#000000"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "@app"
+      }
+    ]
+  }
+{% endschema %}

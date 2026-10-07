@@ -1,0 +1,6 @@
+{% assign current_variant = product.selected_or_first_available_variant | default: product.variants.first %}
+{%- assign shipping_lead_time = current_variant.metafields.teamwork.shippingleadtime.value | default: current_variant.metafields.teamwork.ShippingLeadTime -%}
+
+<div class="pv-shipping-lead-time js-product-shipping-lead-time{% unless shipping_lead_time != blank %} hide{% endunless %}">
+  Special Order: <span class="js-product-shipping-lead-time-text">{{ shipping_lead_time }}</span>
+</div>

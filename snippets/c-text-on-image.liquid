@@ -1,0 +1,49 @@
+{%- comment -%}
+  Text On Image Section
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="text-on-image container">
+  {% if ss.heading != blank %}
+    <div class="text-on-image__heading">
+      {{- ss.heading -}}
+    </div>
+  {% endif %}
+  {% for block in section.blocks %}
+    {% assign bs = block.settings %}
+    <div
+      class="text-on-image__block"
+      style="--text-background-color-mobile: {{ bs.text_background_color_mobile }};"
+    >
+      {% if bs.text != blank %}
+        <div class="text-on-image__text-wrapper text-on-image__text-wrapper--{{- bs.text_position_desktop -}}">
+          <div class="text-on-image__text">
+            {{- bs.text -}}
+          </div>
+        </div>
+      {% endif %}
+      {% if bs.image_mobile != nil %}
+        {% render 'c-responsive-image', {
+          image: bs.image_mobile,
+          image_class: 'text-on-image__image',
+          wrapper_class: 'text-on-image__image-wrapper hide-tablet hide-desktop',
+        } %}
+      {% endif %}
+      {% if bs.image_desktop != nil %}
+        {% render 'c-responsive-image', {
+          image: bs.image_tablet,
+          image_class: 'text-on-image__image',
+          wrapper_class: 'text-on-image__image-wrapper hide-phone hide-desktop',
+        } %}
+      {% endif %}
+      {% if bs.image_desktop != nil %}
+        {% render 'c-responsive-image', {
+          image: bs.image_desktop,
+          image_class: 'text-on-image__image',
+          wrapper_class: 'text-on-image__image-wrapper hide-phone hide-tablet',
+        } %}
+      {% endif %}
+    </div>
+  {% endfor %}
+</section>

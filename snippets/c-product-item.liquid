@@ -1,0 +1,60 @@
+{% comment %}
+  variables set from parent snippet:
+  product, namespace, has_variable_img_ratio
+{% endcomment %}
+
+{% comment %} set default variables {% endcomment %}
+{% assign pi_has_more_colors = false %}
+{% assign pi_tags = product.tags | join: ', ' %}
+
+{% comment %} check if more then 1 color {% endcomment %}
+{% for opt in product.options_with_values %}
+  {% assign opt_name = opt.name | downcase %}
+  {% if opt_name == 'color' %}
+    {% for val in opt.values %}
+      {% if forloop.length > 1 %}
+        {% assign pi_has_more_colors = true %}
+        {% break %}
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endfor %}
+
+<article class="{% render 'h-module', class: 'pi' %}" itemscope itemtype="http://schema.org/Product">
+
+  <meta itemprop="name" content="{{ product.title }}" />
+  <link itemprop="image" href="{{ product | img_url: '271x' }}" />
+  <meta itemprop="url" content="{{ shop.url }}{{ product.url | within: collection }}" />
+
+  <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
+    <meta itemprop="priceCurrency" content="{{ shop.currency }}">
+    <meta itemprop="price" content="{{ product.price | money_without_currency | strip_html }}">
+    <meta itemprop="availability" content="In Stock">
+    <meta itemprop="itemCondition" itemtype="http://schema.org/OfferItemCondition" content="http://schema.org/NewCondition" />
+  </div>
+
+  <div class="pi__img">
+    <a class="{% render 'h-module', class: 'pi__link' %} is-loading ir{% unless has_variable_img_ratio %} ir--product{% endunless %}" href="{{ product.url | within: collection }}">
+      <img class="lazyload" data-srcset="{{ product | img_url: '285x' }} 1x, {{ product | img_url: '570x' }} 2x" alt="{{ product.title | escape }}" />
+    </a>
+  </div>
+
+  <div class="{% render 'h-module', class: 'pi__desc' %}">
+
+    <h3 class="{% render 'h-module', class: 'pi__title' %}">
+      <a href="{{ product.url | within: collection }}">
+        {{ product.title }}
+      </a>
+    </h3>
+
+    <p class="pi__price">
+      {% if product.price_min < product.price_max  %}
+        {{ product.price_min | money }} - {{ product.price_max | money }}
+      {% else %}
+        {{ product.price | money }}
+      {% endif %}
+    </p>
+
+  </div>
+
+</article>

@@ -1,0 +1,16 @@
+{% comment %}
+  Top banner details modal
+  @param {object} block
+{% endcomment %}
+
+<aside class="top-banner__details-modal" id="topBannerDetailsModal_{{ block.id }}" data-modal-id="{{ block.id }}">
+  <div class="modal__inner">
+    <button type="button" class="modal__close btn-icon" id="topBannerDetailsModalClose_{{ block.id }}">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div>
+      <p>{{ block.settings.modal_content }}</p>
+    </div>
+  </div>
+</aside>

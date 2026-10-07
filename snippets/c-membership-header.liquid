@@ -1,0 +1,17 @@
+{%- comment -%}
+  Membership Header Section
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="heading">
+  {% if ss.heading != blank %}
+    <h1 class="membership-header__heading">{{ ss.heading }}</h1>
+  {% endif %}
+
+  {% if ss.sub_heading_text != blank %}
+    <div class="membership-header__sub-heading">
+      <p>{{ ss.sub_heading_text }}</p>
+    </div>
+  {% endif %}
+</section>

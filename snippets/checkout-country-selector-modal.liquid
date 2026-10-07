@@ -1,0 +1,22 @@
+{%- comment -%}
+  TODO: update copies with settings
+{%- endcomment -%}
+
+<aside id="countrySelectorModal" class="modal country-selector-modal__modal js-modal">
+  <button id="countrySelectorModalBackgroundClose" class="country-selector-modal__modal-background-button modal__background-button js-modal-close" type="button"></button>
+  <div id="countrySelectorModalInner" class="modal__inner country-selector-modal__modal-inner">
+    <button id="countrySelectorModalClose" type="button" class="modal__close btn-icon js-modal-close">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div class="country-selector-modal__content">
+      <div class="country-selector-modal__header">
+        <span class="country-selector-modal__title">{{ settings.checkout_country_selector_modal_title }}</span>
+        <p class="country-selector-modal__copy">{{ settings.checkout_country_selector_modal_description }}</p>
+      </div>
+
+      <div id="countrySelectorModalForm" class="country-selector-modal__form"></div>
+    </div>
+  </div>
+</aside>
+<div id="countrySelectorModalOverlay" class="modal-overlay"></div>

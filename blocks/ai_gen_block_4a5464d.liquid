@@ -1,0 +1,100 @@
+{% doc %}
+  @prompt
+    Create a text only block with no background color. Allow text display in 12 px font size, Allow color adjustment of text and background.  Left align all text, leave 30 px margin on top and one the side. the body section should be fixed width, and  should use the page margins. The overall width of the section should be bound by the global page margins—for example, a max-width of 1340px when the page is fully extended on desktop viewports., Add 30 px padding on each side of the module. Add 40 Px of padding on top and Bottom of the text.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-text-block-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 1340px;
+    margin: 0 auto;
+    padding-left: 30px;
+    padding-right: 30px;
+    box-sizing: border-box;
+  }
+
+  .ai-text-block-content-{{ ai_gen_id }} {
+    background-color: {{ block.settings.background_color }};
+    padding: 40px 30px;
+    margin-top: 30px;
+  }
+
+  .ai-text-block-text-{{ ai_gen_id }} {
+    font-size: {{ block.settings.font_size }}px;
+    color: {{ block.settings.text_color }};
+    text-align: left;
+    line-height: 1.5;
+  }
+
+  .ai-text-block-text-{{ ai_gen_id }} p {
+    margin: 0 0 1em 0;
+  }
+
+  .ai-text-block-text-{{ ai_gen_id }} p:last-child {
+    margin-bottom: 0;
+  }
+{% endstyle %}
+
+<div class="ai-text-block-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-text-block-content-{{ ai_gen_id }}">
+    {% if block.settings.text != blank %}
+      <div class="ai-text-block-text-{{ ai_gen_id }}">
+        {{ block.settings.text }}
+      </div>
+    {% else %}
+      <div class="ai-text-block-text-{{ ai_gen_id }}" style="color: #999; font-style: italic;">
+        Add your text content here
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Text block",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "richtext",
+      "id": "text",
+      "label": "Text",
+      "default": "<p>Add your text content here. This block uses a fixed width layout with page margins.</p>"
+    },
+    {
+      "type": "header",
+      "content": "Style"
+    },
+    {
+      "type": "range",
+      "id": "font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background color",
+      "default": "#ffffff"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Text block"
+    }
+  ]
+}
+{% endschema %}

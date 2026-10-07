@@ -1,0 +1,33 @@
+<div
+  id="notify{{ suffix }}"
+  class="notify notify--{{ suffix | downcase }} js-product-notify"
+  {% if suffix == 'Config' %}{% if current_variant.available %} style="display:none;"{% endif %}{% endif %}
+>
+  <form
+    action="/contact"
+    class="notify__form js-notify-form"
+    data-product-id="{{ product.id }}"
+    data-variant-id="{{ current_variant.id }}"
+    method="post"
+  >
+    <div class="notify__form-inline form-inline">
+      <div class="form-inline__input input-placeholder">
+        <label for="notifyInput{{ suffix }}">
+          Enter your email
+        </label>
+        <input
+          class="notify__input form-inline__input input js-notify-email"
+          id="notifyInput{{ suffix }}"
+          name="contact[email]"
+          required
+          type="email"
+          value="{{ contact.fields.email }}"
+        >
+      </div>
+      <button class="notify__btn form-inline__btn btn btn--quaternary js-notify-btn{% if customer %} logged-in{% endif %}" type="submit">
+        <span class="btn__label">Notify</span>
+      </button>
+    </div>
+    <div class="notify__response" id="notifyMessage{{ suffix }}" style="display:none"></div>
+  </form>
+</div>

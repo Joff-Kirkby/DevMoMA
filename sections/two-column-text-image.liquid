@@ -1,0 +1,81 @@
+{% assign ss = section.settings %}
+
+<div class="two-column-text-image__wrapper two-column-text-image__wrapper--{{ ss.image_position }}">
+  <div class="two-column-text-image__text-wrapper">
+    {%- if ss.title -%}
+      <h2 class="two-column-text-image__text-header">
+        {{ ss.title }}
+      </h2>
+    {%- endif -%}
+    {%- if ss.copy -%}
+      <p class="two-column-text-image__text-copy">
+        {{ ss.copy | newline_to_br }}
+      </p>
+    {%- endif -%}
+  </div>
+  {%- if ss.image -%}
+    <div class="two-column-text-image__image{% if ss.hide_mobile_image %} hide-mobile{% endif %}">
+      {% render 'c-responsive-image', {
+        image: ss.image,
+        inline_ir: true,
+        wrapper_class: 'two-column-text-image__image-wrapper',
+      } %}
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+  {
+    "name": "Two Column Text + Image",
+    "class": "two-column-text-image container",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Header Title"
+      },
+      {
+        "type": "textarea",
+        "id": "copy",
+        "label": "Copy Text"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Recommended Image Format: JPG or PNG; Width: 401px; Height: 361px;"
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "right"
+      },
+      {
+        "type": "checkbox",
+        "id": "hide_mobile_image",
+        "label": "Hide image for mobile?",
+        "default": true
+      }
+    ],
+    "presets": [
+      {
+        "name": "Two Column Text + Image"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,80 @@
+{%- comment -%}
+  2-Up Featured Collections Section
+{%- endcomment -%}
+{% assign ss = section.settings %}
+<div class="icon-carousel">
+  <div class="container" style="background-color:{{ ss.bg_color }}; color:{{ ss.text_color }}">
+    <div class="icon-carousel__inner">
+      <div class="icon-carousel__copy">
+        {%- if ss.header -%}
+          <div class="icon-carousel__header">
+            {{ ss.header }}
+          </div>
+        {%- endif -%}
+      </div>
+      <div class="icon-carousel__grid js-icon-grid-carousel">
+        {%- for block in section.blocks -%}
+          <div class="icon-carousel__grid-item">
+            {% render 'c-responsive-image', {
+              image: block.settings.icon,
+              image_class: 'icon-carousel__grid-item-image',
+              wrapper_class: 'icon-carousel__grid-item-image-wrapper',
+            } %}
+            <div> {{ block.settings.icon_text }} </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+</div>
+{% schema %}
+{
+  "name": "Icon Grid Carousel",
+  "presets": [
+    {
+      "category": "Components",
+      "name": "Icon Grid Carousel"
+    }
+  ],
+  "settings": [
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "text",
+      "id": "header",
+      "label": "Header Text",
+      "default": "We Make the Holidays Easier"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Icon",
+      "type": "Icon",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "icon",
+          "label": "Icon",
+          "info": "An image is required (SVG Recommended)."
+        },
+        {
+          "type": "text",
+          "id": "icon_text",
+          "label": "Icon Text",
+          "default": "Easy Returns for 90 Days"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

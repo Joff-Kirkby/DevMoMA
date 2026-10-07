@@ -1,0 +1,36 @@
+{% if product %}
+  {% assign size_chart = product.metafields.size_chart.pdp %}
+  {% assign size_chart_tag = size_chart | metafield_tag %}
+  {% if size_chart %}
+    <aside
+      id="productSizeChartModal"
+      class="config__options-size-chart-modal modal"
+    >
+      <button
+        id="productSizeChartModalBackgroundClose"
+        class="config__options-size-chart-modal-background-close-btn"
+        type="button"
+      >
+      </button>
+      <div
+        id="productSizeChartModalInner"
+        class="config__options-size-chart-modal-inner modal__inner"
+      >
+        <button
+          class="config__options-size-chart-modal-close-btn btn-icon modal__close"
+          id="productSizeChartModalClose"
+          type="button"
+        >
+          <span class="screenreader">Close</span>
+          <i class="icon icon--close"></i>
+        </button>
+        {{ size_chart_tag }}
+      </div>
+    </aside>
+    <div
+      id="productSizeChartModalOverlay"
+      class="config__options-size-chart-modal-overlay modal-overlay"
+    >
+    </div>
+  {% endif %}
+{% endif %}

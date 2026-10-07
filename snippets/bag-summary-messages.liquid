@@ -1,0 +1,79 @@
+<div class="bag__gift-membership">
+  {%- if shop.metafields.cart.ship_message -%}
+    {{ shop.metafields.cart.ship_message.value }}
+  {%- endif -%}
+  {%- if settings.cart_shipping_cut_off_message_copy != blank and settings.cart_shipping_cut_off_message_enabled -%}
+    <div class="bag__gift-membership-item">
+      <span class="bag__gift-membership-item-icon">
+        {%- if settings.cart_shipping_cut_off_icon != blank -%}
+          {% render 'c-responsive-image', {
+            image: settings.cart_shipping_cut_off_icon,
+            inline_ir: true
+          } %}
+        {%- else -%}
+          <i class="icon icon--delivery-truck"></i>
+        {%- endif -%}
+      </span>
+      <p class="bag__gift-membership-item-text">
+        <strong class="bag__gift-membership-item-text--strong bag__blue-text">
+          {%- if settings.cart_shipping_cut_off_message_bold_copy != blank -%}
+            {{ settings.cart_shipping_cut_off_message_bold_copy }}
+          {%-endif-%}
+        </strong>
+        {{ settings.cart_shipping_cut_off_message_copy }}
+      </p>
+    </div>
+  {%- endif -%}
+  <div class="bag__gift-membership-item">
+    <span class="bag__gift-membership-item-icon">
+      <i class="icon icon--gift"></i>
+    </span>
+    <p class="bag__gift-membership-item-text">
+      <strong class="bag__gift-membership-item-text--strong">Is this order a gift?</strong>
+      Add gift wrap and a free gift message in checkout.
+    </p>
+  </div>
+  <div class="bag__gift-membership-item">
+    <span class="bag__gift-membership-item-icon">
+      <i class="icon icon--membership"></i>
+    </span>
+    <p class="bag__gift-membership-item-text">
+      <strong class="bag__gift-membership-item-text--strong bag__blue-text">Are you a MoMA Member?</strong>
+      You'll be able to add your membership in checkout to get your Member savings.
+    </p>
+  </div>
+  {% if settings.yotpo_cart_rewards_enable %}
+    <div class="bag__gift-membership-item">
+      <span class="bag__gift-membership-item-icon">
+        <i class="icon icon--small-boxes"></i>
+      </span>
+      {% if customer %}
+        {% if settings.cart_rewards_message_loggedin_title != blank or settings.cart_rewards_message_loggedin_copy != blank %}
+          <p class="bag__gift-membership-item-text">
+            {% if settings.cart_rewards_message_loggedin_title != blank  %}
+              <span class="bag__gift-membership-item-text--strong">
+                {{ settings.cart_rewards_message_loggedin_title | replace: '<p>', '' | replace: '</p>', '' }}
+              </span>
+            {% endif %}
+            {% if settings.cart_rewards_message_loggedin_copy != blank  %}
+              {{ settings.cart_rewards_message_loggedin_copy | replace: '<p>' , '' | replace: '</p>', '' | replace: '<strong>', '<a href="#" onclick="document.getElementById(`registerDrawer`).classList.add(`active`)">' | replace: '</strong>', '</a>' }}
+            {% endif %}
+          </p>
+        {% endif %}
+      {% else %}
+        {% if settings.cart_rewards_message_loggedout_title != blank or settings.cart_rewards_message_loggedout_copy != blank %}
+          <p class="bag__gift-membership-item-text">
+            {% if settings.cart_rewards_message_loggedout_title != blank %}
+              <span class="bag__gift-membership-item-text--strong">
+                {{ settings.cart_rewards_message_loggedout_title | replace: '<p>' , '' | replace: '</p>', '' }}
+              </span>
+            {% endif %}
+            {% if settings.cart_rewards_message_loggedout_copy != blank %}
+              {{ settings.cart_rewards_message_loggedout_copy | replace: '<p>' , '' | replace: '</p>', '' | replace: '<strong>', '<a href="#" onclick="document.getElementById(`registerDrawer`).classList.add(`active`)">' | replace: '</strong>', '</a>' }}
+            {% endif%}
+          </p>
+        {% endif %}
+      {% endif %}
+    </div>
+  {% endif%}
+</div>

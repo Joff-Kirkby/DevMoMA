@@ -1,0 +1,69 @@
+{%- comment -%}
+  4 Blocks + Text Section
+{%- endcomment -%}
+
+{% render 'c-four-blocks-and-text', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "4 Blocks + Text",
+    "settings": [
+      {
+        "type": "header",
+        "content": "4 Blocks + Text"
+      },
+      {
+        "type": "text",
+        "id": "headline",
+        "label": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "URL",
+        "info": "For CTA"
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Block",
+        "type": "block",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "Format: JPG. Recommended dimensions: width: 1414px; height: 1414px;"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "CTA Text"
+          },
+          {
+            "type": "url",
+            "id": "cta_url",
+            "label": "CTA/Image URL"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "4 Blocks + Text"
+      }
+    ]
+  }
+{% endschema %}

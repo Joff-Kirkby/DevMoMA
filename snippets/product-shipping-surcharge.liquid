@@ -1,0 +1,73 @@
+{% assign current_variant = product.selected_or_first_available_variant | default: product.variants.first %}
+
+<div
+  id="productShippingSurcharge"
+  class="pv-shipping-surcharge js-product-shipping-surcharge"
+>
+  {% for variant in product.variants %}
+    {% liquid
+      assign additional_shipping_value = variant.metafields.teamwork.AdditionalShipping.value | default: variant.metafields.teamwork.additionalshipping.value
+      assign additional_shipping_cost = additional_shipping_value | times: 100 | money
+    %}
+
+    {% if additional_shipping_value != blank and additional_shipping_value > 0 %}
+      <div
+        class="pv-shipping-surcharge__text js-product-shipping-surcharge-text{% if variant.id == current_variant.id %} is-active{% endif %}"
+        data-variant-id="{{ variant.id }}"
+      >
+        <i class="pv-shipping-surcharge__icon icon icon--van"></i>Shipping surcharge of <span class="pv-shipping-surcharge__amount">{{ additional_shipping_cost }}</span>&nbsp;
+        <button
+          type="button"
+          class="pv-shipping-surcharge__modal-trigger btn btn-link js-product-shipping-surcharge-modal-trigger"
+        >
+          Why?
+        </button>
+      </div>
+    {% endif %}
+  {% endfor %}
+  <div
+    id="productShippingSurchargeModalFakeTrigger"
+    class="pv-shipping-surcharge__modal-fake-trigger"
+  ></div>
+  <aside
+    id="productShippingSurchargeModal"
+    class="pv-shipping-surcharge__modal modal"
+  >
+    <button
+      id="productShippingSurchargeModalBackgroundClose"
+      class="pv-shipping-surcharge__modal-background-close-btn"
+    >
+    </button>
+    <div
+      id="productShippingSurchargeModalInner"
+      class="pv-shipping-surcharge__modal-inner modal__inner"
+    >
+      <button
+        class="pv-shipping-surcharge__modal-close-icon btn-icon modal__close"
+        id="productShippingSurchargeModalCloseIcon"
+        type="button"
+      >
+        <span class="screenreader">Close</span>
+        <i class="icon icon--close"></i>
+      </button>
+      <h3 class="pv-shipping-surcharge__modal-title">
+        Why is there a shipping surcharge?
+      </h3>
+      <p class="pv-shipping-surcharge__modal-text">
+        While we try to keep as many of our products within our flat shipping rate, some products require additional shipping charge due to oversize shipping package or special delivery requirements.
+      </p>
+      <button
+        id="productShippingSurchargeModalCloseBtn"
+        class="pv-shipping-surcharge__modal-close-btn btn btn--quaternary"
+        type="button"
+      >
+        Close
+      </button>
+    </div>
+  </aside>
+  <div
+    id="productShippingSurchargeModalOverlay"
+    class="pv-shipping-surcharge__modal-overlay modal-overlay"
+  >
+  </div>
+</div>

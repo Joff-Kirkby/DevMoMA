@@ -1,0 +1,24 @@
+{% comment %}
+  Account Registration Submission Modal
+  @param {object} section
+{% endcomment %}
+
+<aside class="ac-registration__submission-modal modal" id="acRegistrationSubmissionModal">
+  <div class="modal__inner">
+    <button type="button" class="modal__close btn-icon js-modal-close" id="acRegistrationSubmissionModalClose">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div class="modal__inner-body">
+      <p class="modal__inner-text">{{ settings.account_registration_success }}</p>
+      <a
+        class="modal__inner-btn btn btn--quinary"
+        id="acRegistrationSubmissionModalInnerClose"
+        href="{% render 'h-auth0-url' %}"
+      >
+        Login to Account
+      </a>
+    </div>
+  </div>
+</aside>
+<div id="acRegistrationSubmissionModalOverlay" class="modal-overlay"></div>

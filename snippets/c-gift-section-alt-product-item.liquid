@@ -1,0 +1,46 @@
+{% comment %}
+  Gift Section Alt Product Item
+  @param {Object} product required
+  @param {Number} index required
+{% endcomment %}
+
+<a
+  href="{{ product.url }}"
+  title="{{ product.title }}"
+  class="gift-section-alt__product-item gift-section-alt__product-item--{{ index }} js-gift-alt-product-item"
+>
+  <div class="gift-section-alt__product-item-inner">
+    {% render 'c-responsive-image', {
+      image: product.featured_image,
+      image_class: 'image-css-class',
+      modifier: 'swatch',
+      wrapper_class: '_gift-section-alt__product-item-image',
+      inline_ir: true
+    } %}
+    <p class="gift-section-alt__product-item-number">
+      {% if index < 10 %}
+        {% assign index = index | prepend: '0' %}
+      {% endif %}
+      {{ index }}
+    </p>
+    <div class="gift-section-alt__product-item-overlay">
+      <div class="gift-section-alt__product-item-title">
+        {{ product.title }}
+      </div>
+      {% assign membership_discount_except = product.metafields.teamwork.membershipdiscountexcept.value | default: product.metafields.teamwork.membershipdiscountexcept %}
+      <button
+        class="btn btn--quinary gift-section-alt__product-item-btn js-gift-alt-add-to-bag"
+        id="btnAddToBag"
+        name="add"
+        type="button"
+        data-variants='{{ product.variants | json }}'
+        data-variant-id="{{ product.selected_or_first_available_variant.id | json }}"
+        {% if membership_discount_except != blank %}
+          data-membership-discount-except="{{ membership_discount_except | strip_html | strip | escape }}"
+        {% endif %}
+      >
+        Add to Cart
+      </button>
+    </div>
+  </div>
+</a>

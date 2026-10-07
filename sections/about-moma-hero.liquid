@@ -1,0 +1,109 @@
+{%- comment -%}
+  About Moma Hero
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+{% assign hex_to_rgba = ss.image_overlay_color | hex_to_rgba: ss.image_overlay_opacity %}
+
+<section
+  class="about-moma-hero container"
+  id="section-{{ section.id }}"
+>
+  <div class="about-moma-hero__item">
+    <div class="about-moma-hero__item-image">
+      {% if ss.background_image_desktop != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.background_image_desktop,
+          modifier: 'about-moma-hero',
+          wrapper_class: 'desktop-only',
+        } %}
+      {% endif %}
+      {% if ss.background_image_tablet != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.background_image_tablet,
+          modifier: 'about-moma-hero',
+          wrapper_class: 'tablet-only',
+        } %}
+      {% endif %}
+      {% if ss.background_image_mobile != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.background_image_mobile,
+          modifier: 'about-moma-hero',
+          wrapper_class: 'phone-only',
+        } %}
+      {% endif %}
+    </div>
+    <div class="about-moma-hero__item-content">
+      {% if ss.header != blank %}
+        <div class="about-moma-hero__item-content__heading">
+          <h1 class="about-moma-hero__heading">{{ ss.header }}</h1>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+<style>
+  #section-{{ section.id }} .about-moma-hero__item::before {
+    background-color: {{ hex_to_rgba }};
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "About Moma Hero",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "background_image_desktop",
+        "label": "Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1280px; height: 500px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_tablet",
+        "label": "Background Image (Tablet)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1280px; height: 500px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_mobile",
+        "label": "Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 355px; height: 460px;"
+      },
+      {
+        "type": "color",
+        "id": "image_overlay_color",
+        "label": "Image Overlay Color",
+        "info": "Optional image overlay to enable text readability.",
+        "default": "#000"
+      },
+      {
+        "type": "range",
+        "id": "image_overlay_opacity",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "pts",
+        "label": "Image Overlay Opacity",
+        "info": "Sets the opacity of the overlay. Range 0-1. Increments by 0.1.",
+        "default": 0
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "textarea",
+        "id": "header",
+        "label": "Header Text"
+      }
+    ],
+    "presets": [
+      {
+        "name": "About Moma Hero"
+      }
+    ]
+  }
+{% endschema %}

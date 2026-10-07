@@ -1,0 +1,30 @@
+{%- comment -%}
+  This is used to remap short hand size values to full words
+
+  Params:
+  - val {String}
+{%- endcomment -%}
+
+{%- assign val = val | downcase -%}
+{%- case val -%}
+  {%- when 'xs' -%}
+    extra small
+  {%- when 's' -%}
+    small
+  {%- when 'm' -%}
+    medium
+  {%- when 'l' -%}
+    large
+  {%- when 'xl' -%}
+    extra large
+  {%- when 'xxl' -%}
+    2x Large
+  {%- when '2xl' -%}
+    2x Large
+  {%- when 'xxxl' -%}
+    3x Large
+  {%- when '3xl' -%}
+    3x Large
+  {%- else -%}
+    {{- val -}}
+{%- endcase -%}

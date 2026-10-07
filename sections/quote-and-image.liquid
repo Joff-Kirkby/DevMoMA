@@ -1,0 +1,51 @@
+{%- comment -%}
+  Quote + Image Section
+{%- endcomment -%}
+
+{% render 'c-quote-and-image', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "Quote + Image",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Quote + Image"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Format: JPG. Recommended dimensions: width: 740px; height: 740px;"
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "right"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Quote + Image"
+      }
+    ]
+  }
+{% endschema %}

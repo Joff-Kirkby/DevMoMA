@@ -1,0 +1,278 @@
+{% assign ss = section.settings %}
+
+<section
+  class="cta-grid container"
+  style="
+    --header-text-alignment-desktop: {{ ss.title_alignment_desktop }};
+    --header-text-alignment-mobile: {{ ss.title_alignment_mobile }};
+  "
+>
+  <div
+    class="cta-grid__header"
+  >
+    <h2
+      class="cta-grid__title"
+      style="color: {{ ss.text_color }}"
+    >{{ ss.title }}</h2>
+  </div>
+  <div class="cta-grid__grid">
+    {% for block in section.blocks %}
+      {% assign bs = block.settings %}
+      {% if block.type == 'text' %}
+        <a
+          href="{{ bs.url }}"
+          class="cta-grid__grid-item cta-grid__grid-item--text"
+          style="background-color: {{ bs.background_color }}; color: {{ bs.text_color }}; text-align: {{ bs.text_alignment }};"
+        >
+          <div class="cta-grid__text">
+            {{- bs.text -}}
+          </div>
+        </a>
+      {% elsif block.type == 'large_image'%}
+        <a
+          href="{{ bs.url }}"
+          class="cta-grid__grid-item cta-grid__grid-item--large-image"
+          style="color: {{ bs.text_color }}; text-align: {{ bs.text_alignment }};"
+        >
+          {% render 'c-responsive-image', {
+            image: bs.image,
+            modifier: 'cta-grid-large-image',
+            wrapper_class: 'cta-grid__image-wrapper',
+          } %}
+          <div class="cta-grid__text">
+            {{- bs.text -}}
+          </div>
+        </a>
+      {% elsif block.type == 'small_image'%}
+        <a
+          href="{{ bs.url }}"
+          class="cta-grid__grid-item cta-grid__grid-item--small-image"
+          style="color: {{ bs.text_color }}; text-align: {{ bs.text_alignment }};"
+        >
+          {% render 'c-responsive-image', {
+            image: bs.image,
+            modifier: 'cta-grid-small-image',
+            wrapper_class: 'cta-grid__image-wrapper',
+          } %}
+          <div class="cta-grid__text">
+            {{- bs.text -}}
+          </div>
+        </a>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "CTA Grid",
+    "settings": [
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Title Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "select",
+        "id": "title_alignment_desktop",
+        "label": "Title Alignment Desktop",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "select",
+        "id": "title_alignment_mobile",
+        "label": "Title Alignment Mobile",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "The Gift Store"
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Text",
+        "type": "text",
+        "settings": [
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background Color",
+            "default": "#000000"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#ffffff"
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "textarea",
+            "id": "text",
+            "label": "Text",
+            "default": "Gifts $25 And Under"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Block URL Link"
+          }
+        ]
+      },
+      {
+        "name": "Large Image",
+        "type": "large_image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "Recommended: Size: 1220x948px; Format: JPG"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text",
+            "default": "Bestselling Gifts"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Block URL Link"
+          }
+        ]
+      },
+      {
+        "name": "Small Image",
+        "type": "small_image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "Recommended: Size: 574x400px; Format: JPG"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#000000"
+          },
+          {
+            "type": "select",
+            "id": "text_alignment",
+            "label": "Text Alignment",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "center",
+                "label": "Center"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "left"
+          },
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text",
+            "default": "Gift Category"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Block URL Link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "CTA Grid"
+      }
+    ]
+  }
+{% endschema %}

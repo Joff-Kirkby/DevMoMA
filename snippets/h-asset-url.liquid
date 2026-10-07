@@ -1,0 +1,6 @@
+{%- if settings.env_enable_js_minify -%}
+  {%- assign extension = '.min.js' -%}
+{%- else -%}
+  {%- assign extension = '.js' -%}
+{%- endif -%}
+{{- name | append: extension | asset_url -}}

@@ -1,0 +1,465 @@
+{%- comment -%}
+  FAQ Accordion
+  Layout shell: heading, subcopy, the list of question/answer rows and an
+  optional CTA. Each row is rendered by the c-faq-accordion-item snippet and
+  the open/close behaviour lives in the <faq-accordion> custom element
+  (lib/faq-accordion.js). Editable in the customizer, droppable on any template.
+
+  Two sources for the rows, in priority order:
+  1. Product metafield `custom.faq` (rich_text_field). Every heading is a
+     question and everything under it, up to the next heading, is its answer,
+     so merchants write the FAQ as one document in the admin rich text editor
+     and get links, bold and lists for free. The metafield is rendered by
+     `metafield_tag`, headings are normalised to h2 and the HTML is split on
+     them; content before the first heading is ignored, a heading without
+     text under it is skipped, and markup inside a heading is dropped.
+  2. The section's Question/Answer blocks, used off product pages or when the
+     product has no usable headings (unless "Hide when the product has no
+     FAQ" is on).
+  When neither source has a row, the section renders nothing at all, so an
+  unconfigured section never shows a lone heading.
+
+  Presets: "FAQ Accordion" (manual blocks, Rewards-style) and "Product FAQ"
+  (heading "Frequently Asked Questions", metafield only, hidden when the
+  product has no FAQ) for the product templates. On product pages the root also gets the
+  `faq-accordion--product` modifier, which tightens the heading gap and keeps
+  the hairline under the last question, as in the PDP design.
+{%- endcomment -%}
+
+{%- liquid
+  assign ss = section.settings
+  assign cta_text = ss.cta_text | default: 'View all FAQs'
+
+  # Render the product rows up front so "does the product have a FAQ" and the
+  # markup come from a single pass over the metafield.
+  assign product_faq_rows = ''
+  assign product_faq_count = 0
+  if ss.use_product_metafield and product.metafields.custom.faq != blank
+    assign faq_html = product.metafields.custom.faq | metafield_tag
+    assign faq_html = faq_html | replace: '<h1>', '<h2>' | replace: '</h1>', '</h2>'
+    assign faq_html = faq_html | replace: '<h3>', '<h2>' | replace: '</h3>', '</h2>'
+    assign faq_html = faq_html | replace: '<h4>', '<h2>' | replace: '</h4>', '</h2>'
+    assign faq_html = faq_html | replace: '<h5>', '<h2>' | replace: '</h5>', '</h2>'
+    assign faq_html = faq_html | replace: '<h6>', '<h2>' | replace: '</h6>', '</h2>'
+    assign faq_chunks = faq_html | split: '<h2>'
+
+    capture product_faq_rows
+      for chunk in faq_chunks offset: 1
+        assign parts = chunk | split: '</h2>'
+        # Still entity-encoded by metafield_tag; the snippet escapes once.
+        assign faq_question = parts[0] | strip_html | strip
+        assign faq_answer = parts[1] | split: '</div>' | first | strip
+        assign faq_answer_text = faq_answer | strip_html | strip
+        if faq_question != blank and faq_answer_text != blank
+          assign product_faq_count = product_faq_count | plus: 1
+          assign answer_id = 'faq-answer-' | append: section.id | append: '-' | append: product_faq_count
+          render 'c-faq-accordion-item', question: faq_question, answer: faq_answer, id: answer_id
+        endif
+      endfor
+    endcapture
+  endif
+
+  assign has_product_faq = false
+  if product_faq_count > 0
+    assign has_product_faq = true
+  endif
+
+  # Render nothing (no heading either) when there is no row to show.
+  assign hide_section = false
+  if has_product_faq == false
+    if section.blocks.size == 0
+      assign hide_section = true
+    elsif product != blank and ss.use_product_metafield and ss.hide_without_product_faq
+      assign hide_section = true
+    endif
+  endif
+-%}
+
+{%- unless hide_section -%}
+<faq-accordion class="faq-accordion{% if product != blank %} faq-accordion--product{% endif %}" id="section-{{ section.id }}">
+  <div class="faq-accordion__inner container">
+    {%- if ss.heading != blank -%}
+      <h2 class="faq-accordion__heading">{{ ss.heading | escape }}</h2>
+    {%- endif -%}
+
+    {%- if ss.subcopy != blank and ss.subcopy_mobile != blank -%}
+      <div class="faq-accordion__subcopy hide-mobile">{{ ss.subcopy }}</div>
+      <p class="faq-accordion__subcopy hide-desktop">{{ ss.subcopy_mobile | escape }}</p>
+    {%- elsif ss.subcopy != blank -%}
+      <div class="faq-accordion__subcopy">{{ ss.subcopy }}</div>
+    {%- elsif ss.subcopy_mobile != blank -%}
+      <p class="faq-accordion__subcopy">{{ ss.subcopy_mobile | escape }}</p>
+    {%- endif -%}
+
+    {%- if has_product_faq -%}
+      <div class="faq-accordion__list">{{ product_faq_rows }}</div>
+    {%- elsif section.blocks.size > 0 -%}
+      <div class="faq-accordion__list">
+        {%- for block in section.blocks -%}
+          {%- assign answer_id = 'faq-answer-' | append: section.id | append: '-' | append: forloop.index -%}
+          {%- render 'c-faq-accordion-item',
+            question: block.settings.title,
+            answer: block.settings.answer,
+            id: answer_id,
+            attrs: block.shopify_attributes
+          -%}
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+    {%- if ss.show_cta and ss.cta_url != blank -%}
+      <a href="{{ ss.cta_url }}" class="faq-accordion__cta">{{ cta_text | escape }}</a>
+    {%- endif -%}
+  </div>
+</faq-accordion>
+{%- endunless -%}
+
+
+{% stylesheet %}
+  /**
+   * FAQ Accordion
+   * Heading uses MoMA Sans Store, questions/answers use MoMA Sans. Chevron sizes
+   * to the question text and rotates on open. Tokens come from
+   * snippets/theme-styles-variables.liquid.
+   *
+   * Instance values ride on custom properties so a template can restyle one
+   * instance (e.g. the PDP) without a new selector:
+   *   --faq-accordion-padding-block  vertical padding of the section (2.5rem)
+   *   --faq-accordion-heading-gap    space under the heading (1.875rem)
+   *   --faq-accordion-divider        colour of the hairline between rows
+   *   --faq-accordion-duration       open/close transition (0 under reduced motion)
+   */
+  .faq-accordion {
+    --faq-accordion-duration: 0.4s;
+
+    display: block;
+    padding: var(--faq-accordion-padding-block, 2.5rem) 0;
+    font-family: var(--font-primary);
+    color: var(--color-foreground);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq-accordion {
+      --faq-accordion-duration: 0s;
+    }
+  }
+
+  .faq-accordion__heading {
+    margin: 0 0 var(--faq-accordion-heading-gap, 1.875rem);
+    font-family: var(--font-secondary);
+    font-size: 2rem;
+    line-height: 1.2;
+    font-weight: var(--font-weight-regular);
+    text-align: left;
+  }
+
+  .faq-accordion__subcopy {
+    margin: 0 0 1.5rem;
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+
+  .faq-accordion__subcopy a {
+    color: var(--color-foreground);
+    text-decoration: underline;
+  }
+
+  .faq-accordion__list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .faq-accordion__item {
+    border-bottom: 1px solid var(--faq-accordion-divider, #e0e0e0);
+  }
+
+  .faq-accordion__item:last-child {
+    border-bottom: none;
+  }
+
+  .faq-accordion__question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    width: 100%;
+    padding: 1.25rem 0;
+    background-color: transparent;
+    border: none;
+    font-family: inherit;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .faq-accordion__question:focus-visible {
+    outline: -webkit-focus-ring-color auto 1px;
+    outline-offset: 0.125rem;
+  }
+
+  .faq-accordion__question-text {
+    flex-grow: 1;
+    font-size: 1.125rem;
+    line-height: 1.3;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-foreground);
+  }
+
+  .faq-accordion__icon {
+    flex-shrink: 0;
+    width: 1em;
+    height: 1em;
+    font-size: 1.125rem;
+    color: var(--color-foreground);
+    transition: transform var(--faq-accordion-duration) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .faq-accordion__answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows var(--faq-accordion-duration) cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .faq-accordion__answer-inner {
+    overflow: hidden;
+  }
+
+  .faq-accordion__answer-content {
+    padding: 0 0 1.25rem;
+  }
+
+  .faq-accordion__answer-text,
+  .faq-accordion__answer-text p {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    font-weight: var(--font-weight-regular);
+    color: var(--color-foreground);
+  }
+
+  .faq-accordion__answer-text a {
+    color: var(--color-foreground);
+    text-decoration: underline;
+  }
+
+  .faq-accordion__answer-text a:hover,
+  .faq-accordion__answer-text a:focus-visible {
+    color: var(--color-foreground-muted);
+  }
+
+  .faq-accordion__cta {
+    display: inline-block;
+    margin-top: 1.875rem;
+    padding: 0.8125rem 1.5rem;
+    background-color: var(--color-foreground);
+    color: var(--color-background);
+    font-size: 1rem;
+    line-height: 1;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* Open state, toggled by <faq-accordion>. Declared after the elements it
+     overrides so specificity only ever goes up. */
+  .faq-accordion__item.is-open .faq-accordion__icon {
+    transform: rotate(180deg);
+  }
+
+  .faq-accordion__item.is-open .faq-accordion__answer {
+    grid-template-rows: 1fr;
+  }
+
+  /* Product pages (Figma "PDP Updates"): 30px on mobile and 40px on desktop
+     between the heading and the first question, i.e. this gap plus the
+     1.25rem padding of the question button. Other pages keep the 50px of the
+     Rewards design. The PDP design also closes the list with a hairline under
+     the last question (the Reviews section that follows draws none of its
+     own, see _pv-reviews.scss), where Rewards leaves the last row open. */
+  .faq-accordion--product {
+    --faq-accordion-heading-gap: 0.625rem;
+  }
+
+  .faq-accordion--product .faq-accordion__item:last-child {
+    border-bottom: 1px solid var(--faq-accordion-divider, #e0e0e0);
+  }
+
+  /* PDP type sizes (ECOM-1294 QA): the heading matches the other PDP section
+     titles (26px mobile / 36px desktop, see .pv-reviews__title), questions are
+     17px on mobile and answers stay 14px on every breakpoint. */
+  .faq-accordion--product .faq-accordion__heading {
+    font-size: 1.625rem;
+  }
+
+  .faq-accordion--product .faq-accordion__question-text,
+  .faq-accordion--product .faq-accordion__icon {
+    font-size: 1.0625rem;
+  }
+
+  @media screen and (min-width: 1025px) {
+    .faq-accordion--product {
+      --faq-accordion-heading-gap: 1.25rem;
+    }
+
+    .faq-accordion__heading {
+      font-size: 3rem;
+    }
+
+    .faq-accordion__subcopy {
+      font-size: 1.5rem;
+    }
+
+    .faq-accordion__question-text,
+    .faq-accordion__icon {
+      font-size: 1.5rem;
+    }
+
+    .faq-accordion__answer-text,
+    .faq-accordion__answer-text p {
+      font-size: 1rem;
+    }
+
+    .faq-accordion--product .faq-accordion__heading {
+      font-size: 2.25rem;
+    }
+
+    .faq-accordion--product .faq-accordion__question-text,
+    .faq-accordion--product .faq-accordion__icon {
+      font-size: 1.5rem;
+    }
+
+    .faq-accordion--product .faq-accordion__answer-text,
+    .faq-accordion--product .faq-accordion__answer-text p {
+      font-size: 0.875rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "FAQ Accordion",
+  "tag": "section",
+  "class": "faq-accordion-section",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Headline",
+      "default": "Frequently Asked Questions"
+    },
+    {
+      "type": "richtext",
+      "id": "subcopy",
+      "label": "Subcopy"
+    },
+    {
+      "type": "text",
+      "id": "subcopy_mobile",
+      "label": "Subcopy (mobile)",
+      "info": "Optional. Shown instead of the subcopy on mobile."
+    },
+    {
+      "type": "header",
+      "content": "Product FAQ"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_product_metafield",
+      "label": "Use the product's FAQ metafield",
+      "default": true,
+      "info": "On product pages, reads the product's FAQ rich text metafield (custom.faq): write each question as a Heading and its answer as the text below it. Links, bold and lists are kept. Falls back to the blocks below when the product has none."
+    },
+    {
+      "type": "checkbox",
+      "id": "hide_without_product_faq",
+      "label": "Hide when the product has no FAQ",
+      "default": false,
+      "info": "On product pages, hides the section instead of showing the blocks below.",
+      "visible_if": "{{ section.settings.use_product_metafield }}"
+    },
+    {
+      "type": "header",
+      "content": "Call to action"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_cta",
+      "label": "Show CTA",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA label",
+      "default": "View all FAQs",
+      "visible_if": "{{ section.settings.show_cta }}"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "CTA link",
+      "visible_if": "{{ section.settings.show_cta }}"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "question_answer",
+      "name": "Question/Answer",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Question",
+          "default": "Question?"
+        },
+        {
+          "type": "richtext",
+          "id": "answer",
+          "label": "Answer",
+          "default": "<p>The <b>answer</b> to the question.</p>"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "FAQ Accordion",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "show_cta": false,
+        "cta_text": "View all FAQs"
+      },
+      "blocks": [
+        {
+          "type": "question_answer",
+          "settings": {
+            "title": "How do I join the rewards program?",
+            "answer": "<p>Joining is free. Create an account or sign in, and you'll be enrolled automatically to start earning points on every purchase.</p>"
+          }
+        },
+        {
+          "type": "question_answer",
+          "settings": {
+            "title": "How do I earn points?",
+            "answer": "<p>You earn points on every qualifying purchase, as well as through special promotions and account activities.</p>"
+          }
+        },
+        {
+          "type": "question_answer",
+          "settings": {
+            "title": "How do I redeem my rewards?",
+            "answer": "<p>Once you've earned enough points, you can redeem them for rewards at checkout or from your account dashboard.</p>"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Product FAQ",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "use_product_metafield": true,
+        "hide_without_product_faq": true,
+        "show_cta": false
+      },
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}

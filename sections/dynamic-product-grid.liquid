@@ -1,0 +1,191 @@
+{%- comment -%}
+  Dynamic SS Carousel Section
+{%- endcomment -%}
+
+{% render 'c-gifting-product-grid', {
+  section: section,
+  is_dynamic: true
+} %}
+
+{% schema %}
+{
+  "name": "Dynamic SS Carousel",
+  "max_blocks": 16,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Desktop Heading Text",
+      "default": "Best Selling Gifts"
+    },
+    {
+      "type": "text",
+      "id": "mobile_heading_text",
+      "label": "Mobile Heading Text",
+      "default": "Explore"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Text Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "category_selector_type",
+      "label": "Category Selector Type",
+      "options": [
+        {
+          "value": "dropdown",
+          "label": "Dropdown"
+        },
+        {
+          "value": "inline",
+          "label": "Inline Buttons"
+        }
+      ],
+      "default": "dropdown"
+    },
+    {
+      "type": "checkbox",
+      "id": "enable_product_carousel",
+      "label": "Enable Product Carousel",
+      "default": false
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Category",
+      "type": "category",
+      "settings": [
+        {
+          "type": "text",
+          "id": "title",
+          "label": "Category Name",
+          "default": "Category Name",
+          "info": "Category Name is required."
+        },
+        {
+          "type": "text",
+          "id": "searchspring_tag",
+          "label": "Searchspring Profile",
+          "default": "all-outdoor-lp-recommendations",
+          "info": "Searchspring Profile is required."
+        },
+        {
+          "type": "select",
+          "id": "search_results_source",
+          "label": "Search Results Source",
+          "options": [
+            {
+              "value": "recommendations",
+              "label": "Recommendations"
+            },
+            {
+              "value": "search",
+              "label": "Search"
+            }
+          ],
+          "default": "recommendations"
+        },
+        {
+          "type": "header",
+          "content": "CTA"
+        },
+        {
+          "type": "url",
+          "id": "cta_url",
+          "label": "CTA URL"
+        },
+        {
+          "type": "header",
+          "content": "Collections"
+        },
+        {
+          "type": "checkbox",
+          "id": "use_collection",
+          "label": "Use Collection",
+          "info": "When enabled, this will grab the first 8 products from the collection"
+        },
+        {
+          "type": "collection",
+          "id": "collection_handle",
+          "label": "Collection"
+        },
+        {
+          "type": "header",
+          "content": "Products"
+        },
+        {
+          "type": "paragraph",
+          "content": "Products will be used when 'Use Collection' is un-checked"
+        },
+        {
+          "type": "product",
+          "id": "product_1",
+          "label": "Product 1",
+          "info": "First product is required."
+        },
+        {
+          "type": "product",
+          "id": "product_2",
+          "label": "Product 2"
+        },
+        {
+          "type": "product",
+          "id": "product_3",
+          "label": "Product 3"
+        },
+        {
+          "type": "product",
+          "id": "product_4",
+          "label": "Product 4"
+        },
+        {
+          "type": "product",
+          "id": "product_5",
+          "label": "Product 5"
+        },
+        {
+          "type": "product",
+          "id": "product_6",
+          "label": "Product 6"
+        },
+        {
+          "type": "product",
+          "id": "product_7",
+          "label": "Product 7"
+        },
+        {
+          "type": "product",
+          "id": "product_8",
+          "label": "Product 8"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic SS Carousel"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,124 @@
+{% comment %}
+  Set cpage
+{% endcomment %}
+{% assign cpage = handle %}
+{% if template contains 'index' %}
+  {% assign cpage = 'index' %}
+{% endif %}
+{% if template contains 'customers' %}
+  {% assign cpage = 'account' %}
+  {% if template == 'customers/account' or template == 'customers/addresses' %}
+    {% assign cpage = 'account-dashboard' %}
+  {% endif %}
+{% endif %}
+{% if template contains 'collection' %}
+  {% assign cpage = 'collection' %}
+{% endif %}
+{% if template contains 'membership' %}
+  {% assign cpage = 'membership' %}
+{% endif %}
+{% if template contains 'product' %}
+  {% assign cpage = 'product' %}
+{% endif %}
+{% if template contains 'style-guide' %}
+  {% assign cpage = 'style_guide' %}
+{% endif %}
+{% if template contains 'gift-finder' %}
+  {% assign cpage = 'gift_finder' %}
+{% endif %}
+{% if template == 'page.gifts' %}
+  {% assign cpage = 'gifts' %}
+{% endif %}
+{% if template contains 'store' %}
+  {% assign cpage = 'stores' %}
+{% endif %}
+{% if template contains 'email-sign-up' %}
+  {% assign cpage = 'email_signup' %}
+{% endif %}
+{% if template contains 'sitemap' %}
+  {% assign cpage = 'sitemap' %}
+{% endif %}
+{% if template contains 'rewards' %}
+  {% assign cpage = 'rewards' %}
+{% endif %}
+{% if template contains 'cart' %}
+  {% assign cpage = 'cart' %}
+{% endif %}
+
+{% assign ss_id = settings.ss_id %}
+
+{% comment %}
+  Set extension
+{% endcomment %}
+{% if settings.env_enable_js_minify %}
+  {% assign extension = '.min.js' %}
+{% else %}
+  {% assign extension = '.js' %}
+{% endif %}
+
+{% comment %}
+  Capture and render script variables
+{% endcomment %}
+{%- capture script_vars -%}
+<script>
+  SDG.Data.path = {
+    account: '{{ 'account' | append: extension | asset_url }}',
+    account_dashboard: '{{ 'account-dashboard' | append: extension | asset_url }}',
+    collection: '{{ 'collection' | append: extension | asset_url }}',
+    email_signup: '{{ 'email-signup' | append: extension | asset_url }}',
+    gift_finder: '{{ 'gift-finder' | append: extension | asset_url }}',
+    gifts: '{{ 'gifts' | append: extension | asset_url }}',
+    index: '{{ 'index' | append: extension | asset_url }}',
+    membership: '{{ 'membership' | append: extension | asset_url }}',
+    product: '{{ 'product' | append: extension | asset_url }}',
+    rewards: '{{ 'rewards' | append: extension | asset_url }}',
+    shopify_options: '{{ 'option_selection.js' | shopify_asset_url }}',
+    sitemap: '{{'sitemap' | append: extension | asset_url }}',
+    style_guide: '{{ 'style-guide' | append: extension | asset_url }}',
+    stores: '{{ 'stores' | append: extension | asset_url }}',
+    cart: '{{ 'cart' | append: extension | asset_url }}'
+  };
+  SDG.Data.pageHandle = '{{ cpage  | replace : '-', '_' }}';
+  SDG.Data.ssId = '{{ ss_id }}';
+  SDG.Data.ssHiddenFilters = {{ settings.ss_hidden_filters | replace: ', ', ',' | split: ',' | json }};
+  SDG.Data.template = {{ template | json }};
+  SDG.Data.memberDiscountRatio = {{ shop.metafields.global.pdp_member_discount.value | default: 10 }};
+</script>
+{%- endcapture -%}
+{% render 'h-minify', variable: script_vars %}
+
+{%- assign storefront_api = shop.metafields.global.storefront_api -%}
+<script>
+  SDG.Data.yotpo = {
+    yotpoEnabled: '{{ settings.yotpo_enable | json }}',
+    yotpoAppKey: '{{ settings.yotpo_appkey | json }}',
+    yotpoAccountSectionEnabled: {{ settings.yotpo_account_rewards_enable }},
+  };
+  SDG.Data.storefrontDomain = {{ storefront_api.value.storefrontDomain | json }};
+  SDG.Data.publicStorefrontToken = {{ storefront_api.value.publicStorefrontToken | json }};
+  SDG.Data.publicStorefrontTokenBopis = {{ storefront_api.value.publicStorefrontTokenBopis | json }};
+</script>
+{% comment %}
+  Load scripts
+{% endcomment %}
+<script src="{{ 'runtime' | append: extension | asset_url }}" defer></script>
+
+{% if 'ui-libs' | asset_url %}
+  <script src="{{ 'ui-libs' | append: extension | asset_url }}" defer></script>
+{% endif %}
+
+{% if 'utils' | asset_url %}
+  <script src="{{ 'utils' | append: extension | asset_url }}" defer></script>
+{% endif %}
+
+{% if 'common' | asset_url %}
+  <script src="{{ 'common' | append: extension | asset_url }}" defer></script>
+{% endif %}
+
+<script src="{{ 'app' | append: extension | asset_url }}" defer></script>
+
+{% render 'membership-checks' %}
+
+{% if template == 'collection.native' %}
+  <script src="{{ 'collection-native' | append: extension | asset_url }}" defer></script>
+{% endif %}

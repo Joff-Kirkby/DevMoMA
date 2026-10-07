@@ -1,0 +1,48 @@
+{%- if settings.ss_branch_name != blank -%}
+	{% capture ss_branch_name %}/{{ settings.ss_branch_name }}{% endcapture %}
+{%- endif -%}
+
+{%- if customer -%}
+	{% capture ss_shopper_config %} 
+		shopper = { id: "{{ customer.id }}" };
+	{% endcapture %}
+{%- endif -%}
+
+{% assign ss_defer_config = ' defer' %}
+{%- if collection.handle and template contains 'collection' -%}
+	{% assign ss_defer_config = '' %}
+	{%- if collection.handle != settings.ss_collection_handle -%}
+		{% capture ss_collection_config %} 
+			collection = { id: "{{ collection.id }}", name: "{{ collection.title | replace: '"', '&quot;' }}", handle: "{{ collection.handle }}" };
+		{% endcapture %}
+	{%- endif -%}	
+{%- endif -%}
+
+{%- if current_tags -%}
+	{% capture ss_tags_config %}
+		tags = "{{ current_tags | join: '|' | replace: '"', '&quot;' }}";
+	{% endcapture %}
+{%- endif -%}
+
+{%- if template -%}
+	{% capture ss_template_config %}
+		template = "{{ template }}";
+	{% endcapture -%}
+{%- endif -%}
+
+{% capture ss_money_config %}
+	format = "{{ shop.money_format }}";
+{% endcapture %}
+
+{% capture ss_token %}
+	token={{ shop.metafields.global.storefront_api.value.publicStorefrontToken | default: '186fb692aaf4bad38b0c3621ba614ba5' | json }};
+{% endcapture %}
+
+{% capture ss_early_access %}
+  {% if settings.ss_early_access_list != blank %}early_access_collections = [{%- for collection in settings.ss_early_access_list -%}"{{ collection.handle }}"{%- unless forloop.last -%}, {%- endunless -%}{%- endfor -%}];{% endif %}
+{% endcapture %}
+
+{% comment %}Searchspring Script{% endcomment %}
+<script src="https://snapui.searchspring.io/{{ settings.ss_site_id }}{{ ss_branch_name }}/bundle.js" id="searchspring-context"{{ ss_defer_config }}>
+	{{ ss_shopper_config }}{{ ss_collection_config }}{{ ss_tags_config }}{{ ss_template_config }}{{ ss_money_config }}{{ss_token}}{{ss_early_access}}
+</script>

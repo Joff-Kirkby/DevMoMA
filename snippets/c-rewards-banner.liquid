@@ -1,0 +1,62 @@
+{% capture logged_in %}
+    <p>
+      {{ section.settings.body_text_logged_in | newline_to_br }}
+    </p>
+  </div>
+  <a class="rewards-banner__cta" href="{{- section.settings.cta_url_logged_in -}}">
+    {{section.settings.cta_text_logged_in}}
+  </a>
+{% endcapture %}
+{% capture logged_out %}
+    <p>
+      {{ section.settings.body_text_logged_out | newline_to_br }}
+    </p>
+  </div>
+  <a class="rewards-banner__cta" href="{{- section.settings.cta_url_logged_out -}}">
+    {{ section.settings.cta_text_logged_out }}
+  </a>
+{% endcapture %}
+<section class="rewards-banner container">
+  <div class="rewards-banner__container">
+    <div class="rewards-hero__left">
+      <p class="rewards-hero__header">{{ section.settings.sub_heading_text | newline_to_br }}</p>
+      <div class="rewards-hero__text-wrap">
+        <h2 class="rewards-hero__text-wrap-title">{{section.settings.heading_text }}</h2>
+        <div class="rewards-hero__img-blocks">
+          {% render 'c-responsive-image', {
+            image: section.settings.small_blocks,
+            modifier: 'rewards-hero-img-small',
+            image_class: 'rewards-hero__image-small',
+          } %}
+        </div>
+      </div>
+      <div class="rewards-hero__info">
+        {% if customer %}
+          {{ logged_in }}
+        {% else %}
+          {{ logged_out }}
+        {% endif %}
+    </div>
+
+    <div class="rewards-hero__right">
+      <div class="rewards-hero__right-image">
+        {% render 'c-responsive-image', {
+          image: section.settings.background_image_desktop,
+          inline_ir: true,
+          wrapper_class: 'hide-mobile',
+          image_class: 'rewards-hero__image',
+        } %}
+
+        {% if section.settings.background_image_mobile != blank %}
+          {% render 'c-responsive-image', {
+            image: section.settings.background_image_mobile,
+            image_class: 'image-css-class',
+            modifier: 'rewards-hero-img',
+            wrapper_class: 'hide-desktop',
+            inline_ir: true,
+          } %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>

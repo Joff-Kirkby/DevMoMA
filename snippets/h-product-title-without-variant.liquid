@@ -1,0 +1,42 @@
+{%- comment -%}
+Returns product title, minus variant string
+@param {String} title
+@param {Object} product
+{%- endcomment -%}
+
+{%- assign product_title = product.title -%}
+{%- assign sibling_meta = product.metafields.teamwork.product_stitching.value -%}
+{%- assign sibling_option_names = "" -%}
+
+{%- if sibling_meta != blank -%}
+  {%- assign sibling_option = blank -%}
+
+  {%- comment -%}{%- endcomment -%}
+  {%- if sibling_meta.Options.Option1 -%}
+    {%- assign sibling_option = sibling_meta.Options.Option1 -%}
+  {%- endif -%}
+
+  {%- comment -%}{%- endcomment -%}
+  {%- for option in sibling_meta.Values -%}
+    {%- if option[sibling_option] -%}
+      {%- assign current_option_value = option[sibling_option] -%}
+      {%- if sibling_option_names contains current_option_value -%}
+        {%- continue -%}
+      {%- endif -%}
+      {%- assign sibling_option_names = sibling_option_names | append: option[sibling_option] | append: ','  -%}
+    {%- endif -%}
+  {%- endfor -%}
+
+  {%- comment -%}{%- endcomment -%}
+  {%- if sibling_option_names != "" -%}
+    {%- assign sibling_option_names_array = sibling_option_names | split: ',' -%}
+    {%- for option_name in sibling_option_names_array -%}
+      {%- assign variant_option_string = option_name | prepend: ' - ' -%}
+      {%- if product_title contains variant_option_string -%}
+        {%- assign product_title = product_title | replace: variant_option_string, '' -%}
+        {%- break -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endif -%}
+{%- endif -%}
+{{- product_title -}}

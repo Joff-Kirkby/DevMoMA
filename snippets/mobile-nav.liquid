@@ -1,0 +1,136 @@
+{% comment %}
+  Nav mobile
+{% endcomment %}
+{%- assign meta = shop.metafields.navigation.mobile.value -%}
+{%- assign menu_items = meta.menu_items -%}
+{%- assign need_help_menu = meta.need_help_menu -%}
+{%- assign bottom_menu = meta.bottom_menu -%}
+
+<nav id="mobileNav" class="mobile-nav">
+
+  {% comment %} Level one {% endcomment %}
+  <ul class="mobile-nav__menu list-reset container">
+    {%- for menu_item in menu_items -%}
+      {% assign namespace_key = menu_item.title | downcase | replace: ' ', '-' | prepend: 'font_color_' %}
+      {% if namespace_key == 'font_color_kids' %}
+        {% assign namespace_key = 'font_color_kids-&-games' %}
+      {% endif %}
+      {% assign color_metafield = shop.metafields.navigation[namespace_key].value %}
+      <li class="mobile-nav__level-one-list-item js-mobile-nav-menu-wrapper">
+        <div class="mobile-nav__menu-item">
+          {%- if menu_item.url != blank -%}
+            <a
+              href="{{ menu_item.url }}"
+              class="mobile-nav__menu-item-link"
+              {% if color_metafield %}
+                style="color: {{ color_metafield }}"
+              {% endif %}
+            >
+              {{ menu_item.title }}
+            </a>
+          {%- else -%}
+            {{ menu_item.title }}
+          {%- endif -%}
+          {%- if menu_item.submenu != blank -%}
+            <button type="button" class="mobile-nav__expand-btn btn-icon js-mobile-nav-expand-submenu-btn">
+              <i class="icon icon--plus-black js-mobile-nav-expand-icon"></i>
+            </button>
+          {%- endif -%}
+        </div>
+
+        {% comment %} Level two {% endcomment %}
+        {%- if menu_item.submenu != blank -%}
+          <ul class="mobile-nav__submenu mobile-nav__submenu--level-two list-reset js-mobile-nav-submenu">
+            {%- for submenu_item in menu_item.submenu -%}
+              <ul class="mobile-nav__submenu--level-two-list list-reset">
+                {%- if submenu_item.title != blank -%}
+                  <li class="mobile-nav__submenu-title">
+                    {%- if submenu_item.url -%}
+                      <a href="{{ submenu_item.url}}">{{ submenu_item.title }}</a>
+                    {%- else -%}
+                      {{ submenu_item.title }}
+                    {%- endif -%}
+                  </li>
+                {%- endif -%}
+                {%- for submenu_item in submenu_item.items -%}
+                  <li class="js-mobile-nav-menu-wrapper">
+                    <div class="mobile-nav__menu-item">
+                      {%- if submenu_item.url != blank -%}
+                        <a href="{{ submenu_item.url }}" class="mobile-nav__submenu-link">{{ submenu_item.title }}</a>
+                      {%- else -%}
+                        {{ submenu_item.title }}
+                      {%- endif -%}
+                      {%- if submenu_item.submenu != blank -%}
+                        <button type="button" class="mobile-nav__expand-btn btn-icon js-mobile-nav-expand-submenu-btn">
+                          <i class="icon icon--plus-black js-mobile-nav-expand-icon"></i>
+                        </button>
+                      {%- endif -%}
+                    </div>
+
+                    {% comment %} Level three {% endcomment %}
+                    {%- if submenu_item.submenu != blank -%}
+                      <ul class="mobile-nav__submenu list-reset js-mobile-nav-submenu">
+                        {%- if submenu_item.submenu.title -%}
+                          <li>
+                            {%- if submenu_item.submenu.url -%}
+                              <a href="{{ submenu_item.submenu.url}}">{{ submenu_item.submenu.title }}</a>
+                            {%- else -%}
+                              {{ submenu_item.submenu.title }}
+                            {%- endif -%}
+                          </li>
+                        {%- endif -%}
+                        {%- for submenu_item in submenu_item.submenu.items -%}
+                          <li>
+                            <div class="mobile-nav__menu-item">
+                              {%- if submenu_item.url != blank -%}
+                                <a href="{{ submenu_item.url }}" class="mobile-nav__submenu-link">{{ submenu_item.title }}</a>
+                              {%- else -%}
+                                {{ submenu_item.title }}
+                              {%- endif -%}
+                            </div>
+                          </li>
+                        {%- endfor -%}
+                      </ul>
+                    {%- endif -%}
+                  </li>
+                {%- endfor -%}
+              </ul>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </li>
+    {%- endfor -%}
+  </ul>
+
+  <div class="mobile-nav__dropdowns-wrapper">
+    <div class="mobile-nav__dropdowns">
+      <div class="mobile-nav__country-selector-wrapper">
+        {% render 'country-selector' %}
+      </div>
+      <div class="mobile-nav__need-help-wrapper">
+        <button type="button" class="btn mobile-nav__need-help-btn" id="mobileNavNeedHelpBtn">
+          {{ need_help_menu.title }}
+        </button>
+        <div class="mobile-nav__need-help-menu" id="mobileNavNeedHelpMenu">
+          <ul class="list-reset">
+            {%- for menu_item in need_help_menu.menu_items -%}
+              <li>
+                <a href="{{ menu_item.url }}">{{ menu_item.title }}</a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {%- if bottom_menu.size > 0 -%}
+    <ul class="mobile-nav__bottom-menu list-reset" id="mobileNavBottomMenu">
+      {%- for menu_item in bottom_menu -%}
+        <li class="mobile-nav__bottom-menu-item">
+          <a href="{{ menu_item.url }}">{{ menu_item.title }}</a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  {%- endif -%}
+</nav>

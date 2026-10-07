@@ -1,0 +1,378 @@
+{%- comment -%}
+  Bag
+  IMPORTANT: Changes to this file should be consistent with checkout-bag-items.liquid
+{%- endcomment -%}
+
+{% liquid
+  assign is_member = false
+  if customer.tags contains 'moma-membership-active'
+    assign is_member = true
+  endif
+
+  assign has_membership_in_cart = false
+  assign member_total_price = 0
+  assign member_discount = 0
+  assign member_total = 0
+  assign additional_shipping_cost = 0
+  assign regular_items_array = '' | split: ''
+  assign special_delivery_items_array = '' | split: ''
+  assign prod_requires_login = false
+
+  # 1000000 equals $10,000 before 'money_without_trailing_zeros' filter
+  assign giftcard_chooseamount_max = 1000000
+  assign giftcard_chooseamount_sku = '84466-84466'
+%}
+
+{%- liquid
+  assign gifted_skus = ''
+  assign defined_gift_id = settings.checkout_gift_wrap_item_id | times: 1
+-%}
+
+<section
+  id="bag"
+  class="bag{% if modifier %} bag--{{ modifier }}{% endif %}{% if cart.item_count < 1 %} is-empty{% endif %}"
+  data-count="{{ cart.item_count }}"
+  data-total-price="{{ cart.original_total_price }}"
+>
+  {% comment %} capture and output bag_data {% endcomment %}
+  {%- capture bag_data -%}
+    <script id="data-bag">
+      SDG.Data.bagItems = [];
+      {%- for item in cart.items -%}
+        {%- liquid
+          assign item_array = cart.items | where: 'key', item.key
+          assign ship_from_vendor = item.variant.metafields.teamwork.shipfromvendor | downcase
+          assign shipping_lead_time = item.variant.metafields.teamwork.shippingleadtime.value
+          if ship_from_vendor == 'ok' and shipping_lead_time != blank
+            assign special_delivery_items_array = special_delivery_items_array | concat: item_array
+          else
+            assign regular_items_array = regular_items_array | concat: item_array
+          endif
+
+          if item.variant.metafields.teamwork.memberdiscount or item.variant.metafields.teamwork.MemberDiscount
+            assign member_total_price = member_total_price | plus: item.final_line_price
+          endif
+
+          assign additional_shipping_value = item.variant.metafields.teamwork.AdditionalShipping.value | default: item.variant.metafields.teamwork.additionalshipping.value
+          if additional_shipping_value != blank
+            assign additional_shipping_cost = additional_shipping_value | times: item.quantity | plus: additional_shipping_cost
+          endif
+
+          if item.product.tags contains 'Department:REGULAR MEMBERSHIP'
+            assign has_membership_in_cart = true
+          endif
+
+          if item.product.metafields.custom.requires_login.value
+            assign prod_requires_login = true
+          endif
+        -%}
+
+        SDG.Data.bagItems.push({
+          id: {{ item.variant.id }},
+          inventory_quantity: {{ item.variant.inventory_quantity }},
+          key: '{{ item.key }}',
+          price: '{{ item.price | money_without_currency }}',
+          properties: {{ item.properties | json }},
+          quantity: {{ item.quantity }},
+          sku: '{{ item.variant.sku }}',
+          productId: {{ item.product.id }},
+          continues_selling_when_out_of_stock: {{ item.variant.inventory_policy | json }},
+          variantTitle: {{ item.variant.title | json}},
+          productTitle: {{ item.product.title | json}},
+          inventory_management: {{ item.variant.inventory_management | json }},
+        });
+        {%- liquid
+          if item.properties.sku != blank and item.variant_id == defined_gift_id
+            assign gifted_skus = gifted_skus | append: item.properties.sku | append: ','
+          endif
+        -%}
+      {%- endfor -%}
+
+      SDG.Data.oos_items = [];
+      SDG.Data.bagItems.forEach(function(item) {
+        if (item.inventory_management && item.continues_selling_when_out_of_stock === 'deny' && item.quantity > item.inventory_quantity) {
+          SDG.Data.oos_items.push(item);
+        }
+      });
+
+      {%- assign gifted_skus = gifted_skus | split: ',' -%}
+    </script>
+  {%- endcapture -%}
+  {% render 'h-minify', variable: bag_data %}
+  {% unless modifier %}
+    <form
+      id="bagForm"
+      action="{{ routes.root_url }}cart"
+      method="post"
+      class="bag__form container"
+    >
+
+      <header class="bag__header">
+        <h1 class="bag__title">Your Shopping Cart</h1>
+        <a href="{{ routes.root_url }}" class="bag__underline-link hide-phone js-bag-continue" data-cart-page="true">
+          Continue Shopping
+        </a>
+      </header>
+
+      {% unless cart.item_count < 1 %}
+        <div class="phone-only">
+          <div class="bag-mobile-data">
+            <div class="bag-mobile-data__count">
+              Items ({{ cart.item_count }})
+            </div>
+            <div class="bag-mobile-data__divider"></div>
+            <div class="bag-mobile-data__subtotal">
+              {{- cart.total_price | money_without_trailing_zeros -}}
+            </div>
+          </div>
+        </div>
+      {% endunless %}
+
+      <div class="bag__content">
+        <div id="bagEmpty" class="bag__empty">
+          <h2 class="bag__empty-title">Your shopping cart is empty</h2>
+          <p class="bag__empty-subtitle">If you have a Design Store account, please <a class="bag__empty-link" href="{% render 'h-auth0-url' %}">sign in</a> to view items you added to your cart in previous visits. </p>
+        </div>
+
+        <div class="bag__items-wrap">
+          {% unless is_member %}
+            {% liquid
+              assign member_discount_promo = member_total_price | divided_by: 5
+              assign member_discount_text = ''
+              if member_discount_promo > 0
+                assign member_discount_text = member_discount_promo | money_without_trailing_zeros
+              endif
+            %}
+            {% unless has_membership_in_cart %}
+              {%- liquid
+                assign cart_membership_banner_title = settings.cart_membership_banner_title | replace: '{member_discount}', member_discount_text
+                assign cart_membership_banner_benefits_label = settings.cart_membership_banner_benefits_label
+                assign cart_membership_banner_btn_label = settings.cart_membership_banner_btn_label
+              -%}
+              {%- if cart_membership_banner_title != blank or
+                cart_membership_banner_benefits_label != blank or
+                cart_membership_banner_btn_label != blank
+              -%}
+                <div class="bag__membership">
+                  <div class="bag__membership-content">
+                    {%- if cart_membership_banner_title != blank -%}
+                      <p class="bag__membership-title">
+                      {{ cart_membership_banner_title }}
+                      </p>
+                    {%- endif -%}
+                    {%- if cart_membership_banner_benefits_label != blank -%}
+                      <a class="bag__underline-link bag__membership-link" href="{% render 'h-href', href: '/pages/memberships' %}">
+                        {{ cart_membership_banner_benefits_label }}
+                      </a>
+                    {%- endif -%}
+                  </div>
+                  {%- if cart_membership_banner_btn_label != blank -%}
+                    <div class="bag__membership-cta">
+                      <button class="bag__membership-cta-btn btn btn--primary" id="membershipUpsellModalTrigger" type="button">
+                        {{ cart_membership_banner_btn_label }}
+                      </button>
+                    </div>
+                  {%- endif -%}
+                </div>
+              {%- endif -%}
+            {%- endunless -%}
+          {%- endunless -%}
+
+          <table role="presentation" cellspacing="0" cellpadding="0" class="bag__table">
+            <thead class="bag__headings desktop-and-tablet" aria-hidden="true">
+              <tr>
+                <th class="bag__headings-title bag__headings-title--items">Items ({{ cart.item_count }})</th>
+                <th class="bag__headings-title"></th>
+                <th class="bag__headings-title bag__headings-title--price">Item Price</th>
+                <th class="bag__headings-title bag__headings-title--qty">Qty</th>
+                <th class="bag__headings-title bag__headings-title--total">Total</th>
+              </tr>
+            </thead>
+            <tbody id="bagItems" class="bag__items">
+              {% for item in regular_items_array %}
+                {% render 'c-bag-item', {
+                  item: item,
+                  is_member: is_member,
+                  has_membership_in_cart: has_membership_in_cart,
+                  gifted_skus: gifted_skus,
+                }%}
+              {% endfor %}
+              {% if special_delivery_items_array.size > 0 %}
+                <tr class="bag-item bag-item--special-delivery">
+                  <th class="bag-item__special-delivery-header" colspan="5">
+                    <div class="bag-item__title bag-item__title--special-delivery">Special Delivery Required</div>
+                    <button id="bagShippingDetailsModalTrigger" class="bag__underline-link bag__underline-link--special-delivery btn btn-link" type="button">
+                      View Full Shipping Details
+                    </button>
+                  </th>
+                </tr>
+              {% endif %}
+              {% for item in special_delivery_items_array %}
+                {% render 'c-bag-item', {
+                  item: item,
+                  is_member: is_member,
+                  has_membership_in_cart: has_membership_in_cart,
+                  gifted_skus: gifted_skus,
+                }%}
+              {% endfor %}
+            </tbody>
+          </table>
+          <div class="bag-gift">
+            <div class="bag-gift__left">
+
+              <div class="bag-gift__content">
+                <div class="bag-gift__message">
+                  <div class="bag-gift__message-heading">
+                    <div class="bag-gift__message-heading-icon">
+                      <i class="icon icon--gift"></i>
+                    </div>
+                    <h5 class="bag-gift__message-heading-title">Include a gift message?</h5>
+                  </div>
+                  <label for="giftMesssageTextArea" class="bag-gift__message-text-area-label">Include a FREE gift message with this order:</label>
+                  <textarea class="input-textarea" id="giftMesssageTextArea" name="checkout[attributes][giftwrap-message]" class="bag-gift__message-text-area"rows="4" cols="10" data-character-limit="250" maxlength="250" aria-invalid="false"></textarea>
+                  <div class="input-textarea-subarea">
+                    <div class="bag-gift__message-text-area-count">
+                      <span class="gift__message-text-area-count-number">250</span> characters remaining
+                    </div>
+                    <span class="bag-gift__message-text-area-disclaimer">
+                      *Only one gift message can be printed per shipment.
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <script>console.log({{ settings.cart_gift_wrap_image | json }});</script>
+            <div class="bag-gift__right">
+              <div class="bag-gift__message-heading">
+                <h5 class="bag-gift__message-heading-title">Gift wrap example</h5>
+              </div>
+              <p class="bag-gift__message-text-area-label">$5 per item / <span class="bag__blue-text">Free for MoMA Members</span></p>
+              <img
+                class="bag-gift__message-image"
+                src="{{ settings.cart_gift_wrap_image | img_url: 'master' }}"
+                alt="Gift Wrap Sample"
+              />
+            </div>
+          </div>
+
+          {%- if settings.cart_display_wishlist -%}
+            <div id="wishlistBagOutput" class="bag-wishlist{% if cart.item_count < 1 %} is-empty{% endif %}">
+              <wishlist-page
+                show-product-title
+                show-price
+                cta-button="add-to-cart"
+                product-options="dropdowns"
+                move-to-cart
+                is-cart-page
+                {% if cart.item_count < 1 %}
+                  cart-is-empty
+                {% endif %}
+                wishlist-empty-link="/"
+              ></wishlist-page>
+            </div>
+          {%- endif -%}
+        </div>
+
+        {% render 'bag-summary', prod_requires_login: prod_requires_login %}
+
+        <div class="bag__actions bag__actions--phone phone-only">
+          {% liquid
+            assign checkout_href = '/checkout'
+            assign sign_in_checkout_href = '/customer_authentication/login?return_to=/checkout'
+
+            capture checkout_url
+              render 'h-href', href: checkout_href
+            endcapture
+            capture sign_in_checkout_url
+              render 'h-href', href: sign_in_checkout_href
+            endcapture
+          %}
+          <a class="bag__action bag__checkout btn btn--quinary btn--full" href="{{- checkout_url | strip -}}">
+            {% if customer %}
+              Proceed to Checkout
+            {% else %}
+              Checkout as Guest
+            {% endif %}
+          </a>
+          {% unless customer %}
+            <a
+              class="bag__action bag__checkout bag__checkout--sign-in btn btn--senary btn--full"
+              href="{{- sign_in_checkout_url | strip -}}"
+            >
+              Sign in and Checkout
+            </a>
+          {% endunless %}
+        </div>
+      </div>
+
+    </form>
+  {% endunless %}
+
+</section>
+
+{% unless modifier %}
+  {% if cart.empty? %}
+    {% render 'ss-cart-recommendations-empty' %}
+  {% else %}
+    {% render 'c-product-recommendations', {
+      product: false
+      product_recommendations_tag: settings.ss_recommendations_tag_cart_empty,
+      no_filter: true,
+      no_storage: true,
+    } %}
+    {% render 'ss-cart-recommendations-full' %}
+  {% endif %}
+{% endunless %}
+
+{% unless modifier %}
+  <div class="container">
+    <div class="bag-help">
+      <ul class="bag-help__list list-reset">
+        <li class="bag-help__list-item">
+          <div class="bag-help__list-header desktop-and-tablet">1.800.851.4509</div>
+          <div class="bag-help__list-header phone-only">1.866.647.6662</div>
+          <div class="bag-help__list-content">
+            <p class="bag-help__list-content-p">Order by Phone 24/7<br>
+            Customer Service 9:30 - 5:00 ET<br>
+            International Customers <br>call 212.708.9888</p>
+          </div>
+        </li>
+        <li class="bag-help__list-item">
+          <div class="bag-help__list-header">Satisfaction Guaranteed</div>
+          <div class="bag-help__list-content">
+            <p class="bag-help__list-content-p">You may return your purchase for a refund within 90 days for any reason.</p>
+            <a class="bag__underline-link bag__underline-link--help" target="_blank" href="https://storehelpcenter.moma.org/hc/en-us/articles/360001267138-Returns-and-return-policy-">Shipping &amp; Returns Policy</a>
+          </div>
+        </li>
+        <li class="bag-help__list-item">
+          <div class="bag-help__list-header lock-icon">
+            <i class="icon icon--lock bag-help__list-header-icon"></i>
+            Safe & Secure
+          </div>
+          <div class="bag-help__list-content">
+            <p class="bag-help__list-content-p">Buying from MoMA.org is safe. Your order will be processed on our secure servers.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+{% endunless %}
+
+<!-- Searchspring IntelliSuggest Tracking -->
+{% if cart.item_count > 0 %}
+  <script type="text/javascript">
+    try{
+        var seed = [];
+        {% for item in cart.items %}
+            seed.push("{{ item.product.variants[0].sku }}");
+        {% endfor %}
+        IntelliSuggest.init({siteId:`${SDG.Data.ssId}`, context:"Basket", seed: seed });
+        {% for item in cart.items %}
+            IntelliSuggest.haveItem({sku:"{{ item.product.variants[0].sku }}", qty:"{{ item.quantity }}", price:"{{ item.price | money_without_currency }}"});
+        {% endfor %}
+        IntelliSuggest.inBasket({});
+    } catch(err) {}
+  </script>
+{% endif %}
+<!-- END Searchspring IntelliSuggest -->

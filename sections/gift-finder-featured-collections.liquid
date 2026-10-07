@@ -1,0 +1,163 @@
+{%- assign s = section.settings -%}
+
+<section class="featured-collections featured-collections--{{ s.mobile_block_type }} container">
+  {% if s.header_text != blank %}
+    <h3 class="featured-collections__header-text">
+      {{ s.header_text }}
+    </h3>
+  {% endif %}
+  {%- unless s.image_1 == blank -%}
+    <div class="featured-collections__collections-wrapper featured-collections__collections-wrapper--{{ s.mobile_block_type }}">
+      {% comment %} Featured Collection 1 {% endcomment %}
+      {% render 'c-featured-collection', {
+        image: s.image_1,
+        header: s.header_1,
+        subheader: s.subheader_1,
+        cta_text: s.cta_text_1,
+        cta_link: s.cta_link_1,
+      } %}
+      {% comment %} Featured Collection 2 {% endcomment %}
+      {% render 'c-featured-collection', {
+        image: s.image_2,
+        header: s.header_2,
+        subheader: s.subheader_2,
+        cta_text: s.cta_text_2,
+        cta_link: s.cta_link_2,
+      } %}
+      {% comment %} Featured Collection 3 {% endcomment %}
+      {% render 'c-featured-collection', {
+        image: s.image_3,
+        header: s.header_3,
+        subheader: s.subheader_3,
+        cta_text: s.cta_text_3,
+        cta_link: s.cta_link_3,
+      } %}
+    </div>
+  {%- endunless -%}
+</section>
+
+{% schema %}
+{
+  "name": "Featured Collections",
+  "presets": [
+    {
+      "category": "Components",
+      "name": "Gift Finder Featured Collections"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "header_text",
+      "label": "Section Header Text",
+      "default": "You May Also Like"
+    },
+    {
+      "type": "select",
+      "id": "mobile_block_type",
+      "label": "Mobile Block Type",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "header",
+      "content": "Required 1st Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_1",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "subheader_1",
+      "label": "Subheader Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_1",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_1",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Optional 2nd Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_2",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "subheader_2",
+      "label": "Subheader Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_2",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_2",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Optional 3rd Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_3",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_3",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "subheader_3",
+      "label": "Subheader Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_3",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_3",
+      "label": "CTA Link"
+    }
+  ]
+}
+{% endschema %}

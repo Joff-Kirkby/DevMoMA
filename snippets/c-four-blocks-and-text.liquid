@@ -1,0 +1,40 @@
+{%- comment -%}
+  Four blocks + Text
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+{% assign blocks = section.blocks %}
+<section class="four-blocks-text container">
+  <div class="four-blocks-text__text">
+    <h2 class="four-blocks-text__text-headline">{{ ss.headline }}</h2>
+    {{ ss.text }}
+    {% if ss.cta_text != blank and ss.cta_url != blank %}
+      <a class="btn btn--primary" href="{{ ss.cta_url }}">
+        {{ ss.cta_text }}
+      </a>
+    {% endif %}
+  </div>
+  <div class="four-blocks-text__blocks">
+    {% for block in blocks %}
+      {% assign bs = block.settings %}
+      <div class="four-blocks-text__blocks-block">
+        {% render 'c-responsive-image', {
+          image: bs.image,
+          inline_ir: true,
+          wrapper_class: 'four-blocks-text__blocks-image',
+          link: bs.cta_url,
+        } %}
+        {% if bs.cta_url != blank and bs.title != blank %}
+          <a
+            href="{{ bs.cta_url }}"
+            class="four-blocks-text__blocks-cta"
+          >
+            {{ bs.title }}
+          </a>
+        {% elsif bs.title != blank %}
+          <p class="four-blocks-text__blocks-cta">{{ bs.title }}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+</section>

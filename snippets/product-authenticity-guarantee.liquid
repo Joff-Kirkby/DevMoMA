@@ -1,0 +1,19 @@
+{% assign authenticity_guarantee = shop.metafields.global.authenticity_guarantee.value %}
+
+{% if authenticity_guarantee != blank %}
+  {% assign header = authenticity_guarantee.header %}
+  {% assign body_text = authenticity_guarantee.body_text %}
+
+  <div class="pv-authenticity-guarantee container">
+    {% if header %}
+      <h3 class="pv-authenticity-guarantee__header">
+        {{ header }}
+      </h3>
+    {% endif %}
+    {% if body_text %}
+      <p class="pv-authenticity-guarantee__body-text">
+        {{ shop.metafields.global.authenticity_guarantee.value.body_text }}
+      </p>
+    {% endif %}
+  </div>
+{% endif %}

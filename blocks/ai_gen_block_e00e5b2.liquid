@@ -1,0 +1,302 @@
+{% doc %}
+  Custom Banner Section with Explicit Hosted Font Loading (MoMA-Sans-Store)
+{% enddoc %}
+
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  /* Declare hosted font file explicitly */
+  @font-face {
+    font-family: 'MoMA-Sans-Custom';
+    src: url("{{ 'MoMA-Sans-Store.WOFF' | asset_url }}") format('woff'),
+         url("{{ 'MoMA-Sans-Store.WOFF' | file_url }}") format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+  }
+
+  .ai-custom-banner-{{ ai_gen_id }} {
+    display: flex;
+    width: 100%;
+    height: 400px;
+    background-color: {{ block.settings.background_color }};
+    position: relative;
+    overflow: hidden;
+
+    --content-position-horizontal-desktop: {{ block.settings.content_position_horizontal_desktop }};
+    --content-position-vertical-desktop: {{ block.settings.content_position_vertical_desktop }};
+    --content-position-vertical-mobile: {{ block.settings.content_position_vertical_mobile }};
+    --heading-position-desktop: {{ block.settings.heading_position_desktop }};
+    --heading-position-mobile: {{ block.settings.heading_position_mobile }};
+  }
+
+  .ai-custom-banner-container-{{ ai_gen_id }} {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: var(--content-position-vertical-desktop);
+  }
+
+  .banner__item-content--left {
+    align-items: flex-start;
+  }
+  .banner__item-content--center {
+    align-items: center;
+  }
+  .banner__item-content--right {
+    align-items: flex-end;
+  }
+
+  .ai-custom-banner-content-{{ ai_gen_id }} {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: {{ block.settings.desktop_width_percent }}%;
+  }
+
+  /* Direct override targeting explicit custom font face */
+  .ai-custom-banner-content-{{ ai_gen_id }} h2.ai-custom-banner-heading-{{ ai_gen_id }} {
+    font-family: 'MoMA-Sans-Custom', sans-serif !important;
+    font-weight: 300 !important;
+    font-size: 120px;
+    line-height: 120px;
+    margin: 0;
+    color: {{ block.settings.heading_color }};
+    text-align: var(--heading-position-desktop);
+    width: 100%;
+  }
+
+  .ai-custom-banner-subheading-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subheading_size }}px;
+    margin: 20px 0 0;
+    color: {{ block.settings.subheading_color }};
+    text-align: var(--heading-position-desktop);
+    width: 100%;
+  }
+
+  @media screen and (max-width: 749px) {
+    .ai-custom-banner-{{ ai_gen_id }} {
+      height: {{ block.settings.mobile_height }}px;
+    }
+
+    .ai-custom-banner-container-{{ ai_gen_id }} {
+      justify-content: var(--content-position-vertical-mobile);
+    }
+
+    .ai-custom-banner-content-{{ ai_gen_id }} h2.ai-custom-banner-heading-{{ ai_gen_id }} {
+      font-size: 45px;
+      line-height: 45px;
+      text-align: var(--heading-position-mobile);
+    }
+
+    .ai-custom-banner-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_size | times: 0.7 }}px;
+      text-align: var(--heading-position-mobile);
+    }
+  }
+{% endstyle %}
+
+<div class="ai-custom-banner-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="container ai-custom-banner-container-{{ ai_gen_id }} banner__item-content--{{ block.settings.content_position_horizontal_desktop }}">
+    <div class="ai-custom-banner-content-{{ ai_gen_id }}">
+      {% if block.settings.heading != blank %}
+        <h2 class="ai-custom-banner-heading-{{ ai_gen_id }}">
+          {{ block.settings.heading | newline_to_br }}
+        </h2>
+      {% endif %}
+      {% if block.settings.subheading != blank %}
+        <p class="ai-custom-banner-subheading-{{ ai_gen_id }}">{{ block.settings.subheading | newline_to_br }}</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Custom banner",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "textarea",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Your Heading"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Your subheading text"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "desktop_width_percent",
+      "label": "Desktop width",
+      "min": 50,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "mobile_height",
+      "label": "Mobile height",
+      "min": 200,
+      "max": 600,
+      "step": 20,
+      "unit": "px",
+      "default": 300
+    },
+    {
+      "type": "select",
+      "id": "content_position_horizontal_desktop",
+      "label": "Horizontal position (desktop)",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "content_position_vertical_desktop",
+      "label": "Vertical position (desktop)",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "content_position_vertical_mobile",
+      "label": "Vertical position (mobile)",
+      "options": [
+        {
+          "value": "flex-start",
+          "label": "Top"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "flex-end",
+          "label": "Bottom"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "heading_position_desktop",
+      "label": "Heading alignment (desktop)",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "select",
+      "id": "heading_position_mobile",
+      "label": "Heading alignment (mobile)",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#f4f4f4"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Heading",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Subheading",
+      "default": "#000000"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "subheading_size",
+      "label": "Subheading size",
+      "min": 12,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 18
+    }
+  ],
+  "presets": [
+    {
+      "name": "Custom banner"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,49 @@
+{%- assign data = page.metafields.rewards.faq.value -%}
+<section class="rewards-faq container">
+  <div class="rewards-faq__inner-wrapper">
+    <div class="rewards-faq__heading">
+      {%- if data.title != blank -%}
+        <h2 class="rewards-faq__title">{{- data.title -}}</h2>
+      {%- endif -%}
+      {%- if data.subtitle != blank and data.subtitle_mobile != blank -%}
+        <p class="rewards-faq__subtitle hide-mobile">{{- data.subtitle -}}</p>
+        <p class="rewards-faq__subtitle hide-desktop">{{- data.subtitle_mobile -}}</p>
+      {%- elsif data.subtitle != blank -%}
+        <p class="rewards-faq__subtitle">{{- data.subtitle -}}</p>
+      {%- endif -%}
+    </div>
+    <div id="rewardsAcc" class="rewards-faq__content">
+      {%- for item in data.faqs -%}
+        <div class="rewards-faq__item">
+          <h3 class="acc__btn-wrapper rewards-faq__item-heading acc__btn js-acc-btn{% if forloop.last == true %} rewards-faq__item-heading--last{% endif %}">
+            <button
+              class="rewards-faq__item-title acc__btn"
+              id="{{ item.question | handle }}-trigger-{{ forloop.index }}"
+              type="button"
+              aria-expanded="false"
+              aria-controls="{{ item.question | handle }}-menu-{{ forloop.index }}"
+            >
+              {{- item.question -}}
+            </button>
+            <span class="rewards-faq__item-icon">
+              <i class="icon icon--chevron-right"></i>
+            </span>
+          </h3>
+          <div class="rewards-faq__item-content acc__menu js-acc-menu">
+            <p>{{- item.answer -}}</p>
+          </div>
+        </div>
+      {%- endfor -%}
+    </div>
+
+    {%- if data.button_enabled == true and data.button_link != blank  -%}
+      <a href="{{ data.button_link }}" class="btn rewards-faq__button">
+        {%- if data.button_text != blank -%}
+          <p class="rewards-faq__button-text">{{- data.button_text -}}</p>
+        {%- else -%}
+          <p class="rewards-faq__button-text">{{- 'View all FAQs' | t -}}</p>
+        {%- endif -%}
+      </a>
+    {%- endif -%}
+  </div>
+</section>

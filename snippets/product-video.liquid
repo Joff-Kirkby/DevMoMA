@@ -1,0 +1,53 @@
+{% capture poster_image %}https://img.youtube.com/vi/{{- youtube_video_id -}}/hqdefault.jpg{% endcapture %}
+
+<section class="pv-video">
+  <div class="pv-video__container">
+    {% if youtube_video_id != blank %}
+      <div class="pv-video__video-wrapper">
+        <div class="pv-video__video-poster ir is-loading" id="productVideoPoster">
+          <img
+            class="lazyload"
+            data-src="{{ poster_image }}"
+            data-sizes="auto"
+            tabindex="-1"
+            alt="{{ product.title }}"
+          >
+        </div>
+        <button
+          type="button"
+          id="productVideoPlayBtn"
+          class="pv-video__play-btn btn-icon"
+        >
+          <i class="icon icon--play"></i>
+          <span class="screenreader">Play video</span>
+        </button>
+        <div class="pv-video__iframe-wrapper" id="productVideoIframeWrapper">
+          <iframe
+            id="productVideoIframe"
+            data-src="https://www.youtube.com/embed/{{ youtube_video_id }}?autoplay=1&rel=0&playsinline=1"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            playsinline
+          ></iframe>
+        </div>
+      </div>
+      <script>
+        (function() {
+          var btn = document.getElementById('productVideoPlayBtn');
+          if (!btn) return;
+          btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            var iframe = document.getElementById('productVideoIframe');
+            var src = iframe.getAttribute('data-src');
+            if (src) iframe.setAttribute('src', src);
+            document.getElementById('productVideoPoster').classList.add('is-hidden');
+            btn.classList.add('is-hidden');
+            document.getElementById('productVideoIframeWrapper').classList.add('is-active');
+          });
+        })();
+      </script>
+    {% endif %}
+  </div>
+</section>

@@ -1,0 +1,38 @@
+{%- comment -%}
+  Custom AJAX template for use in checkout ("localization" liquid object is not accessible in checkout)
+{%- endcomment -%}
+
+{% layout none %}
+
+<localization-form>
+  {% form 'localization', return_to: '/checkout' %}
+    {%- comment -%} Button element needed to prevent console error {%- endcomment -%}
+    <button type="button" class="hide"></button>
+
+    <ul role="list" class="country-selector__list">
+      {% for country in localization.available_countries %}
+        <li class="country-selector__item" tabindex="-1">
+          <a class="country-selector__btn" href="/checkout" {% if country.iso_code == localization.country.iso_code %} aria-current="true" {% endif %}
+            data-value="{{ country.iso_code }}">
+            <div class="country-selector__img-wrapper">
+              <div class="country-selector__img-ir ir">
+                <img
+                  class="lazyload"
+                  data-src="https://flowcdn.io/util/icons/flags-v2/svg/{{ country.iso_code | upcase }}.svg"
+                  alt=""
+                >
+              </div>
+            </div>
+            <span>{{ country.name }} ({{ country.currency.iso_code }})</span>
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+
+    <button type="button" class="country-selector__proceed btn-icon js-modal-close">
+      Or Proceed as a {{ localization.country.iso_code | upcase }} Shopper
+    </button>
+  {% endform %}
+</localization-form>

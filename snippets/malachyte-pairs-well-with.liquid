@@ -1,0 +1,278 @@
+{%- comment -%}
+  Calls the Malachyte API directly instead of using the app block, since that block only
+  supports a multi-item carousel, not this single-item "add both to cart" pairing.
+  Styles mirror SearchSpring's MoMA mini-bundle stylesheet.
+{%- endcomment -%}
+
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+{%- if current_variant.available -%}
+  <div
+    class="pairs-well-with"
+    data-pairs-well-with
+    data-product-id="{{ product.id }}"
+    data-component-id="825f07fc-9421-4333-b94e-eaa81453aade"
+    data-current-variant-id="{{ current_variant.id }}"
+  >
+    <h3 class="pairs-well-with__title">Pairs Well With</h3>
+    <div class="pairs-well-with__result">
+      <a class="pairs-well-with__image" data-pairs-well-with-link tabindex="-1" aria-hidden="true">
+        <div class="pairs-well-with__image-wrapper" data-pairs-well-with-image>
+          <div class="pairs-well-with__skeleton"></div>
+        </div>
+      </a>
+      <div class="pairs-well-with__details">
+        <a class="pairs-well-with__name" data-pairs-well-with-link data-pairs-well-with-name></a>
+        <p class="collection-grid-item__product-price pairs-well-with__price" data-pairs-well-with-price></p>
+      </div>
+    </div>
+    <div class="pairs-well-with__cta">
+      <button type="button" class="pairs-well-with__button" data-pairs-well-with-add disabled>
+        Add Both to Cart
+      </button>
+    </div>
+  </div>
+
+  <style>
+    .pairs-well-with {
+      margin-bottom: 20px;
+    }
+    .pairs-well-with__title {
+      font-size: 1.2rem;
+      font-weight: 400;
+      border-top: 1px solid #d4d4d4;
+      padding-top: 15px;
+      margin: 0 0 1rem;
+    }
+    .pairs-well-with__result {
+      display: flex;
+    }
+    .pairs-well-with__image {
+      width: 50%;
+      margin: 0 .5rem;
+      display: flex;
+      justify-content: center;
+    }
+    .pairs-well-with__image-wrapper {
+      width: 210px;
+      height: 210px;
+    }
+    .pairs-well-with__image-wrapper img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .pairs-well-with__skeleton {
+      width: 100%;
+      height: 100%;
+      background: #f4f4f4;
+      animation: pairs-well-with-pulse 1.5s infinite;
+    }
+    @keyframes pairs-well-with-pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: .4; }
+    }
+    .pairs-well-with__details {
+      width: 50%;
+      text-align: left;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .pairs-well-with__name {
+      font-family: "MoMA Sans", arial, sans-serif;
+      font-size: .875rem;
+      line-height: 1.25rem;
+      color: #000;
+      text-decoration: none;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 2;
+      overflow: hidden;
+    }
+    @media only screen and (min-width: 1025px) {
+      .pairs-well-with__name {
+        font-size: 1rem;
+      }
+    }
+    .pairs-well-with .pairs-well-with__price {
+      margin-top: 5px;
+      justify-content: flex-start;
+    }
+    .pairs-well-with .pairs-well-with__price .collection-grid-item__product-price--original {
+      margin: 0;
+    }
+    .pairs-well-with__cta {
+      position: relative;
+      bottom: 35px;
+      width: 48%;
+      margin-left: auto;
+    }
+    .pairs-well-with__button {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 44px;
+      width: 100%;
+      background: #000;
+      color: #fff;
+      border: .1875rem solid #000;
+      outline: 0;
+      cursor: pointer;
+      font-family: "MoMA Sans", arial, sans-serif;
+      font-size: 1rem;
+      font-weight: 400;
+      line-height: 1rem;
+      padding: .625rem 1.25rem .5rem;
+      transition: .3s;
+    }
+    .pairs-well-with__button:hover:not(:disabled) {
+      background: #fff;
+      color: #000;
+    }
+    .pairs-well-with__button:disabled {
+      cursor: default;
+    }
+    @media screen and (max-width: 750px) {
+      .pairs-well-with {
+        border-bottom: 1px solid #000;
+      }
+      .pairs-well-with__title {
+        margin-top: 20px;
+        border-top: none;
+      }
+      .pairs-well-with__image-wrapper {
+        width: 175px;
+        height: 175px;
+      }
+      .pairs-well-with__button {
+        padding: 0;
+      }
+    }
+  </style>
+
+  <script>
+  (function() {
+    const root = document.querySelector('[data-pairs-well-with]');
+    const config = window.ml_config;
+    if (!root) return;
+    if (!config?.endpoint) {
+      root.hidden = true;
+      return;
+    }
+
+    const routesRoot = window.Shopify.routes.root;
+    const addBtn = root.querySelector('[data-pairs-well-with-add]');
+    let recVariantId = null;
+
+    function formatMoney(cents) {
+      const amount = (cents / 100).toLocaleString('en-US', {
+        minimumFractionDigits: cents % 100 ? 2 : 0,
+        maximumFractionDigits: 2
+      });
+      const format = window.SDG?.moneyFormat;
+      return format ? format.replace(/\{\{\s*amount\w*\s*\}\}/, amount) : `$${amount}`;
+    }
+
+    function priceSpan(cls, cents) {
+      const span = document.createElement('span');
+      span.className = cls;
+      span.textContent = formatMoney(cents);
+      return span;
+    }
+
+    async function fetchTopHandle() {
+      let visitorId = 'anonymous';
+      try {
+        visitorId = localStorage.getItem('_malachyte_id') || 'anonymous';
+      } catch (e) {}
+
+      const res = await fetch(`${config.endpoint}/v1/recommendations/component`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-api-key': config.token },
+        body: JSON.stringify({
+          component_id: root.dataset.componentId,
+          query: root.dataset.productId,
+          catalog: '-1',
+          visitor_id: visitorId,
+          k: 1,
+          exclusions: []
+        })
+      });
+      if (!res.ok) return null;
+      const data = await res.json();
+      return (data.results?.[0]?.facts?.handle || '').split('/').filter(Boolean).pop() || null;
+    }
+
+    async function load() {
+      const handle = await fetchTopHandle();
+      const res = handle && await fetch(`${routesRoot}products/${encodeURIComponent(handle)}.js`);
+      const product = res && res.ok ? await res.json() : null;
+      const variant = product?.variants.find(v => v.available);
+      if (!variant) {
+        root.hidden = true;
+        return;
+      }
+
+      recVariantId = variant.id;
+      const url = `${routesRoot}products/${product.handle}`;
+      root.querySelectorAll('[data-pairs-well-with-link]').forEach(a => { a.href = url; });
+      root.querySelector('[data-pairs-well-with-name]').textContent = product.title;
+
+      if (product.featured_image) {
+        const img = document.createElement('img');
+        img.src = `${product.featured_image}${product.featured_image.includes('?') ? '&' : '?'}width=420`;
+        img.alt = product.title;
+        img.loading = 'lazy';
+        root.querySelector('[data-pairs-well-with-image]').replaceChildren(img);
+      }
+
+      const priceEl = root.querySelector('[data-pairs-well-with-price]');
+      if (variant.compare_at_price > variant.price) {
+        priceEl.replaceChildren(
+          priceSpan('collection-grid-item__product-price--original line-through', variant.compare_at_price),
+          priceSpan('collection-grid-item__product-price--sale', variant.price)
+        );
+      } else {
+        priceEl.replaceChildren(priceSpan('collection-grid-item__product-price--original', variant.price));
+      }
+
+      addBtn.disabled = false;
+    }
+
+    addBtn.addEventListener('click', async () => {
+      const label = addBtn.textContent;
+      addBtn.disabled = true;
+      addBtn.textContent = 'Adding...';
+      try {
+        const res = await fetch(`${routesRoot}cart/add.js`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            items: [
+              { id: Number(root.dataset.currentVariantId), quantity: 1 },
+              { id: recVariantId, quantity: 1 }
+            ]
+          })
+        });
+        if (!res.ok) {
+          console.error('Pairs Well With add failed', res.status, await res.text());
+        } else {
+          await Promise.race([
+            window.updateMiniCart?.(),
+            new Promise(resolve => setTimeout(resolve, 4000))
+          ]);
+          window.openMiniCart?.();
+          window.SDG?.Bag?.refresh?.();
+        }
+      } catch (e) {
+        console.error('Pairs Well With add failed', e);
+      }
+      addBtn.textContent = label;
+      addBtn.disabled = false;
+    });
+
+    load().catch(() => { root.hidden = true; });
+  })();
+  </script>
+{%- endif -%}

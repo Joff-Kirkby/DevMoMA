@@ -1,0 +1,141 @@
+{%- comment -%}
+  Gift Section Alt
+{%- endcomment -%}
+
+{% render 'c-gift-section-alt', {
+  section: section
+} %}
+
+{% schema %}
+{
+  "name": "Gift Section Alt",
+  "max_blocks": 14,
+  "settings": [
+    {
+      "type": "header",
+      "content": "Heading"
+    },
+    {
+      "type": "text",
+      "id": "heading_text",
+      "label": "Heading Text",
+      "default": "Gifts for Everybody"
+    },
+    {
+      "type": "select",
+      "id": "heading_alignment",
+      "label": "Heading Text Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "header",
+      "content": "CTA"
+    },
+    {
+      "type": "color",
+      "id": "cta_text_color",
+      "label": "CTA Text Color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA Background Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_text_color",
+      "label": "CTA Hover Text Color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_bg_color",
+      "label": "CTA Hover Background Color",
+      "default": "#fff"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text",
+      "default": "Shop All Gifts"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "select",
+      "id": "product_count",
+      "label": "Number of Products to Display",
+      "options": [
+        {
+          "value": "9",
+          "label": "9"
+        },
+        {
+          "value": "14",
+          "label": "14"
+        }
+      ],
+      "default": "14"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_search_spring",
+      "label": "Use Search Spring as Source",
+      "info": "When enabled, this will grab the first 9 or 14 products products from Search Spring, if unchecked you must manually add products using section blocks"
+    },
+    {
+      "type": "checkbox",
+      "id": "use_collection",
+      "label": "Use Collection as Source",
+      "info": "When enabled, this will grab the first 9 or 14 products products from the collection below (depending on the number of products displayed set by setting above), if unchecked you must manually add products using section blocks"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection"
+    }
+  ],
+  "blocks": [
+    {
+      "name": "Product",
+      "type": "product",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Product",
+          "info": "Select Product"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Gift Section Alt"
+    }
+  ]
+}
+{% endschema %}

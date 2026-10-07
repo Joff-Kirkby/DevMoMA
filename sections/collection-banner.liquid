@@ -1,0 +1,365 @@
+{%- comment -%}
+  Collection Banner Section
+{%- endcomment -%}
+{% assign s = section.settings %}
+
+{%- capture section_settings -%}
+{%- comment -%}
+  - Use `url_escape` to avoid JSON parsing errors from newlines
+  - Do not use single quotes in `decodeURIComponent`
+{%- endcomment -%}
+<script>
+  SDG.Data.collectionBannerSettings = {
+    ...JSON.parse(decodeURIComponent("{{ s | json | url_escape }}")),
+    sub_heading_text: '{{ s.sub_heading_text | newline_to_br }}',
+    heading_text: '{{ s.heading_text | newline_to_br }}',
+    body_text: '{{ s.body_text | newline_to_br }}'
+  };
+</script>
+{%- endcapture -%}
+{%- render 'h-minify', variable: section_settings -%}
+
+{% schema %}
+  {
+    "name": "Collection Banner",
+    "presets": [
+      {
+        "category": "Components",
+        "name": "Collection Banner"
+      }
+    ],
+    "limit": 1,
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "background_image_desktop",
+        "label": "Background Image (Desktop)",
+        "info": "Required. Format: JPG or GIF. Recommended dimensions: 3840x1371 pixels."
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_mobile",
+        "label": "Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: 750x1075 pixels. Overrides 'Mobile Background Color'."
+      },
+      {
+        "type": "color",
+        "id": "mobile_background_color",
+        "label": "Mobile Background Color",
+        "default": "#eeeeee"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "checkbox",
+        "id": "mobile_stack",
+        "label": "Mobile Text Stack",
+        "info": "Used to stack content block (sub-heading, heading, body text, CTA) above image instead of overlaying image on mobile.",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "mobile_stack_color",
+        "label": "Mobile Text Stack Background Color",
+        "info": "Optional background color on content block when Mobile Text Stack option is selected",
+        "default": "#fff"
+      },
+      {
+        "type": "select",
+        "id": "content_position_horizontal_desktop",
+        "label": "Desktop Horizontal Content Position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to horizontally align the content block (sub-heading, heading, body text) left, center, or right in the banner on desktop."
+      },
+      {
+        "type": "select",
+        "id": "content_position_vertical_mobile",
+        "label": "Mobile Vertical Content Position",
+        "options": [
+          {
+            "value": "start",
+            "label": "Align Top"
+          },
+          {
+            "value": "center",
+            "label": "Align Middle"
+          },
+          {
+            "value": "end",
+            "label": "Align Bottom"
+          }
+        ],
+        "default": "start",
+        "info": "Used to vertically align the content block (sub-heading, heading, body text) top, middle, or bottom in the banner on mobile (when using a background image)."
+      },
+      {
+        "type": "header",
+        "content": "Sub-Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_heading_text",
+        "label": "Sub-Heading Text",
+        "default": "Sub-Heading",
+        "info": "Descriptive keyword or phrase placed above the main heading. Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "sub_heading_color",
+        "label": "Sub-Heading Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "sub_heading_color_mobile",
+        "label": "Sub-Heading Color (Mobile)",
+        "default": "#000000"
+      },
+      {
+        "type": "select",
+        "id": "sub_heading_position_desktop",
+        "label": "Sub-Heading Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the sub-heading left, right, or center in the banner on desktop."
+      },
+      {
+        "type": "select",
+        "id": "sub_heading_position_mobile",
+        "label": "Sub-Heading Position (Mobile)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the sub-heading left, right, or center in the banner on mobile."
+      },
+      {
+        "type": "header",
+        "content": "Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "heading_text",
+        "label": "Heading Text",
+        "default": "Heading",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading Color (Desktop)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "heading_color_mobile",
+        "label": "Heading Color (Mobile)",
+        "default": "#000000"
+      },
+      {
+        "type": "number",
+        "id": "heading_font_size_desktop",
+        "label": "Heading Font Size (Desktop)",
+        "default": 60,
+        "info": "Font size in pixels. Default: 60"
+      },
+      {
+        "type": "number",
+        "id": "heading_font_size_mobile",
+        "label": "Heading Font Size (Mobile)",
+        "default": 40,
+        "info": "Font size in pixels. Default: 40"
+      },
+      {
+        "type": "select",
+        "id": "heading_position_desktop",
+        "label": "Heading Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the heading left, right, or center in the banner on desktop."
+      },
+      {
+        "type": "select",
+        "id": "heading_position_mobile",
+        "label": "Heading Position (Mobile)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the heading left, right, or center in the banner on mobile."
+      },
+      {
+        "type": "header",
+        "content": "Body Text"
+      },
+      {
+        "type": "textarea",
+        "id": "body_text",
+        "label": "Body Text",
+        "default": "Body text. Lorem ipsum dolor, sit amet consectetur adipisicing elit.",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "select",
+        "id": "body_text_position_desktop",
+        "label": "Body Text Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the body text left, right, or center in the banner."
+      },
+      {
+        "type": "select",
+        "id": "body_text_position_mobile",
+        "label": "Body Text Position (Mobile)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          },
+          {
+            "value": "center",
+            "label": "Align Center"
+          },
+          {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the body text left, right, or center in the banner."
+      },
+      {
+        "type": "color",
+        "id": "body_text_color",
+        "label": "Body Text Color (Desktop)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "body_text_color_mobile",
+        "label": "Body Text Color (Mobile)",
+        "default": "#000000"
+      },
+      {
+        "type": "header",
+        "content": "CTA"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text",
+        "default": "Default CTA text"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "CTA URL"
+      },
+      {
+        "type": "color",
+        "id": "cta_static_text_color",
+        "label": "CTA Color (Desktop)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "cta_hover_text_color",
+        "label": "CTA Hover Color (Desktop)",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "cta_static_text_color_mobile",
+        "label": "CTA Color (Mobile)",
+        "default": "#000000"
+      },
+      {
+        "type": "range",
+        "label": "Banner bottom margin",
+        "id": "section_bottom_margin",
+        "min": 0,
+        "max": 500,
+        "step": 5,
+        "default": 35,
+        "info": "Used to add space between banner and pagination"
+      }
+    ]
+  }
+{% endschema %}

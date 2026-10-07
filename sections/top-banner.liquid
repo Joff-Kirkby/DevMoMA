@@ -1,0 +1,203 @@
+{% render 'c-top-banner', section: section %}
+
+{% schema %}
+  {
+    "name":"Top Banner",
+    "class": "top-banner js-top-banner",
+    "settings":[
+      {
+        "type": "header",
+        "content": "Banner Settings"
+      },
+      {
+        "type": "color",
+        "id": "bg_color",
+        "label": "Background Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#fff"
+      },
+      {
+        "type": "header",
+        "content": "Become a Member"
+      },
+      {
+        "id": "become_a_member_text",
+        "type": "text",
+        "label": "'Become a Member' Text",
+        "default": "Become a Member"
+      },
+      {
+        "id": "become_a_member_link",
+        "type": "url",
+        "label": "'Become a Member' Link"
+      },
+      {
+        "type": "header",
+        "content": "'Need Help?'' Modal"
+      },
+      {
+        "id": "need_help_text",
+        "type": "text",
+        "label": "'Need Help?' Text",
+        "default": "Need Help?"
+      }
+    ],
+    "blocks":[
+      {
+        "type":"marketing_message",
+        "name":"Marketing Message",
+        "settings":[
+          {
+            "id": "desktop_message",
+            "type": "inline_richtext",
+            "label": "Desktop Message",
+            "info": "Message that appears on desktop devices"
+          },
+          {
+            "id": "mobile_message",
+            "type": "inline_richtext",
+            "label": "Mobile Message",
+            "info": "Message that appears on mobile devices"
+          },
+          {
+            "id": "user_visibility",
+            "type": "select",
+            "label": "Show for",
+            "options": [
+              {
+                "value": "all",
+                "label": "All users"
+              },
+              {
+                "value": "logged_in",
+                "label": "Logged in users only"
+              },
+              {
+                "value": "logged_out",
+                "label": "Logged out users only"
+              }
+            ],
+            "default": "all"
+          },
+          {
+            "id": "enable_countdown_timer",
+            "type": "checkbox",
+            "label": "Enable countdown timer",
+            "default": false
+          },
+          {
+            "id": "countdown_timer",
+            "type": "text",
+            "label": "Countdown Timer",
+            "info": "Format: MM-DD-YYYY HH:MM:SS AM/PM. Example: 01-01-2024 12:00:00 PM. Please ensure the date is no longer than a month out."
+          },
+          {
+            "type": "header",
+            "content": "Standard/Membership Modal"
+          },
+          {
+            "id": "enable_banner_modal",
+            "type": "checkbox",
+            "label": "Enable Modal",
+            "info": "Enable or disable standard/membership modal",
+            "default": true
+          },
+          {
+            "id": "enable_standard_modal",
+            "type": "checkbox",
+            "label": "Enable Standard Modal",
+            "info": "Switch between standard modal or membership modal"
+          },
+          {
+            "id": "modal_trigger_text",
+            "type": "richtext",
+            "label": "Modal Trigger Text"
+          },
+          {
+            "id": "modal_open_symbol",
+            "type": "text",
+            "label": "Modal Open Symbol"
+          },
+          {
+            "id": "modal_closed_symbol",
+            "type": "text",
+            "label": "Modal Closed Symbol"
+          },
+          {
+            "id": "modal_header",
+            "type": "text",
+            "label": "Modal Header"
+          },
+          {
+            "id": "modal_content",
+            "type": "richtext",
+            "label": "Modal Content",
+            "info": "Content within the modal. Only shows when 'Enable Standard Modal' is checked."
+          },
+          {
+            "id": "modal_cta_text",
+            "type": "text",
+            "label": "Modal CTA Text"
+          },
+          {
+            "id": "modal_cta_link",
+            "type": "url",
+            "label": "Modal CTA Link"
+          }
+        ]
+      },
+      {
+        "type":"modal_membership_card",
+        "name":"Modal Membership Card",
+        "settings":[
+          {
+            "id":"header",
+            "type": "text",
+            "label": "Header"
+          },
+          {
+            "id":"body",
+            "type":"richtext",
+            "label":"Body"
+          }
+        ]
+      },
+      {
+        "type":"need_help_menu_item",
+        "name":"'Need Help' Menu Item",
+        "settings":[
+          {
+            "id":"text",
+            "type": "text",
+            "label": "Text"
+          },
+          {
+            "id":"link",
+            "type":"url",
+            "label":"Link"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Top Banner",
+        "blocks": [
+          {
+            "type": "marketing_message",
+            "settings": {
+              "desktop_message": "Free shipping on orders over $150",
+              "mobile_message": "Free shipping over $150",
+              "user_visibility": "all"
+            }
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

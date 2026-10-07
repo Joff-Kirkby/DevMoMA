@@ -1,0 +1,183 @@
+{% assign is_color = false %}
+{% assign is_size = false %}
+{% assign is_amount = false %}
+{% assign option_downcase = option.name | downcase %}
+{% assign option_handle = option.name | handleize %}
+{% assign has_multi_variant = false %}
+{% if option_downcase contains 'color' or option_downcase contains 'colour' %}
+  {% assign is_color = true %}
+{% endif %}
+{% if option_downcase contains 'size' %}
+  {% assign is_size = true %}
+{% endif %}
+{% if option_downcase contains 'amount' %}
+  {% assign is_amount = true %}
+{% endif %}
+{% if product.variants.size > 1 %}
+  {% assign has_multi_variant = true %}
+{% endif %}
+
+{% assign current_variant = product.selected_or_first_available_variant %}
+{% assign selected_option = current_variant.option1 %}
+{% assign selected_option_variants = product.variants | where: 'option1', selected_option %}
+
+{%- comment -%}
+  Variants matching every currently selected option *except* this one, so a
+  value can be checked against the rest of the selection. Filtering on this
+  option's own position would compare it to itself and leave only the selected
+  value available. Positions the product does not have are skipped: `where`
+  with a nil target degrades to a truthy filter and would match nothing.
+  Only size groups consume this, so skip the filtering everywhere else.
+{%- endcomment -%}
+{% if is_size %}
+  {% assign sibling_option_variants = product.variants %}
+  {% unless option.position == 1 %}
+    {% assign sibling_option_variants = sibling_option_variants | where: 'option1', current_variant.option1 %}
+  {% endunless %}
+  {% if product.options.size > 1 and option.position != 2 %}
+    {% assign sibling_option_variants = sibling_option_variants | where: 'option2', current_variant.option2 %}
+  {% endif %}
+  {% if product.options.size > 2 and option.position != 3 %}
+    {% assign sibling_option_variants = sibling_option_variants | where: 'option3', current_variant.option3 %}
+  {% endif %}
+{% endif %}
+{% assign size_chart = product.metafields.size_chart.pdp %}
+{% assign size_chart_tag = size_chart | metafield_tag %}
+
+{% assign is_product_preview = false %}
+{% if product.published_at == blank or request.path contains 'products_preview' %}
+  {% assign is_product_preview = true %}
+{% endif %}
+
+<script>
+  SDG.Data.hideOptions = [{%- if section.settings.hide_1st_option == true -%}true{%- else -%}false{%- endif -%}, {%- if section.settings.hide_2nd_option == true -%}true{%- else -%}false{%- endif -%}, {%- if section.settings.hide_3rd_option == true -%}true{%- else -%}false{%- endif -%}]
+</script>
+
+<div
+  class="config__group config__group--{{ option_handle }} js-option-group"
+  data-option-name="{{ option.name }}"
+>
+  <header class="config__header js-product-option-header">
+    <h4 class="config__heading" id="config-heading-{{ option_handle }}">
+      <span class="config__heading-option-name js-product-header-option-name">{{- option.name -}}:&nbsp;</span>
+      <span class="config__heading-option-value js-product-header-option-value">
+        {%- if option.selected_value != 'Choose Amount' and is_amount -%}
+          {{- selected_option_variants.first.price | money_without_trailing_zeros -}}
+        {%- else -%}
+          {{- option.selected_value -}}
+        {%- endif -%}
+      </span>
+    </h4>
+  </header>
+  {% assign position0 = option.position | minus: 1 %}
+  <!-- '{{ option.name }}' config options -->
+  <ul
+    class="config__options config__options--{{ option_handle }} list-reset{% if hide_option_list == true %} hide-important{% endif %}"
+    data-index="{{ position0 }}"
+    role="radiogroup"
+    aria-labelledby="config-heading-{{ option_handle }}"
+  >
+
+    {% for value in option.values %}
+      {% assign value_handle = value | handleize %}
+      {% capture value_id %}option{{ option.position }}-{{ value_handle }}{% endcapture %}
+
+      {% assign is_active = false %}
+      {% if option.selected_value == value %}
+        {% assign is_active = true %}
+      {% endif %}
+
+      {% assign is_disabled = false %}
+      {% if is_size %}
+        {% capture option_with_position %}option{{ option.position }}{% endcapture %}
+        {% assign variants_with_current_size = sibling_option_variants | where: option_with_position, value %}
+        {% if variants_with_current_size == empty %}
+          {% assign is_disabled = true %}
+        {% endif %}
+      {% endif %}
+
+      {%- comment -%} Check if variant is available {%- endcomment -%}
+      {% assign has_variant_po = false %}
+      {% assign variant_available = false %}
+      {% for variant in product.variants %}
+        {% assign option1_handle = variant.option1 | handleize %}
+        {% assign option2_handle = variant.option2 | handleize %}
+        {% if option1_handle == value_handle or option2_handle == value_handle %}
+          {% assign variant_po = variant.metafields.teamwork.po_date %}
+          {% assign variant_available = variant.available %}
+          {% if variant_po != blank and variant_po != 'null' %}
+            {% assign has_variant_po = true %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+      {% assign hide_variant = false %}
+      {% if has_variant_po == false and variant_available == false and is_product_preview == false %}
+        {% assign hide_variant = true %}
+      {% endif %}
+
+      <li
+        class="config__option config__option--{{ option_handle }} js-option{% if is_active %} is-active{% endif %}{% if is_disabled %} is-disabled{% endif %}{% if has_multi_variant and hide_variant %} hide{% endif %}"
+        data-option-value="{{ value | replace: '"', '%20' }}"
+        data-option-name="{{- option.name -}}"
+      >
+        <input
+          id="{{ value_id }}"
+          class="config__radio js-input"
+          name="options[{{ option.name }}]"
+          type="radio"
+          value="{{ value | replace: '"', '%20' }}"
+          {% if is_disabled %}disabled{% endif %}
+          {% if is_active %}checked{% endif %}
+        >
+
+      {% if is_color %}
+        <!-- {{ option.name }}: '{{ value_handle }}' -->
+        <label
+          class="swatch swatch--{{ value_handle }}"
+          for="{{ value_id }}"
+          role="radio"
+          tabindex="{% if is_disabled %}-1{% else %}0{% endif %}"
+          aria-checked="{% if is_active %}true{% else %}false{% endif %}"
+          aria-label="{{ value | escape }}"
+          {% if is_disabled %}aria-disabled="true"{% endif %}
+        >
+          {% for variant in product.variants %}
+            {% assign variant_color_handle = variant.option1 | handleize %}
+            {% if variant_color_handle == value_handle and variant.featured_image != blank %}
+              {% render 'c-responsive-image', {
+                image: variant.featured_image.src,
+                modifier: 'swatch swatch__ir',
+                image_alt: value | escape,
+              } %}
+
+            {% endif %}
+          {% endfor %}
+        </label>
+      {% else %}
+        <!-- {{ option.name }}: '{{ value }}' -->
+        {% assign long_text_class = '' %}
+        {% if value.size > 8 %}
+          {% assign long_text_class = ' config__btn--long-text' %}
+        {% endif %}
+        <label
+          class="config__btn{{ long_text_class }}"
+          for="{{ value_id }}"
+          role="radio"
+          tabindex="{% if is_disabled %}-1{% else %}0{% endif %}"
+          aria-checked="{% if is_active %}true{% else %}false{% endif %}"
+          {% if is_disabled %}aria-disabled="true"{% endif %}
+        >
+          {%- if value != 'Choose Amount' and is_amount -%}
+            {%- assign option_variants = product.variants | where: 'option1', value -%}
+            {{- option_variants.first.price | money_without_trailing_zeros -}}
+          {%- else -%}
+            {{- value -}}
+          {%- endif -%}
+        </label>
+      {% endif %}
+
+      </li>
+
+    {% endfor %}
+  </ul>
+</div>

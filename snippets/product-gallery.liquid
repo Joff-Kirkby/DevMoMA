@@ -1,0 +1,483 @@
+{%- comment -%}
+  Structure:
+    - gallery (contains carousels)
+    - carousel (contains media)
+    - media (contains image/video)
+{%- endcomment -%}
+{% assign current_variant = product.selected_or_first_available_variant | default: product.variants.first %}
+{%- assign youtube_video_id = product.metafields.teamwork.youtubevideoid.value | default: product.metafields.teamwork.YoutubeVideoID.value -%}
+
+{% assign media_manual_sort = false %}
+{% for tag in product.tags %}
+  {% assign tag_downcase = tag | downcase %}
+  {% if tag_downcase contains 'media manual sort' and product.has_only_default_variant or product.variants.size == 1 %}
+    {% assign media_manual_sort = true %}
+  {% endif %}
+{% endfor %}
+
+{%- comment -%}
+  - https://app.shortcut.com/sdg/story/188037/create-tag-on-images-that-allows-manual-sort-order
+    "We currently have two sources for images in Shopify, our new GlobalEdit integration (which pushes images directly to Shopify),
+    and Teamwork. Going forward (i.e., new photos, images), will come from the GE integration only."
+
+  - The Teamwork FILE NAMES will always follow this format: "105426_a.jpg"
+  - The GlobalEdit ALT TEXT will always follow this format: "105426_a.jpg"
+    - `_a` indicates the sort order of the images for that variant, starting at _a and incrementally A-Z in order.
+    - `_s` is a special case and is always the swatch image. This should be removed from the image gallery (and only used for the swatch).
+
+  - If ANY images have this naming scheme, display them by alphabetical order. Ex: "105426_a, 105426_b, 105426_c"
+
+  - If NO images have this naming scheme, display any other images in default Shopify order.
+
+  - If product is tagged `Media Manual Sort`, sort by Shopify sort order
+  - Manual Sort functionality should only work for products with single/no variants.
+{%- endcomment -%}
+
+<!-- Product Gallery -->
+<div
+  id="productGallery"
+  class="js-product-gallery sticky-top"
+  data-product-youtube-video-id="{{- youtube_video_id -}}"
+  data-product-handle="{{- product.handle -}}"
+  data-variant-id="{{- current_variant.id -}}"
+  role="region"
+  aria-label="Product gallery"
+>
+  {% for variant in product.variants %}
+    {%- comment -%}
+      Get the product/variant SKUs and use them to check for Teamwork/GlobalEdit image files
+    {%- endcomment -%}
+    {%- assign sku_product_id = '' -%}
+    {%- assign sku_variant_id = '' -%}
+    {% if variant.sku != blank %}
+      {%- assign sku_product_id = variant.sku | split: '-' | first -%}
+      {%- assign sku_variant_id = variant.sku | split: '-' | last -%}
+    {% endif %}
+
+    {%- assign product_image_string = '' -%}
+    {%- if sku_product_id != blank -%}
+      {%- assign product_image_string = sku_product_id | append: '_' -%}
+    {%- endif -%}
+
+    {%- assign variant_image_string = '' -%}
+    {%- if sku_variant_id != '' -%}
+      {%- assign variant_image_string = sku_variant_id | append: '_' -%}
+    {%- endif -%}
+
+    {%- assign variant_swatch_image_string = '_s' -%}
+
+    {%- comment -%} carousel {%- endcomment -%}
+    <div
+      class="pv-gallery__carousel js-product-gallery-carousel{% if current_variant.id == variant.id %} is-active{% endif %}"
+      data-variant-id="{{ variant.id }}"
+      style="visibility: hidden;"
+    >
+      {% assign has_variant_media = false %}
+      {% assign has_product_media = false %}
+
+      {%- for media in product.media -%}
+        {% assign filename = media.src | split: '/' | last -%}
+
+        {% assign image_string_match = false %}
+        {% if filename contains variant_image_string or media.alt contains variant_image_string %}
+          {% assign image_string_match = true %}
+        {% endif %}
+
+        {% assign swatch_match = false %}
+        {% if filename contains variant_swatch_image_string or media.alt contains variant_swatch_image_string %}
+          {% assign swatch_match = true %}
+        {% endif %}
+
+        {%- comment -%}
+          Manual sort
+        {%- endcomment -%}
+        {% if media_manual_sort == true %}
+          {%- unless swatch_match -%}
+            <div
+              class="pv-gallery__carousel-item js-product-gallery-carousel-item"
+              data-variant-string="{{ variant_image_string }}"
+              data-variant-media-filename="{{- filename -}}"
+              data-variant-media-alt="{{- media.alt -}}"
+            >
+              {% render 'c-responsive-image', {
+                image: media,
+                modifier: 'swatch',
+                flickity_lazyload: true,
+              } %}
+            </div>
+          {%- endunless -%}
+        {%- endif -%}
+
+        {%- if variant_image_string != blank and image_string_match and media.media_type == 'image' and media_manual_sort == false -%}
+          {% assign has_variant_media = true %}
+          {%- unless swatch_match -%}
+            {%- comment -%} Parse media sort order, could be from src or alt {%- endcomment -%}
+            {% assign src_sort_order = media.src | split: '/' | last | split: '_' | last | split: '.' | first %}
+            {% assign alt_sort_order = media.alt | split: '_' | last %}
+            {% assign src_sort_size = src_sort_order | size %}
+            {% assign alt_sort_size = alt_sort_order | size %}
+            {% assign media_sort_order = blank -%}
+            {%- if alt_sort_order and alt_sort_size == 1 -%}
+              {% assign media_sort_order = alt_sort_order -%}
+            {%- elsif src_sort_order and src_sort_size == 1 -%}
+              {% assign media_sort_order = src_sort_order -%}
+            {%- endif -%}
+
+            <div
+              class="pv-gallery__carousel-item js-product-gallery-carousel-item js-gallery-image"
+              data-sort-order="{{ media_sort_order }}"
+              data-variant-string="{{ variant_image_string }}"
+              data-variant-media-filename="{{- filename -}}"
+              data-variant-media-alt="{{- media.alt -}}"
+              data-position="{{- forloop.index0 -}}"
+            >
+              {% render 'c-responsive-image', {
+                image: media,
+                modifier: 'swatch',
+                flickity_lazyload: true,
+              } %}
+            </div>
+            {% capture zoom_gallery_item %}
+              <div
+                class="pv-gallery__item-wrapper js-product-gallery-carousel-item js-product-gallery-item-wrapper"
+              >
+                <div
+                  class="pv-gallery__item--zoom js-product-gallery-zoom-image-wrapper"
+                  data-sort-order="{{ media_sort_order }}"
+                  data-variant-string="{{ variant_image_string }}"
+                  data-variant-media-filename="{{- filename -}}"
+                  data-variant-media-alt="{{- media.alt -}}"
+                  data-position="{{- forloop.index0 -}}"
+                >
+                  {%- render 'c-responsive-image', {
+                    image: media,
+                    modifier: 'swatch',
+                    image_class: 'pv-gallery__image',
+                    wrapper_class: 'pv-gallery__image-wrapper js-product-gallery-zoom-image'
+                    inline_ir: true,
+                  } -%}
+                </div>
+              </div>
+            {%- endcapture -%}
+            {% assign zoom_html = zoom_html | append: zoom_gallery_item %}
+          {%- endunless -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- comment -%}
+        If has_variant_media is false, display any media containing product_image_string
+      {%- endcomment -%}
+      {% if has_variant_media == false and media_manual_sort == false %}
+        {% for media in product.media %}
+          {% assign filename = media.src | split: '/' | last -%}
+
+          {% assign image_string_match = false %}
+          {% if filename contains product_image_string or media.alt contains product_image_string %}
+            {% assign image_string_match = true %}
+          {% endif %}
+
+          {% assign swatch_match = false %}
+          {% if filename contains variant_swatch_image_string or media.alt contains variant_swatch_image_string %}
+            {% assign swatch_match = true %}
+          {% endif %}
+
+          {%- if product_image_string != blank and image_string_match and media.media_type == 'image' -%}
+            {%- unless swatch_match -%}
+              {%- comment -%} Parse media sort order, could be from src or alt {%- endcomment -%}
+              {% assign src_sort_order = media.src | split: '/' | last | split: '_' | last | split: '.' | first %}
+              {% assign alt_sort_order = media.alt | split: '_' | last %}
+              {% assign src_sort_size = src_sort_order | size %}
+              {% assign alt_sort_size = alt_sort_order | size %}
+              {% assign media_sort_order = blank -%}
+              {%- if alt_sort_order and alt_sort_size == 1 -%}
+                {% assign media_sort_order = alt_sort_order -%}
+              {%- elsif src_sort_order and src_sort_size == 1 -%}
+                {% assign media_sort_order = src_sort_order -%}
+              {%- endif -%}
+
+              <div
+                class="pv-gallery__carousel-item js-product-gallery-carousel-item"
+                data-sort-order="{{ media_sort_order }}"
+                data-variant-media-filename="{{- filename -}}"
+                data-variant-media-alt="{{- media.alt -}}"
+              >
+                {% render 'c-responsive-image', {
+                  image: media,
+                  modifier: 'swatch',
+                  flickity_lazyload: true,
+                } %}
+              </div>
+            {%- endunless -%}
+          {%- endif -%}
+        {% endfor %}
+      {% endif %}
+
+      {%- comment -%}
+        If there are no Teamwork/GlobalEdit images, display whatever images there are in default Shopify order
+      {%- endcomment -%}
+      {% if has_variant_media == false and has_product_media == false and media_manual_sort == false %}
+        {% for media in product.media %}
+          {% assign filename = media.src | split: '/' | last -%}
+
+          {% assign swatch_match = false %}
+          {% if filename contains variant_swatch_image_string or media.alt contains variant_swatch_image_string %}
+            {% assign swatch_match = true %}
+          {% endif %}
+
+          {% if media.media_type == 'image' %}
+            {%- unless swatch_match -%}
+              <div
+                class="pv-gallery__carousel-item js-product-gallery-carousel-item"
+                data-variant-media-filename="{{- filename -}}"
+                data-variant-media-alt="{{- media.alt -}}"
+              >
+                {% render 'c-responsive-image', {
+                  image: media,
+                  modifier: 'swatch',
+                  flickity_lazyload: true,
+                } %}
+              </div>
+            {%- endunless -%}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {%- comment -%}
+        Video item
+      {%- endcomment -%}
+      {% if youtube_video_id != blank %}
+        <div class="pv-gallery__carousel-item pv-gallery__carousel-item--video js-product-gallery-carousel-item-video" role="none">
+          <div class="ir ir--swatch is-loading" aria-hidden="true">
+            <img
+              class="lazyload"
+              data-src="https://img.youtube.com/vi/{{- youtube_video_id -}}/hqdefault.jpg"
+              data-sizes="auto"
+              tabindex="-1"
+              alt=""
+            >
+          </div>
+          <button class="pv-gallery__video-play-btn btn-icon" id="productVideoModalGalleryTrigger" type="button" aria-label="Play video">
+            <i class="icon icon--play" aria-hidden="true"></i>
+          </button>
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%}
+      Carousel nav
+    {%- endcomment -%}
+    <div
+      class="pv-gallery__carousel-nav js-product-gallery-carousel-nav{% if current_variant.id == variant.id %} is-active{% endif %}"
+      data-variant-id="{{ variant.id }}"
+      style="visibility: hidden;"
+    >
+      {% for media in product.media %}
+        {% assign filename = media.src | split: '/' | last -%}
+
+        {% assign image_string_match = false %}
+        {% if filename contains variant_image_string or media.alt contains variant_image_string %}
+          {% assign image_string_match = true %}
+        {% endif %}
+
+        {% assign swatch_match = false %}
+        {% if filename contains variant_swatch_image_string or media.alt contains variant_swatch_image_string %}
+          {% assign swatch_match = true %}
+        {% endif %}
+
+        {%- comment -%}
+          Manual sort
+        {%- endcomment -%}
+        {% if media_manual_sort == true %}
+          {%- unless swatch_match -%}
+            <div
+              class="pv-gallery__carousel-nav-item js-product-gallery-carousel-nav-item"
+              data-variant-media-filename="{{- filename -}}"
+              data-variant-media-alt="{{- media.alt -}}"
+            >
+              {% render 'c-responsive-image', {
+                image: media,
+                modifier: 'swatch',
+                flickity_lazyload: true,
+              } %}
+            </div>
+          {%- endunless -%}
+        {% endif %}
+
+        {% if variant_image_string != blank and image_string_match and media.media_type == 'image' and media_manual_sort == false %}
+          {%- unless swatch_match -%}
+            {%- comment -%} Parse media sort order, could be from src or alt {%- endcomment -%}
+            {% assign src_sort_order = media.src | split: '/' | last | split: '_' | last | split: '.' | first %}
+            {% assign alt_sort_order = media.alt | split: '_' | last %}
+            {% assign src_sort_size = src_sort_order | size %}
+            {% assign alt_sort_size = alt_sort_order | size %}
+            {% assign media_sort_order = blank -%}
+            {%- if alt_sort_order and alt_sort_size == 1 -%}
+              {% assign media_sort_order = alt_sort_order -%}
+            {%- elsif src_sort_order and src_sort_size == 1 -%}
+              {% assign media_sort_order = src_sort_order -%}
+            {%- endif -%}
+
+            <div
+              class="pv-gallery__carousel-nav-item js-product-gallery-carousel-nav-item"
+              data-sort-order="{{ media_sort_order }}"
+              data-variant-media-filename="{{- filename -}}"
+              data-variant-media-alt="{{- media.alt -}}"
+            >
+              {% render 'c-responsive-image', {
+                image: media,
+                modifier: 'swatch',
+                flickity_lazyload: true,
+              } %}
+            </div>
+          {%- endunless -%}
+        {% endif %}
+      {% endfor %}
+
+      {%- comment -%}
+        If has_variant_media is false, display any media containing product_image_string
+      {%- endcomment -%}
+      {% if has_variant_media == false and media_manual_sort == false %}
+        {% for media in product.media %}
+          {% assign filename = media.src | split: '/' | last -%}
+
+          {% assign image_string_match = false %}
+          {% if filename contains product_image_string or media.alt contains product_image_string %}
+            {% assign image_string_match = true %}
+          {% endif %}
+
+          {% assign swatch_match = false %}
+          {% if filename contains variant_swatch_image_string or media.alt contains variant_swatch_image_string %}
+            {% assign swatch_match = true %}
+          {% endif %}
+
+          {%- if product_image_string != blank and image_string_match and media.media_type == 'image' -%}
+            {%- unless swatch_match -%}
+              {%- comment -%} Parse media sort order, could be from src or alt {%- endcomment -%}
+              {% assign src_sort_order = media.src | split: '/' | last | split: '_' | last | split: '.' | first %}
+              {% assign alt_sort_order = media.alt | split: '_' | last %}
+              {% assign src_sort_size = src_sort_order | size %}
+              {% assign alt_sort_size = alt_sort_order | size %}
+              {% assign media_sort_order = blank -%}
+              {%- if alt_sort_order and alt_sort_size == 1 -%}
+               {% assign media_sort_order = alt_sort_order -%}
+              {%- elsif src_sort_order and src_sort_size == 1 -%}
+                {% assign media_sort_order = src_sort_order -%}
+              {%- endif -%}
+
+              <div
+                class="pv-gallery__carousel-nav-item js-product-gallery-carousel-nav-item"
+                data-sort-order="{{ media_sort_order }}"
+                data-variant-media-filename="{{- filename -}}"
+                data-variant-media-alt="{{- media.alt -}}"
+              >
+                {% render 'c-responsive-image', {
+                  image: media,
+                  modifier: 'swatch',
+                  flickity_lazyload: true,
+                } %}
+              </div>
+            {%- endunless -%}
+          {%- endif -%}
+        {% endfor %}
+      {% endif %}
+
+      {%- comment -%}
+        If there are no Teamwork/GlobalEdit images, display whatever images there are in default Shopify order
+      {%- endcomment -%}
+      {% if has_variant_media == false and has_product_media == false and media_manual_sort == false %}
+        {% for media in product.media %}
+          {% assign filename = media.src | split: '/' | last -%}
+
+          {% assign swatch_match = false %}
+          {% if filename contains variant_swatch_image_string or media.alt contains variant_swatch_image_string %}
+            {% assign swatch_match = true %}
+          {% endif %}
+
+          {% if media.media_type == 'image' %}
+            {%- unless swatch_match -%}
+              <div
+                class="pv-gallery__carousel-nav-item js-product-gallery-carousel-nav-item"
+                data-variant-media-filename="{{- filename -}}"
+                data-variant-media-alt="{{- media.alt -}}"
+              >
+                {% render 'c-responsive-image', {
+                  image: media,
+                  modifier: 'swatch',
+                  flickity_lazyload: true,
+                } %}
+              </div>
+            {%- endunless -%}
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+
+      {%- comment -%} video item {%- endcomment -%}
+      {% if youtube_video_id != blank %}
+        <div class="pv-gallery__carousel-nav-item pv-gallery__carousel-nav-item--video js-product-gallery-carousel-nav-item-video">
+          <div class="ir ir--swatch is-loading">
+            <img
+              class="lazyload"
+              data-src="https://img.youtube.com/vi/{{- youtube_video_id -}}/hqdefault.jpg"
+              data-sizes="auto"
+              tabindex="-1"
+              alt="{{ product.title }}"
+            >
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %}
+      Gift Card Balance Check Link
+    {% endcomment %}
+    {% if forloop.last %}
+
+      {% assign is_e_gift_card_template = false %}
+      {% if template contains 'e-gift-card' %}
+        {% assign is_e_gift_card_template = true %}
+      {% endif %}
+
+      {% if is_e_gift_card_template == true %}
+        {% assign check_balance_link_text = settings.product_gift_card_check_balance_link_text %}
+        {% assign check_balance_link_url = settings.product_gift_card_check_balance_link_url %}
+
+        {% if check_balance_link_text != empty and check_balance_link_url != nil %}
+          <div class="pv-gallery__check-balance-wrapper">
+            <a
+              href="{{- check_balance_link_url -}}"
+              class="btn btn--primary pv-gallery__check-balance-link"
+            >
+              {{- check_balance_link_text -}}
+            </a>
+          </div>
+        {% endif %}
+
+      {% endif %}
+
+    {% endif %}
+  {% endfor %}
+</div>
+
+<section id="productGalleryZoom" class="pv-gallery__zoom hide" aria-hidden="true">
+  <div class="pv-gallery__zoom-inner js-product-gallery">
+    {{ zoom_html }}
+  </div>
+  <button class="pv-gallery__zoom-button pv-gallery__zoom-button--close js-product-gallery-zoom-close" type="button">
+    <i class="icon icon--close"></i>
+    <span class="screenreader">Close Zoom Modal</span>
+  </button>
+  <div class="pv-gallery__zoom-actions">
+    <button class="pv-gallery__zoom-button js-product-gallery-zoom-in" type="button">
+      <i class="icon icon--plus-black"></i>
+      <span class="screenreader">
+        Zoom In
+      </span>
+    </button>
+    <button class="pv-gallery__zoom-button js-product-gallery-zoom-out" type="button">
+      <i class="icon icon--dash-black"></i>
+      <span class="screenreader">
+        Zoom Out
+      </span>
+    </button>
+  </div>
+</section>

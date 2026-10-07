@@ -1,0 +1,16 @@
+{%- comment -%}
+  Rewards Refer a Friend
+  Section wrapper around the existing snippet. Renders only when the Yotpo
+  refer-a-friend feature is enabled, preserving the original template guard.
+{%- endcomment -%}
+
+{% if settings.yotpo_refer_friend_enable %}
+  {% render 'rewards-refer' %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Rewards Refer a Friend",
+  "settings": []
+}
+{% endschema %}

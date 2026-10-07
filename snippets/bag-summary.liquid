@@ -1,0 +1,178 @@
+{% assign is_member = false %}
+{% if customer.tags contains 'moma-membership-active' %}
+  {% assign is_member = true %}
+{% endif %}
+
+{% liquid
+  assign checkout_href = '/checkout'
+  assign sign_in_checkout_href = '/customer_authentication/login?return_to=/checkout'
+%}
+
+{%- capture checkout_url -%}
+  {%- render 'h-href', href: checkout_href -%}
+{%- endcapture -%}
+{%- capture sign_in_checkout_url -%}
+  {%- render 'h-href', href: sign_in_checkout_href -%}
+{%- endcapture -%}
+
+{% assign additional_shipping_cost = 0 %}
+{% assign special_delivery_items_array = '' | split: '' %}
+{%- comment -%} 1000000 equals $10,000 before 'money_without_trailing_zeros' filter {%- endcomment -%}
+{% assign giftcard_chooseamount_max = 1000000 %}
+{% assign giftcard_chooseamount_sku = '84466-84466' %}
+{% assign physical_giftcard_chooseamount_sku = '1623-1623' %}
+
+<div class="bag__summary-wrap">
+  <div class="bag__summary-sticky">
+    <div class="bag__summary">
+      <div id="bagTotals" class="bag__totals">
+        <div class="bag__summary-header">
+          <h2 class="bag__summary-title">Order Summary</h2>
+        </div>
+        <p class="bag__total">
+          <span class="bag__total-label">
+            Merchandise
+          </span>
+          <span id="bagSubtotal" class="bag__total-value">
+            {% assign total_price = cart.original_total_price %}
+            {% for item in cart.items %}
+
+              {% assign is_giftcard_sku = false %}
+              {% if item.variant.sku == giftcard_chooseamount_sku or item.variant.sku == physical_giftcard_chooseamount_sku %}
+                {% assign is_giftcard_sku = true %}
+              {% endif %}
+
+              {% if item.properties.giftcard_chooseamount and is_giftcard_sku %}
+                {% assign giftcard_chooseamount = item.properties.giftcard_chooseamount | append: '00' | times: 1 %}
+                {% assign total_price = total_price | minus: giftcard_chooseamount_max | plus: giftcard_chooseamount %}
+              {% endif %}
+            {% endfor %}
+            {{- total_price | money_without_trailing_zeros -}}
+          </span>
+        </p>
+
+        {% comment %}
+          Member discount
+        {% endcomment %}
+        {% assign member_discount_total = 0 %}
+
+        {% for discount in cart.discount_applications %}
+          {% assign discount_title_downcase = discount.title | downcase %}
+
+          {% comment %}
+            Only use discounts with titles including 'member'
+          {% endcomment %}
+          {% if discount_title_downcase contains 'member' %}
+            {% assign member_discount_total = member_discount_total | plus: discount.total_allocated_amount %}
+          {% endif %}
+        {% endfor %}
+
+        {% for item in cart.items %}
+          {% assign is_giftcard_sku = false %}
+          {% if item.variant.sku == giftcard_chooseamount_sku or item.variant.sku == physical_giftcard_chooseamount_sku %}
+            {% assign is_giftcard_sku = true %}
+          {% endif %}
+
+          {% if item.properties.giftcard_chooseamount and is_giftcard_sku %}
+            {% assign giftcard_chooseamount = item.properties.giftcard_chooseamount | append: '00' | times: 1 %}
+            {% assign giftcard_chooseamount_max_difference = giftcard_chooseamount_max | minus: giftcard_chooseamount %}
+            {% assign member_discount_total = member_discount_total | minus: giftcard_chooseamount_max_difference %}
+          {% endif %}
+        {% endfor %}
+
+        {% if is_member and member_discount_total > 0 %}
+          <p class="bag__total bag__blue-text">
+            <span class="bag__total-label">
+              Member Discount
+            </span>
+            <span class="bag__total-value">
+              -{{- member_discount_total | money_without_trailing_zeros -}}
+            </span>
+          </p>
+        {% endif %}
+
+        {% comment %}
+          Non-member discounts
+        {% endcomment %}
+        {% assign non_member_discount_total = 0 %}
+        {% for discount in cart.discount_applications %}
+          {% assign discount_title_downcase = discount.title | downcase %}
+          {% comment %}
+            Skip any discounts with titles including 'member'
+          {% endcomment %}
+          {% unless discount_title_downcase contains 'member' %}
+            {% assign non_member_discount_total = non_member_discount_total | plus: discount.total_allocated_amount %}
+          {% endunless %}
+        {% endfor %}
+        {% if non_member_discount_total > 0 %}
+          <p class="bag__total">
+            <span class="bag__total-label">
+              Discounts
+            </span>
+            <span class="bag__total-value">
+              -{{- non_member_discount_total | money_without_trailing_zeros -}}
+            </span>
+          </p>
+        {% endif %}
+
+        <p class="bag__total">
+          <span class="bag__total-label">
+            Shipping
+          </span>
+          <span class="bag__total-value">
+            TBD
+          </span>
+        </p>
+        {% if additional_shipping_cost > 0 %}
+          {% assign additional_shipping_cost = additional_shipping_cost | times: 100 %}
+          <p class="bag__total">
+            <span class="bag__total-label">
+              Additional Delivery Charges
+            </span>
+            <span id="bagCharges" class="bag__total-value">
+              {{- additional_shipping_cost | money_without_trailing_zeros -}}
+            </span>
+          </p>
+        {% endif %}
+        <p class="bag__total">
+          <span class="bag__total-label">
+            Tax
+          </span>
+          <span class="bag__total-value">
+            TBD
+          </span>
+        </p>
+        <hr class="bag__total-hr">
+        <p class="bag__total bag__total--estimated-final">
+          <span class="bag__total-label">
+            Estimated Total
+          </span>
+          <span id="bagTotal" class="bag__total-value">
+            {{- cart.total_price | plus: additional_shipping_cost | money_without_trailing_zeros -}}
+          </span>
+        </p>
+      </div>
+      <div class="bag__actions hide-phone">
+        <a
+          href="{{- checkout_url | strip -}}"
+          class="bag__action bag__checkout btn btn--quinary btn--full"
+        >
+          {% if customer %}
+            Proceed to Checkout
+          {% else %}
+            Checkout as Guest
+          {% endif %}
+        </a>
+        {% unless customer %}
+          <a
+            href="{{- sign_in_checkout_url | strip -}}"
+            class="bag__action bag__checkout bag__checkout--sign-in btn btn--senary btn--full"
+          >
+            Sign in and Checkout
+          </a>
+        {% endunless %}
+      </div>
+    </div>
+    {% render 'bag-summary-messages' %}
+  </div>
+</div>

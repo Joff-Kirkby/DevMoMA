@@ -1,0 +1,44 @@
+{% comment %}
+  Rewards - Product Carousel
+{% endcomment %}
+
+{% assign collection = collections[page.metafields.rewards.product_carousel] %}
+
+<section class="rewards-product-carousel container">
+  <div class="rewards-product-carousel__wrapper">
+    <div class="rewards-product-carousel__heading-container">
+      <h3 class="rewards-product-carousel__heading">Shop Now and Start Earning Points</h3>
+      <div class="rewards-product-carousel__cta hide-mobile">
+        <a
+          class="rewards-product-carousel__cta-link"
+          href="{{ collection.url }}"
+          title="{{ collection.title }}"
+        >
+          See More
+        </a>
+      </div>
+    </div>
+    {% if collection %}
+      <div class="rewards-product-carousel__inner js-rewards-product-carousel">
+        {% for product in collection.products limit: 6 %}
+          <a
+            class="rewards-product-carousel__cell"
+            href="{{ product.url }}"
+            title="{{ product.title }}"
+          >
+            {% render 'c-responsive-image', {
+              image: product.featured_image,
+              image_class: 'image-css-class',
+              modifier: 'swatch',
+              wrapper_class: 'rewards-product-carousel__image-mobile',
+              inline_ir: true
+            } %}
+            <p class="rewards-product-carousel__cell-title">{{ product.title }}</p>
+          </a>
+        {% endfor %}
+      </div>
+    {% else %}
+      <h3>No products to display</h3>
+    {% endif %}
+  </div>
+</section>

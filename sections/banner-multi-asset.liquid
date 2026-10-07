@@ -1,0 +1,61 @@
+{%- comment -%}
+  Banner Multi-Asset Section
+{%- endcomment -%}
+
+{%- render 'c-banner-multi-asset', {
+  section: section
+} -%}
+
+{% schema %}
+  {
+    "name": "Multi-Asset Banner",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "skinny_image_desktop",
+        "label": "Skinny Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 50px; height: 500px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "skinny_image_tablet",
+        "label": "Skinny Image (Tablet)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 640px; height: 60px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "skinny_image_mobile",
+        "label": "Skinny Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 640px; height: 60px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "large_image_desktop",
+        "label": "Large Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1230px; height: 500px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "large_image_tablet",
+        "label": "Large Image (Tablet)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1200px; height: 1996px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "large_image_mobile",
+        "label": "Large Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1200px; height: 1996px;"
+      },
+      {
+        "type": "url",
+        "id": "url",
+        "label": "URL for Entire Section"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Multi-Asset Banner"
+      }
+    ]
+  }
+{% endschema %}

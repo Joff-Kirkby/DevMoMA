@@ -1,0 +1,257 @@
+{%- comment -%}
+  Double Wide Image + Text
+{%- endcomment -%}
+
+{% render 'c-wide-image-and-text', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "Double Wide Image + Text",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Double Wide Image + Text"
+      },
+      {
+        "type": "select",
+        "id": "headline_text_alignment_desktop",
+        "label": "Headline Text Alignment Desktop",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "select",
+        "id": "headline_text_alignment_mobile",
+        "label": "Headline Text Alignment Mobile",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "text",
+        "id": "eyebrow",
+        "label": "Eyebrow Text",
+        "info": "Optional label shown above the headline. Leave empty to hide it."
+      },
+      {
+        "type": "text",
+        "id": "headline",
+        "label": "Headline"
+      },
+      {
+        "type": "paragraph",
+        "content": "---------------------"
+      },
+      {
+        "type": "select",
+        "id": "text_copy_alignment_desktop",
+        "label": "Text Copy Alignment Desktop",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "select",
+        "id": "text_copy_alignment_mobile",
+        "label": "Text Copy Alignment Mobile",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "type": "paragraph",
+        "content": "---------------------"
+      },
+      {
+        "type": "select",
+        "id": "cta_text_alignment_desktop",
+        "label": "CTA Alignment Desktop",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "select",
+        "id": "cta_text_alignment_mobile",
+        "label": "CTA Alignment Mobile",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "URL",
+        "info": "For CTA/Image"
+      },
+      {
+        "type": "text",
+        "id": "anchor",
+        "label": "Anchor",
+        "info": "Used to directly link to this section"
+      },
+      {
+        "type": "checkbox",
+        "id": "custom_cta_styles",
+        "label": "Enable Custom CTA Styles",
+        "default": false
+      },
+      {
+        "type": "color",
+        "id": "cta_background_color",
+        "label": "CTA Background Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "cta_text_color",
+        "label": "CTA Text Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "cta_border_color",
+        "label": "CTA Border Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "cta_hover_background_color",
+        "label": "CTA Hover Background Color",
+        "default": "#FFFFFF"
+      },
+      {
+        "type": "color",
+        "id": "cta_hover_text_color",
+        "label": "CTA Hover Text Color",
+        "default": "#000000"
+      },
+      {
+        "type": "color",
+        "id": "cta_hover_border_color",
+        "label": "CTA Hover Border Color",
+        "default": "#000000"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Format: JPG. Recommended dimensions: width: 1660px; height: 950px;"
+      },
+      {
+        "type": "video_url",
+        "id": "video",
+        "label": "Video",
+        "accept": [
+          "youtube"
+        ]
+      },
+      {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Double Wide Image + Text"
+      }
+    ]
+  }
+{% endschema %}

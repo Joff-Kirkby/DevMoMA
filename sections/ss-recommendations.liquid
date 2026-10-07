@@ -1,0 +1,62 @@
+{% if settings.ss_enable and section.settings.ss_profile_id != blank %}
+	{%- if section.settings.ss_collection_list != blank or section.settings.ss_batched == false -%}
+		{% capture ss_options %}
+			options = {
+				{% if section.settings.ss_collection_list != blank %}categories : [{%- for collection in section.settings.ss_collection_list -%}{{ collection.id }}{%- unless forloop.last -%}, {%- endunless -%}{%- endfor -%}],{% endif %}
+				{% if section.settings.ss_batched == false %}batched : false,{% endif %}
+			};
+		{% endcapture %}
+	{%- endif -%}
+  <search-spring-recommendations>
+    <div class="container" data-section-id="{{ section.id }}">
+        {% if section.settings.custom_title != blank %}
+            <div class="ss__title-wrapper" data-custom-title="{{ section.settings.custom_title | escape }}"></div>
+        {% endif %}
+    	<script type="searchspring/personalized-recommendations" profile="{{ section.settings.ss_profile_id | escape }}">
+    		{%- if template contains 'product' -%}
+    			seed = "{{ product.variants[0].sku }}";
+    		{%- endif -%}
+    		{{ ss_options }}
+    	</script>
+    </div>
+  </search-spring-recommendations>
+{% endif %}
+
+{% schema %}
+{
+	"name": "SS Recommendations",
+	"tag": "div",
+	"class": "section-product-recommendations",
+	"presets": [
+		{
+			"name": "Searchspring Recommendations"
+		}
+	],
+	"settings": [
+		{
+			"type": "text",
+			"id": "custom_title",
+			"label": "Custom Title",
+			"info": "Override the default SearchSpring recommendation title"
+		},
+		{
+			"type": "text",
+			"id": "ss_profile_id",
+			"label": "Profile ID"
+		},
+		{
+			"type": "collection_list",
+			"id": "ss_collection_list",
+			"label": "Collection ID",
+			"info" : "Filter recommendations to a list of collection ids. This only works for category trending profiles."
+		},
+		{
+			"type": "checkbox",
+			"id": "ss_batched",
+			"label": "Batched",
+			"info" : "Turn off batching on the recommendation. This may show duplicate products across recommendations if you have multiple profiles on the same page.",
+			"default": true
+		}
+	]
+}
+{% endschema %}

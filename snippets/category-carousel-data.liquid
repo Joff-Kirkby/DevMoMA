@@ -1,0 +1,47 @@
+{%- comment -%}
+  Category Carousel data (PLP)
+
+  ECOM-593 - tiles for `CategoryCarousel.vue`, rendered above the filter grid.
+
+  @param {Object} data - `category_carousel` metaobject from the collection metafield
+
+  Tiles without an image are skipped: the row keeps a fixed footprint, so a
+  cell with nothing in it would just be a gap.
+{%- endcomment -%}
+{%- assign tiles = data.tiles.value | default: false -%}
+{%- assign rendered = 0 -%}
+[
+  {%- for tile in tiles -%}
+    {%- assign tile_image = tile.image.value -%}
+    {%- if tile_image == blank -%}
+      {%- continue -%}
+    {%- endif -%}
+    {%- comment -%}
+      `link` is a Link metafield (an object carrying url/text) on entries
+      created in the admin and a plain URL string on older ones.
+    {%- endcomment -%}
+    {%- assign tile_url = tile.link.value.url | default: tile.link.value -%}
+    {%- comment -%}
+      Same handoff as `c-responsive-image`: lazysizes swaps `{width}` for the
+      width it picks out of `widths`. A tile never renders wider than 344px
+      (172 at 2x), so anything above that would only waste bandwidth.
+    {%- endcomment -%}
+    {%- assign tile_image_url = tile_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    {%- capture tile_widths -%}
+      {%- if tile_image.width > 180 -%}180,{%- endif -%}
+      {%- if tile_image.width > 360 -%}360{%- else -%}{{ tile_image.width }}{%- endif -%}
+    {%- endcapture -%}
+    {%- comment -%}
+      A skipped tile can be the last one, so the separator leads instead of
+      trailing: `forloop.last` would leave dangling commas behind.
+    {%- endcomment -%}
+    {%- if rendered > 0 -%},{%- endif -%}
+    {
+      "image": {{ tile_image_url | json }},
+      "label": {{ tile.label | json }},
+      "url": {{ tile_url | default: '#' | json }},
+      "widths": "[{{ tile_widths | strip }}]"
+    }
+    {%- assign rendered = rendered | plus: 1 -%}
+  {%- endfor -%}
+]

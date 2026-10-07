@@ -1,0 +1,637 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "16600846433023f384": {
+      "type": "home-featured-collections",
+      "settings": {
+        "mobile_block_type": "stacked"
+      }
+    },
+    "17848354996a6c777b": {
+      "type": "_blocks",
+      "blocks": {
+        "ai_gen_block_e00e5b2_fPxBHH": {
+          "type": "ai_gen_block_e00e5b2",
+          "settings": {
+            "heading": "We’re Different \nby Design",
+            "subheading": "",
+            "desktop_width_percent": 100,
+            "mobile_height": 200,
+            "content_position_horizontal_desktop": "left",
+            "content_position_vertical_desktop": "center",
+            "content_position_vertical_mobile": "center",
+            "heading_position_desktop": "left",
+            "heading_position_mobile": "left",
+            "background_color": "#ffcd00",
+            "heading_color": "#000000",
+            "subheading_color": "#000000",
+            "subheading_size": 12
+          },
+          "blocks": {}
+        }
+      },
+      "block_order": [
+        "ai_gen_block_e00e5b2_fPxBHH"
+      ],
+      "settings": {}
+    },
+    "banner_carousel_JjN6jG": {
+      "type": "banner-carousel",
+      "blocks": {
+        "banner_rn9m4U": {
+          "type": "Banner",
+          "settings": {
+            "is_page_hero": false,
+            "background_image_desktop": "shopify://shop_images/Group_69_86ea213f-dc61-44d6-843d-f2518394a214.jpg",
+            "background_image_tablet": "shopify://shop_images/Group_69_86ea213f-dc61-44d6-843d-f2518394a214.jpg",
+            "background_image_mobile": "shopify://shop_images/Group_69_9c3c16c3-f5b6-479c-9b7e-aa0823b9b632.jpg",
+            "image_overlay_color": "#000",
+            "image_overlay_opacity": 0,
+            "link_wrapper": "",
+            "mobile_stack": false,
+            "mobile_stack_color": "#fff",
+            "content_position_horizontal_desktop": "left",
+            "content_position_vertical_desktop": "center",
+            "content_position_vertical_mobile": "start",
+            "sub_heading_text": "",
+            "screen_reader_text": "Curator-Approved",
+            "sub_heading_position_desktop": "left",
+            "sub_heading_position_mobile": "left",
+            "sub_heading_color": "#000",
+            "heading_text": "Curator-Approved",
+            "heading_position_desktop": "left",
+            "heading_position_mobile": "left",
+            "heading_color": "#000",
+            "body_text": "Each item is approved by MoMA curators—the same ones behind what’s on view at the Museum. \nIt’s a selection process unlike any other.",
+            "body_text_position_desktop": "left",
+            "body_text_position_mobile": "left",
+            "body_text_color": "#000",
+            "body_max_width": 500,
+            "max_width_unit": "px",
+            "cta_text": "",
+            "cta_url": "",
+            "cta_position_desktop": "left",
+            "cta_position_mobile": "flex-start",
+            "static_cta_style": "solid_background",
+            "cta_static_background_color": "#fff",
+            "cta_static_text_color": "#000",
+            "hover_cta_style": "solid_background",
+            "cta_hover_background_color": "#fff",
+            "cta_hover_text_color": "#000",
+            "secondary_cta": false,
+            "cta_text_2": "Default CTA text",
+            "cta_url_2": "",
+            "static_cta_style_2": "solid_background",
+            "cta_static_background_color_2": "#fff",
+            "cta_static_text_color_2": "#000",
+            "hover_cta_style_2": "solid_background",
+            "cta_hover_background_color_2": "#fff",
+            "cta_hover_text_color_2": "#000"
+          }
+        },
+        "banner_bbqNUk": {
+          "type": "Banner",
+          "settings": {
+            "is_page_hero": false,
+            "background_image_desktop": "shopify://shop_images/Group_70_c9cc8703-33f6-4d82-a836-cfaade8bd7ee.jpg",
+            "background_image_tablet": "shopify://shop_images/Group_70_c9cc8703-33f6-4d82-a836-cfaade8bd7ee.jpg",
+            "background_image_mobile": "shopify://shop_images/Group_70_98085ac5-072c-4518-8cbe-057e1b8713af.jpg",
+            "image_overlay_color": "#000",
+            "image_overlay_opacity": 0,
+            "link_wrapper": "",
+            "mobile_stack": false,
+            "mobile_stack_color": "#fff",
+            "content_position_horizontal_desktop": "left",
+            "content_position_vertical_desktop": "center",
+            "content_position_vertical_mobile": "start",
+            "sub_heading_text": "",
+            "screen_reader_text": "",
+            "sub_heading_position_desktop": "left",
+            "sub_heading_position_mobile": "left",
+            "sub_heading_color": "#000",
+            "heading_text": "Unexpected Discoveries",
+            "heading_position_desktop": "left",
+            "heading_position_mobile": "left",
+            "heading_color": "#000",
+            "body_text": "We work closely with artists, designers, and makers across the globe, seeking objects that meet our criteria.",
+            "body_text_position_desktop": "left",
+            "body_text_position_mobile": "left",
+            "body_text_color": "#000",
+            "body_max_width": 500,
+            "max_width_unit": "px",
+            "cta_text": "",
+            "cta_url": "",
+            "cta_position_desktop": "left",
+            "cta_position_mobile": "flex-start",
+            "static_cta_style": "solid_background",
+            "cta_static_background_color": "#fff",
+            "cta_static_text_color": "#000",
+            "hover_cta_style": "solid_background",
+            "cta_hover_background_color": "#fff",
+            "cta_hover_text_color": "#000",
+            "secondary_cta": false,
+            "cta_text_2": "Default CTA text",
+            "cta_url_2": "",
+            "static_cta_style_2": "solid_background",
+            "cta_static_background_color_2": "#fff",
+            "cta_static_text_color_2": "#000",
+            "hover_cta_style_2": "solid_background",
+            "cta_hover_background_color_2": "#fff",
+            "cta_hover_text_color_2": "#000"
+          }
+        },
+        "banner_g34HYy": {
+          "type": "Banner",
+          "settings": {
+            "is_page_hero": false,
+            "background_image_desktop": "shopify://shop_images/Group_71_12b8cc28-918a-42cf-84ca-5beabaf3d8a0.jpg",
+            "background_image_tablet": "shopify://shop_images/Group_71_12b8cc28-918a-42cf-84ca-5beabaf3d8a0.jpg",
+            "background_image_mobile": "shopify://shop_images/Group_71_02a22619-86e9-43cc-bbd3-8dfd9a47b2d8.jpg",
+            "image_overlay_color": "#000",
+            "image_overlay_opacity": 0,
+            "link_wrapper": "",
+            "mobile_stack": false,
+            "mobile_stack_color": "#fff",
+            "content_position_horizontal_desktop": "left",
+            "content_position_vertical_desktop": "center",
+            "content_position_vertical_mobile": "start",
+            "sub_heading_text": "",
+            "screen_reader_text": "",
+            "sub_heading_position_desktop": "left",
+            "sub_heading_position_mobile": "left",
+            "sub_heading_color": "#000",
+            "heading_text": "Design for Everyone",
+            "heading_position_desktop": "left",
+            "heading_position_mobile": "left",
+            "heading_color": "#000",
+            "body_text": "We offer products at every price that bring innovation, delight, and good design to your everyday life.",
+            "body_text_position_desktop": "left",
+            "body_text_position_mobile": "left",
+            "body_text_color": "#000",
+            "body_max_width": 500,
+            "max_width_unit": "px",
+            "cta_text": "",
+            "cta_url": "",
+            "cta_position_desktop": "left",
+            "cta_position_mobile": "flex-start",
+            "static_cta_style": "solid_background",
+            "cta_static_background_color": "#fff",
+            "cta_static_text_color": "#000",
+            "hover_cta_style": "solid_background",
+            "cta_hover_background_color": "#fff",
+            "cta_hover_text_color": "#000",
+            "secondary_cta": false,
+            "cta_text_2": "Default CTA text",
+            "cta_url_2": "",
+            "static_cta_style_2": "solid_background",
+            "cta_static_background_color_2": "#fff",
+            "cta_static_text_color_2": "#000",
+            "hover_cta_style_2": "solid_background",
+            "cta_hover_background_color_2": "#fff",
+            "cta_hover_text_color_2": "#000"
+          }
+        },
+        "banner_wdbkgx": {
+          "type": "Banner",
+          "settings": {
+            "is_page_hero": false,
+            "background_image_desktop": "shopify://shop_images/Group_72_32e12802-8d5d-4dc8-b464-2c65382fdf2b.jpg",
+            "background_image_tablet": "shopify://shop_images/Group_72_32e12802-8d5d-4dc8-b464-2c65382fdf2b.jpg",
+            "background_image_mobile": "shopify://shop_images/Group_72_ff4a81ff-15d4-4640-ae18-4c7713a69e62.jpg",
+            "image_overlay_color": "#000",
+            "image_overlay_opacity": 0,
+            "link_wrapper": "",
+            "mobile_stack": false,
+            "mobile_stack_color": "#fff",
+            "content_position_horizontal_desktop": "left",
+            "content_position_vertical_desktop": "center",
+            "content_position_vertical_mobile": "start",
+            "sub_heading_text": "",
+            "screen_reader_text": "",
+            "sub_heading_position_desktop": "left",
+            "sub_heading_position_mobile": "left",
+            "sub_heading_color": "#000",
+            "heading_text": "Support MoMA",
+            "heading_position_desktop": "left",
+            "heading_position_mobile": "left",
+            "heading_color": "#000",
+            "body_text": "Every purchase supports the Museum's exhibitions, artwork conservation and educational programs.",
+            "body_text_position_desktop": "left",
+            "body_text_position_mobile": "left",
+            "body_text_color": "#000",
+            "body_max_width": 500,
+            "max_width_unit": "px",
+            "cta_text": "",
+            "cta_url": "",
+            "cta_position_desktop": "left",
+            "cta_position_mobile": "flex-start",
+            "static_cta_style": "solid_background",
+            "cta_static_background_color": "#fff",
+            "cta_static_text_color": "#000",
+            "hover_cta_style": "solid_background",
+            "cta_hover_background_color": "#fff",
+            "cta_hover_text_color": "#000",
+            "secondary_cta": false,
+            "cta_text_2": "",
+            "cta_url_2": "",
+            "static_cta_style_2": "solid_background",
+            "cta_static_background_color_2": "#fff",
+            "cta_static_text_color_2": "#000",
+            "hover_cta_style_2": "solid_background",
+            "cta_hover_background_color_2": "#fff",
+            "cta_hover_text_color_2": "#000"
+          }
+        }
+      },
+      "block_order": [
+        "banner_rn9m4U",
+        "banner_bbqNUk",
+        "banner_g34HYy",
+        "banner_wdbkgx"
+      ],
+      "name": "Banner Carousel",
+      "settings": {
+        "autoplay_delay": 6
+      }
+    },
+    "section_spacer_f7q47P": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 12,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "wide_image_and_text_eARLNC": {
+      "type": "wide-image-and-text",
+      "name": "Double Wide Image + Text",
+      "settings": {
+        "headline_text_alignment_desktop": "left",
+        "headline_text_alignment_mobile": "left",
+        "eyebrow": "Our History",
+        "headline": "Our point of view is informed by MoMA’s historical relationship to design.",
+        "text_copy_alignment_desktop": "left",
+        "text_copy_alignment_mobile": "left",
+        "text": "<p>In 1932, The Museum of Modern Art established the world's first curatorial department devoted to architecture and design—recognizing design’s important role alongside more traditional mediums like painting and sculpture. </p>",
+        "cta_text_alignment_desktop": "left",
+        "cta_text_alignment_mobile": "left",
+        "cta_text": "",
+        "cta_url": "",
+        "anchor": "",
+        "custom_cta_styles": false,
+        "cta_background_color": "#000000",
+        "cta_text_color": "#ffffff",
+        "cta_border_color": "#000000",
+        "cta_hover_background_color": "#ffffff",
+        "cta_hover_text_color": "#000000",
+        "cta_hover_border_color": "#000000",
+        "image": "shopify://shop_images/Mask_group_d2aab79f-1233-4f36-b5ab-d235299f7056.jpg",
+        "video": "",
+        "image_position": "right"
+      }
+    },
+    "section_spacer_UBG47B": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 15,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "wide_image_and_text_MRETbb": {
+      "type": "wide-image-and-text",
+      "name": "Double Wide Image + Text",
+      "settings": {
+        "headline_text_alignment_desktop": "left",
+        "headline_text_alignment_mobile": "left",
+        "eyebrow": "Our Process",
+        "headline": "Every season, we choose 100s of designs from around the world.",
+        "text_copy_alignment_desktop": "left",
+        "text_copy_alignment_mobile": "left",
+        "text": "<p>Like the designs in MoMA’s collection, our product assortment is item driven. We carefully select design objects that represent innovations in material, function or production technique.<br/><br/><br/><a href=\"/collections/new\" title=\"New\"><span style=\"text-decoration:underline\">Shop New Arrivals</span></a></p>",
+        "cta_text_alignment_desktop": "left",
+        "cta_text_alignment_mobile": "left",
+        "cta_text": "",
+        "cta_url": "",
+        "anchor": "",
+        "custom_cta_styles": false,
+        "cta_background_color": "#000000",
+        "cta_text_color": "#ffffff",
+        "cta_border_color": "#000000",
+        "cta_hover_background_color": "#ffffff",
+        "cta_hover_text_color": "#000000",
+        "cta_hover_border_color": "#000000",
+        "image": "shopify://shop_images/Group_49.png",
+        "video": "",
+        "image_position": "left"
+      }
+    },
+    "section_spacer_jV6jhW": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 15,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "wide_image_and_text_zBiRJw": {
+      "type": "wide-image-and-text",
+      "name": "Double Wide Image + Text",
+      "settings": {
+        "headline_text_alignment_desktop": "left",
+        "headline_text_alignment_mobile": "left",
+        "eyebrow": "Our Exclusives",
+        "headline": "Designs you can’t find anywhere else.",
+        "text_copy_alignment_desktop": "left",
+        "text_copy_alignment_mobile": "left",
+        "text": "<p>We consistently launch MoMA Exclusive products that are developed both in-house and with established and emerging designers.<br/><br/><br/><a href=\"/collections/only-at-moma\" title=\"Only at MoMA\"><span style=\"text-decoration:underline\">Shop MoMA Exclusives</span></a></p>",
+        "cta_text_alignment_desktop": "left",
+        "cta_text_alignment_mobile": "left",
+        "cta_text": "",
+        "cta_url": "",
+        "anchor": "",
+        "custom_cta_styles": false,
+        "cta_background_color": "#000000",
+        "cta_text_color": "#ffffff",
+        "cta_border_color": "#000000",
+        "cta_hover_background_color": "#ffffff",
+        "cta_hover_text_color": "#000000",
+        "cta_hover_border_color": "#000000",
+        "image": "shopify://shop_images/Mask_group_7c6ab465-5e4b-4c41-bcca-e9acc747d1fc.jpg",
+        "video": "",
+        "image_position": "right"
+      }
+    },
+    "section_spacer_PpzT9E": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 15,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "wide_image_and_text_ALBgX4": {
+      "type": "wide-image-and-text",
+      "name": "Double Wide Image + Text",
+      "settings": {
+        "headline_text_alignment_desktop": "left",
+        "headline_text_alignment_mobile": "left",
+        "eyebrow": "Our Partnerships",
+        "headline": "We launch unique collaborations every season.",
+        "text_copy_alignment_desktop": "left",
+        "text_copy_alignment_mobile": "left",
+        "text": "<p>We work directly with designers and artists—many of whom have work in MoMA’s collection—to develop special collections.<br/><br/><a href=\"https://store.moma.org/collections/collaborations\" title=\"https://store.moma.org/collections/collaborations\"><span style=\"text-decoration:underline\">Shop All Collabs</span></a></p>",
+        "cta_text_alignment_desktop": "left",
+        "cta_text_alignment_mobile": "left",
+        "cta_text": "",
+        "cta_url": "",
+        "anchor": "",
+        "custom_cta_styles": false,
+        "cta_background_color": "#000000",
+        "cta_text_color": "#ffffff",
+        "cta_border_color": "#000000",
+        "cta_hover_background_color": "#ffffff",
+        "cta_hover_text_color": "#000000",
+        "cta_hover_border_color": "#000000",
+        "image": "shopify://shop_images/Group_40_2c7cf074-a4ff-42fb-ab42-fd3422058bc5.png",
+        "video": "",
+        "image_position": "left"
+      }
+    },
+    "section_spacer_6xKEUG": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 15,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "wide_image_and_text_6nTMJi": {
+      "type": "wide-image-and-text",
+      "name": "Double Wide Image + Text",
+      "settings": {
+        "headline_text_alignment_desktop": "left",
+        "headline_text_alignment_mobile": "left",
+        "eyebrow": "Our Engagement",
+        "headline": "Your purchases support MoMA. ",
+        "text_copy_alignment_desktop": "left",
+        "text_copy_alignment_mobile": "left",
+        "text": "<p>Every year, we engage with millions of people through our programming at MoMA and all over the world. From award-winning online and on-site educational offerings, to ground-breaking exhibitions, and free programs for kids, your support makes a difference every day. </p>",
+        "cta_text_alignment_desktop": "left",
+        "cta_text_alignment_mobile": "left",
+        "cta_text": "",
+        "cta_url": "",
+        "anchor": "",
+        "custom_cta_styles": false,
+        "cta_background_color": "#000000",
+        "cta_text_color": "#ffffff",
+        "cta_border_color": "#000000",
+        "cta_hover_background_color": "#ffffff",
+        "cta_hover_text_color": "#000000",
+        "cta_hover_border_color": "#000000",
+        "image": "shopify://shop_images/Mask_group_e8932948-26da-42ca-8d46-18f8358b2c21.png",
+        "video": "",
+        "image_position": "right"
+      }
+    },
+    "section_spacer_mKQGgY": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 15,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "17848513311eac9a47": {
+      "type": "apps",
+      "blocks": {
+        "metafields_guru_video_8PnMjy": {
+          "type": "shopify://apps/metafields-guru/blocks/video/79c9df68-85d5-4857-a386-0d96fc22b663",
+          "settings": {
+            "title": "",
+            "header": "",
+            "mn": "metafields_video",
+            "mk": "video",
+            "from_shop": false,
+            "columns": "none",
+            "mobile_columns": "same",
+            "aspect_ratio": "21/9",
+            "align": "left",
+            "gap": 0,
+            "corner_radius": 0,
+            "background_mode": false,
+            "pt": 20,
+            "pb": 100,
+            "cc": ""
+          }
+        }
+      },
+      "block_order": [
+        "metafields_guru_video_8PnMjy"
+      ],
+      "settings": {}
+    },
+    "faq_accordion_BnJqEU": {
+      "type": "faq-accordion",
+      "blocks": {
+        "question_answer_rTTLcD": {
+          "type": "question_answer",
+          "settings": {
+            "title": "Are the products sold by MoMA Design Store authentic?",
+            "answer": "<p>Absolutely. As an extension of The Museum of Modern Art, authenticity is the foundation of everything we do. We work closely with designers, artists and manufacturers to sell original designs, authorized versions and products we develop ourselves that embody the spirit of the design objects in MoMA’s collection. Some of the items we sell are actual designs represented in the Museum’s collection. </p>"
+          }
+        },
+        "question_answer_r739aJ": {
+          "type": "question_answer",
+          "settings": {
+            "title": "How does MoMA Design Store choose which products to sell? How does MoMA Design Store choose which products to sell?",
+            "answer": "<p>Every product we sell is evaluated and approved by MoMA’s curatorial team—the very same experts responsible for what is on view in TheThe Museum of Modern Art of Modern Art. We look for items that meet our carefully considered \"good design\" criteria, championing innovation, utility, and everyday delight. </p>"
+          }
+        },
+        "question_answer_tPYTnA": {
+          "type": "question_answer",
+          "settings": {
+            "title": "Do you work directly with the original designers and manufacturers? ",
+            "answer": "<p>We do. To bring you truly unexpected discoveries, we spend a lot of time collaborating closely with artists, designers, and authorized manufacturers all over the globe. These direct partnerships allow us to support the design community while ensuring every product meets our strict standards before it ever reaches your hands.<br/></p>"
+          }
+        },
+        "question_answer_kRcKbN": {
+          "type": "question_answer",
+          "settings": {
+            "title": "What are some of the best gifts for someone who loves design and the person who has everything?",
+            "answer": "<p><a href=\"https://store.moma.org/products/lumio-book-lamp-red\" title=\"https://store.moma.org/products/lumio-book-lamp-red\">Lumio Book Lamp</a>: A striking example of form meeting surprise. When closed, it looks like a minimalist wooden book, but when opened, it unfurls into a sculptural, accordion-style LED lantern that casts a warm glow.</p><p><a href=\"https://store.moma.org/products/author-clock-large\" title=\"https://store.moma.org/products/author-clock-large\">Author Clock</a>: Perfect for the person who \"has everything.\" Instead of standard numbers, this smart clock displays the current time using thousands of rotating literary quotes culled from classic and contemporary books.</p><p><a href=\"https://store.moma.org/products/mondri-vase-primary\" title=\"https://store.moma.org/products/mondri-vase-primary\">Mondri Vase</a>: A De Stijl-inspired design that utilizes three distinct chambers and bold primary color blocks and allows the user to rotate and flip the vase to accommodate different floral arrangement styles.</p><p><a href=\"https://store.moma.org/products/nyc-skyline-chess-set\" title=\"https://store.moma.org/products/nyc-skyline-chess-set\">Skyline Chess Set</a>: This set replaces traditional chess pieces with architectural scale models of iconic NYC buildings, turning a classic board game into a permanent living room centerpiece.</p>"
+          }
+        },
+        "question_answer_YnHmWP": {
+          "type": "question_answer",
+          "settings": {
+            "title": "What are the best things to buy at MoMA Design Store?",
+            "answer": "<p><a href=\"https://store.moma.org/products/moma-ny-yankees-adjustable-baseball-cap-kelly-green\" title=\"https://store.moma.org/products/moma-ny-yankees-adjustable-baseball-cap-kelly-green\">MoMA NY Yankees Cap</a>: One of the store's most legendary items. This exclusive collaboration with New Era pairs the classic, globally recognized MLB New Era 9FORTY silhouette with an embroidered MoMA logo on the side.</p><p><a href=\"/products/new-york-coffee-cup-blue\" title=\"New York Coffee Cup - Blue\">Ceramic New York Coffee Cup</a>: An everyday design icon. This permanent piece turns the disposable, blue-and-white Greek \"Anthora\" paper coffee cup—ubiquitous on New York City streets since 1963—into a durable, heat-retaining ceramic keepsake.</p><p><a href=\"/products/hay-recycled-storage-bin-collapsible-plastic-lid-off-white\" title=\"HAY Recycled Storage Bin Collapsible Plastic Lid - Off White\">HAY Recycled Plastic Color Crates</a>: A fan favorite for home organization. Designed by Danish design house HAY, these highly functional, ventilated, and collapsible storage crates come in vibrant, modern colorways that transform basic storage into a stylistic choice.</p><p><a href=\"/products/double-rainbow-maker\" title=\"Double Rainbow Maker\">Double Rainbow Maker</a>: Powered entirely by solar energy, this design attaches to a window. When struck by direct sunlight, a small motor activates, spinning genuine Swarovski crystals to splash moving rainbow prisms across the entire room.</p><p><a href=\"/products/birds-in-harmony-mobile-multi\" title=\"Birds in Harmony Mobile - Multi\">Birds in Harmony Mobile</a>: A kinetic sculpture masterpiece. This balancing wire mobile uses lightweight, abstract bird silhouettes that gently pivot and shift with natural room air currents, offering a peaceful focal point for modern spaces.</p>"
+          }
+        },
+        "question_answer_YmY4d3": {
+          "type": "question_answer",
+          "settings": {
+            "title": "Do I need a Museum ticket to visit your stores in Midtown and Soho?",
+            "answer": "<p>No, you do not need a Museum ticket to visit the retail stores operated by the Museum of Modern Art in New York in Midtown. The Museum Store in the lobby and MoMA Design Store across 53rd Street and in Soho at 81 Spring Street are open to the public. </p><p></p>"
+          }
+        }
+      },
+      "block_order": [
+        "question_answer_rTTLcD",
+        "question_answer_r739aJ",
+        "question_answer_tPYTnA",
+        "question_answer_kRcKbN",
+        "question_answer_YnHmWP",
+        "question_answer_YmY4d3"
+      ],
+      "name": "FAQ Accordion",
+      "settings": {
+        "heading": "Frequently Asked Questions",
+        "subcopy": "",
+        "subcopy_mobile": "",
+        "show_cta": false,
+        "cta_text": "View all FAQs",
+        "cta_url": ""
+      }
+    },
+    "section_spacer_XrftVz": {
+      "type": "section-spacer",
+      "name": "Section Spacer",
+      "settings": {
+        "section_spacer_mobile_size": 0,
+        "section_spacer_desktop_size": 100
+      }
+    },
+    "home_featured_collections_RLXeKW": {
+      "type": "home-featured-collections",
+      "blocks": {
+        "featured_block_4Cd9ib": {
+          "type": "featured_block",
+          "settings": {
+            "image": "shopify://shop_images/33099_162356_167958_56568_166107_161344_1.jpg",
+            "header_text_alignment_desktop": "center",
+            "header_text_alignment_mobile": "center",
+            "header": "Modern Icons",
+            "subheader_text_alignment_desktop": "center",
+            "subheader_text_alignment_mobile": "center",
+            "subheader": "Timeless furniture and lighting that bring museum worthy design into your home.",
+            "cta_text_alignment_desktop": "center",
+            "cta_text_alignment_mobile": "center",
+            "cta_text": "Shop Now",
+            "cta_link": "shopify://collections/in-momas-collection"
+          }
+        },
+        "featured_block_PjJWUY": {
+          "type": "featured_block",
+          "settings": {
+            "image": "shopify://shop_images/Screenshot_2026-01-14_at_2.49.17_PM_1.png",
+            "header_text_alignment_desktop": "center",
+            "header_text_alignment_mobile": "center",
+            "header": "The Gift Guide",
+            "subheader_text_alignment_desktop": "center",
+            "subheader_text_alignment_mobile": "center",
+            "subheader": "Thoughtfully curated gifts for every person on your list.",
+            "cta_text_alignment_desktop": "center",
+            "cta_text_alignment_mobile": "center",
+            "cta_text": "Shop Now",
+            "cta_link": "shopify://collections/gifts"
+          }
+        },
+        "featured_block_mamRfW": {
+          "type": "featured_block",
+          "settings": {
+            "image": "shopify://shop_images/177961_176987_178407_179296_177463_1.jpg",
+            "header_text_alignment_desktop": "center",
+            "header_text_alignment_mobile": "center",
+            "header": "MoMA Exclusives",
+            "subheader_text_alignment_desktop": "center",
+            "subheader_text_alignment_mobile": "center",
+            "subheader": "Limited-edition apparel and design drops available only at MoMA.",
+            "cta_text_alignment_desktop": "center",
+            "cta_text_alignment_mobile": "center",
+            "cta_text": "Shop Now",
+            "cta_link": "shopify://collections/only-at-moma"
+          }
+        }
+      },
+      "block_order": [
+        "featured_block_4Cd9ib",
+        "featured_block_PjJWUY",
+        "featured_block_mamRfW"
+      ],
+      "name": "Featured Collections",
+      "settings": {
+        "mobile_block_type": "carousel"
+      }
+    }
+  },
+  "order": [
+    "16600846433023f384",
+    "17848354996a6c777b",
+    "banner_carousel_JjN6jG",
+    "section_spacer_f7q47P",
+    "wide_image_and_text_eARLNC",
+    "section_spacer_UBG47B",
+    "wide_image_and_text_MRETbb",
+    "section_spacer_jV6jhW",
+    "wide_image_and_text_zBiRJw",
+    "section_spacer_PpzT9E",
+    "wide_image_and_text_ALBgX4",
+    "section_spacer_6xKEUG",
+    "wide_image_and_text_6nTMJi",
+    "section_spacer_mKQGgY",
+    "17848513311eac9a47",
+    "faq_accordion_BnJqEU",
+    "section_spacer_XrftVz",
+    "home_featured_collections_RLXeKW"
+  ]
+}

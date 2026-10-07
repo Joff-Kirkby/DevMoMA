@@ -1,0 +1,51 @@
+<aside id="accountAcc" class="ac-aside">
+  <h2 class="ac-aside__heading">My Account</h2>
+  <h3 class="acc__btn-wrapper ac-aside__acc-btn-wrapper js-acc-btn">
+    <button
+      class="ac-aside__acc-btn"
+      id="{{ "Account Menu" | handle }}-trigger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="{{ "Account Menu" | handle }}-menu"
+    >
+      Account Menu
+    </button>
+  </h3>
+  <div
+    class="ac-aside__accordion-menu js-acc-menu"
+    id="{{ "Account Menu" | handle }}-menu"
+    aria-labelledby="{{ "Account Menu" | handle }}-trigger"
+  >
+    <div class="ac-aside-settings__link-container">
+      <h3 class="ac-aside-settings__heading">Account Settings</h3>
+      <a href="/account/register" class=" ac-aside-settings__create-account{% if template == 'customers/register' %}--selected{% endif %}">Create Account</a>
+      <h3 class="ac-aside-settings__sub-heading">Shop Confidently</h3>
+      <ul class="ac-aside-settings__list">
+        <li class="ac-aside-settings__list-item">
+          <a href="/pages/privacy-policy" class="ac-aside-settings__list-item-link">Privacy Policy</a>
+        </li>
+        <li class="ac-aside-settings__list-item">
+          <a href="#" target="_blank" class="ac-aside-settings__list-item-link">Secure Shopping</a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="ac-aside-order-help">
+      <h2 class="ac-aside-settings__heading-2">{{ settings.cs_title_1 }}</h2>
+      {{ settings.cs_description_1 }}
+      <div  class="ac-aside-settings__schedule">
+        <p class="ac-aside-settings__schedule-days">
+          {{ settings.cs_schedule_days }}
+        </p>
+        <p class="ac-aside-settings__schedule-hours">
+          {{ settings.cs_schedule_time }}
+        </p>
+      </div>
+      <a class="ac-aside-settings__phone" href="{{ settings.cs_schedule_phone_link }}">
+        {{ settings.cs_schedule_phone }}
+      </a>
+      <h2 class="ac-aside-settings__heading-2--int">{{ settings.cs_title_2 }}</h2>
+      {{ settings.cs_description_2 }}
+    </div>
+  </div>
+</aside>

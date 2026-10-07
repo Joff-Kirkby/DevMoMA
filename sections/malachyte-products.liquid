@@ -1,0 +1,119 @@
+{%- comment -%}
+  Card renderer for the Malachyte PDP recommendations block on MoMA.
+
+  Fetched by the inline script in the "malachyte_pdp_recommendations" block via:
+    /?section_id=malachyte-products&product_ids=<comma-separated-handles>
+
+  Card markup below reuses MoMA's own SearchSpring result classes (.ss__result,
+  .collection-grid-item__*) so recs look identical to native search/collection results, since
+  those are the classes the recs block's own <style> tag already targets.
+
+  Contract required by the block's inline JS (see theme, block "malachyte_pdp_recommendations"):
+    - card wrapper must carry class "swiper-slide"  -> fetchCards() selects `.swiper-slide`
+    - card wrapper must carry data-product-id="{{ product.id }}" -> click-attribution loop reads
+      slide.dataset.productId to tag <a> tags with name="ml-rec:{component_id}:{product_id}"
+
+  NOTE: the Quick Add button below is visual markup matching MoMA's card styling only. It is not
+  wired to MoMA's actual add-to-cart flow (that flow is owned by SearchSpring's client-side
+  templating and wasn't reverse-engineered here). Either wire data-quick-add up to MoMA's real
+  add-to-cart JS, or drop the button and keep the card as a straight link to the PDP.
+{%- endcomment -%}
+
+{%- capture content_for_query_string -%}{{ content_for_header }}{%- endcapture -%}
+{%- liquid
+    assign query_key = "product_ids"
+    assign query_value = blank
+    assign page_url = content_for_query_string | split: '"pageurl":"' | last | split: '"' | first | split: request.host | last | replace: '\/', '/' | replace: '%20', ' ' | replace: '\u0026', '&'
+
+    for i in (1..1)
+        unless page_url contains '?'
+        break
+        endunless
+
+        assign query_string = page_url | split: '?' | last
+        assign qry_parts = query_string | split: '&'
+
+        for part in qry_parts
+            assign key_and_value = part | split: '='
+            if key_and_value.size > 1
+                if key_and_value[0] == query_key
+                assign query_value = key_and_value[1]
+                endif
+            endif
+        endfor
+    endfor
+
+    assign productIds = null
+    if query_value != blank
+        assign decodedValue = query_value | url_decode | trim
+        assign productIds = decodedValue | split: ","
+    endif
+-%}
+
+{%- for handle in productIds -%}
+  {%- assign trimmed_handle = handle | strip -%}
+  {%- assign product = all_products[trimmed_handle] -%}
+  {%- if product != blank -%}
+    <div class="swiper-slide ss__result" data-product-id="{{ product.id }}">
+      <a href="{{ product.url }}" class="ss__result-link">
+        <div class="ir">
+          {{
+            product.featured_image
+            | image_url: width: 600
+            | image_tag:
+              loading: 'lazy',
+              decoding: 'async',
+              alt: product.title,
+              widths: '300, 450, 600'
+          }}
+          {%- if product.images[1] != blank -%}
+            {{
+              product.images[1]
+              | image_url: width: 600
+              | image_tag:
+                loading: 'lazy',
+                decoding: 'async',
+                alt: '',
+                class: 'collection-grid-item__alt-image',
+                widths: '300, 450, 600'
+            }}
+          {%- endif -%}
+        </div>
+      </a>
+      <div class="collection-grid-item__details">
+        <div class="collection-grid-item__product-title">
+          <p class="collection-grid-item__product-name">
+            <a href="{{ product.url }}">{{ product.title }}</a>
+          </p>
+        </div>
+        <div class="collection-grid-item__product-price">
+          {%- if product.compare_at_price > product.price -%}
+            <span class="collection-grid-item__product-price--original line-through">{{ product.compare_at_price | money }}</span>
+            <span class="collection-grid-item__product-price--sale">{{ product.price | money }}</span>
+          {%- else -%}
+            <span class="collection-grid-item__product-price--original">{{ product.price | money }}</span>
+          {%- endif -%}
+        </div>
+        <div class="collection-grid-item__quick-add">
+          <button
+            type="button"
+            class="collection-grid-item__quick-add--btn"
+            data-quick-add
+            data-product-handle="{{ product.handle }}"
+            data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+          >
+            Quick Add
+          </button>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+{%- endfor -%}
+
+{% schema %}
+{
+  "name": "Malachyte Products",
+  "settings": [],
+  "presets": []
+}
+{% endschema %}

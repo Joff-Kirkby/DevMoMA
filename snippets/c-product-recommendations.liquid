@@ -1,0 +1,38 @@
+{% comment %}
+  Product Recommendations Section
+
+  @param product {Object} product object
+  @param container_id {String} id of container
+  @param no_filter {Boolean} don't filter recently viewed
+  @param no_storage {Boolean} don't add product to recently viewed storage
+{% endcomment %}
+
+<!-- Product Recommendations Section -->
+<section
+  class="product-recommendations container js-product-recs-container"
+  data-product-id="{{ product.id | default: false }}"
+  data-product-handle="{{ product.handle }}"
+  data-no-filter="{{ no_filter | default: false }}"
+  data-no-storage="{{ no_storage | default: false }}"
+  data-product-recommendations-tag="{{ product_recommendations_tag | default: settings.ss_recommendations_tag_default }}"
+  style="display: none;"
+>
+  <div class="product-recommendations__wrapper">
+    <div class="product-recommendations__heading-container">
+      <h2 class="product-recommendations__heading">
+        You Might Also Like
+      </h2>
+      <div class="product-recommendations__links">
+        <div class="product-recommendations__links-wrapper">
+          <div class="product-recommendations__link is-active js-product-recs-nav-btn js-product-recs-ss-btn">
+            Recommendations
+          </div>
+          <div class="product-recommendations__link js-product-recs-nav-btn js-product-recs-recent-btn">
+            Recently Viewed
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="product-recommendations__inner js-product-recs-carousel"></div>
+  </div>
+</section>

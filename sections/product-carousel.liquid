@@ -1,0 +1,187 @@
+{%- comment -%}
+  Product Carousel Section
+{%- endcomment -%}
+
+{% render 'c-product-carousel', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "Product Carousel",
+    "settings": [
+      {
+        "type": "number",
+        "id": "limit",
+        "label": "Product Limit",
+        "default": 6,
+        "info": "The limit of products to show"
+      },
+      {
+        "type": "text",
+        "id": "searchspring_tag",
+        "label": "SearchSpring Tag",
+        "info": "Profile ID's that are associated with a recommendations profile in the Searchspring Management Console. If left blank, the carousel will default to the manually selected products"
+      },
+      {
+        "type": "select",
+        "id": "layout",
+        "label": "Layout",
+        "default": "header_cta_top",
+        "options": [
+          {
+            "value": "header_cta_top",
+            "label": "Header & CTA On Top"
+          },
+          {
+            "value": "header_top_cta_bottom",
+            "label": "Header on Top, CTA on Bottom"
+          }
+        ]
+      },
+      {
+        "type": "header",
+        "content": "Carousel Heading"
+      },
+      {
+        "type": "select",
+        "id": "heading_alignment_desktop",
+        "label": "Heading Alignment Desktop",
+        "options": [
+          {
+            "value": "flex-start",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "flex-end",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "select",
+        "id": "heading_alignment_mobile",
+        "label": "Heading Alignment Mobile",
+        "options": [
+          {
+            "value": "flex-start",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "flex-end",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      },
+      {
+        "type": "text",
+        "id": "heading_text",
+        "label": "Heading Text",
+        "default": "Best Sellers"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text",
+        "default": "CTA text here"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "CTA URL"
+      },
+      {
+        "type": "header",
+        "content": "Static CTA Options"
+      },
+      {
+        "type": "select",
+        "id": "static_cta_style",
+        "label": "Static CTA Style",
+        "options": [
+          {
+            "value": "transparent_background",
+            "label": "Transparent Background"
+          },
+          {
+            "value": "solid_background",
+            "label": "Solid Background"
+          }
+        ],
+        "default": "solid_background"
+      },
+      {
+        "type": "color",
+        "id": "cta_static_background_color",
+        "label": "CTA Background Color",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "cta_static_text_color",
+        "label": "CTA Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Hover CTA Options"
+      },
+      {
+        "type": "select",
+        "id": "hover_cta_style",
+        "label": "Hover CTA Style",
+        "options": [
+          {
+            "value": "transparent_background",
+            "label": "Transparent Background"
+          },
+          {
+            "value": "solid_background",
+            "label": "Solid Background"
+          }
+        ],
+        "default": "solid_background"
+      },
+      {
+        "type": "color",
+        "id": "cta_hover_background_color",
+        "label": "CTA Background Color",
+        "default": "#000"
+      },
+      {
+        "type": "color",
+        "id": "cta_hover_text_color",
+        "label": "CTA Text Color",
+        "default": "#FFF"
+      }
+    ],
+    "blocks": [
+      {
+        "type":"product",
+        "name":"Product Item",
+        "settings": [
+          {
+            "type": "product",
+            "id": "product",
+            "label": "Product"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Product Carousel"
+      }
+    ]
+  }
+{% endschema %}

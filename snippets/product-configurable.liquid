@@ -1,0 +1,230 @@
+{%- liquid
+  assign blocks = section.blocks
+  capture form_id
+    render 'h-namespace', id: 'addToBagForm'
+  endcapture
+
+  assign current_variant = product.selected_or_first_available_variant | default: product.variants.first
+  assign current_variant_is_available = current_variant.available
+
+  assign btn_id = 'btnAddToBag'
+  unless current_variant_is_available
+    assign btn_id = 'BIS_trigger'
+  endunless
+
+  assign initial_qty = 1
+  assign is_e_gift_card = false
+  if template contains 'e-gift-card'
+    assign is_e_gift_card = true
+  endif
+  assign size_chart = product.metafields.size_chart.pdp
+
+  assign bopis_location_data = shop.metafields.bopis.data.value | default: shop.metafields.bopis.data
+
+  # Used to get locale
+  assign root_url = routes.root_url | replace: '/', '' | downcase
+
+  assign bopis_location_data = shop.metafields.bopis.data.value | default: shop.metafields.bopis.data
+  assign form_classes = 'shopify-product-form pv-form has-loaded'
+  if bopis_location_data.enable and bopis_location_data
+    assign form_classes = form_classes | replace: 'has-loaded', 'is-loading'
+  endif
+
+  assign product_purchasable_by_staff = true
+  if product.metafields.custom.purchasable_by_staff.value == false
+    assign product_purchasable_by_staff = false
+  endif
+
+  assign product_blocked_to_staff = false
+  unless product_purchasable_by_staff
+    if customer and customer.email contains '@moma.org'
+      assign product_blocked_to_staff = true
+    endif
+  endunless
+%}
+{% form 'product',
+  product,
+  id: form_id,
+  class: form_classes,
+  data-product-handle: product.handle,
+  data-enable-history-state: 'true',
+  novalidate: is_e_gift_card
+%}
+  {% comment %}
+    - In order for this form to submit, it needs to contain an input with name="id".
+    - For testing/debugging purposes, remove the `hide` class so that you can
+      observe the interaction.
+  {% endcomment %}
+  {% comment %}
+    The quantity limit is deliberately NOT sent as a line item property here.
+    Shopify keys line items by variant id *plus* properties, so a property the
+    PDP sets but other add-to-cart paths (Wishlist King) don't would split one
+    variant across two cart lines. The mini cart reads the limit from the
+    quantity-limit metafields instead - see lib/cart-quantity-limits.js.
+  {% endcomment %}
+  <select class="js-hidden-id hide" name="id">
+    {% for variant in product.variants %}
+      <option
+        {% if variant == current_variant %}
+          selected="selected"
+        {% endif %}
+        {% unless variant.available %}
+          disabled="disabled"
+        {% endunless %}
+        value="{{ variant.id }}"
+      >
+        {{ variant.title }}
+      </option>
+    {% endfor %}
+  </select>
+
+  {% unless product.has_only_default_variant %}
+    <div class="config">
+      {% if size_chart %}
+        <button
+          type="button"
+          id="productSizeChartModalTrigger"
+          class="config__size-chart-btn btn btn-link"
+        >
+          <i class="icon icon--size-chart"></i>
+          <span class="icon__fallback-text">Size Chart</span>
+        </button>
+      {% endif %}
+      {% for option in product.options_with_values %}
+        {% render 'product-option', option: option %}
+      {% endfor %}
+    </div>
+  {% endunless %}
+
+  {%- liquid
+    render 'product-availability'
+
+    if product.available
+      render 'product-promotional-message'
+    endif
+  -%}
+
+  {%
+    render 'product-discount-exception', {
+    class: 'pv-discount-exception phone-only'
+    }
+  %}
+
+  {% liquid
+    if root_url == blank
+      render 'product-shipping-surcharge'
+    endif
+
+    render 'product-shipping-lead-time'
+  %}
+  {%- if bopis_location_data.enable and bopis_location_data -%}
+    {%- render 'product-bopis', product: product -%}
+  {%- endif -%}
+  {% liquid
+    if is_e_gift_card
+      render 'product-e-gift-card-details'
+    endif
+  %}
+
+  <div class="pv-actions">
+    {% render 'product-final-sale', settings: section.settings, class: 'hide-mobile' %}
+    <div class="flex-wrapper">
+      <div class="pv-action pv-qty hide">
+        <label
+          class="pv-qty__label"
+          for="quantity"
+        >
+          Quantity:
+        </label>
+        <input
+          class="pv-qty__input js-qty-input"
+          id="quantity"
+          type="number"
+          name="quantity"
+          value="{{ initial_qty }}"
+          min="{{ initial_qty }}"
+        >
+      </div>
+      <div
+        id="productQuantityControls"
+        class="pv-action pv-qty-controls js-qty-controls {% unless current_variant_is_available %}hidden{% endunless %}"
+      >
+        <button
+          type="button"
+          class="pv-qty-controls__btn pv-qty-controls__btn-decrement btn js-qty-controls-btn"
+          data-action="decrement"
+        >
+          -
+        </button>
+        <div class="pv-qty-controls__value js-qty-value">
+          {{ initial_qty }}
+        </div>
+        <button
+          type="button"
+          class="pv-qty-controls__btn pv-qty-controls__btn-increment btn js-qty-controls-btn"
+          data-action="increment"
+        >
+          +
+        </button>
+      </div>
+      <div class="pv-action pv-add">
+        {%- liquid
+          assign disabled_class = ''
+          if is_e_gift_card or product_blocked_to_staff
+            assign disabled_class = 'disabled'
+          endif
+        -%}
+        <button
+          class="pv-add__btn btn btn--quinary js-add-to-bag {{ disabled_class }}"
+          id="{{ btn_id }}"
+          name="add"
+          type="submit"
+          {% unless current_variant_is_available %}
+            disabled="disabled"
+          {% endunless %}
+        >
+          <span class="js-add-to-bag-text" id="btnAddToBagText"> Email When Available </span>
+        </button>
+      </div>
+    </div>
+    {% for block in blocks %}
+      {%- case block.type -%}
+        {%- when '@app' -%}
+          {%- unless block.id contains 'malachyte' -%}
+            <div
+              class="klarna-wrapper{% unless product.available %} hide{% endunless %}"
+            >
+              {% render block %}
+            </div>
+          {%- endunless -%}
+      {%- endcase -%}
+    {% endfor %}
+  </div>
+  <div class="pv-qty__messages-wrapper">
+    <div
+      class="pv-qty__messages messages js-qty-message"
+      id="quantityMessages"
+    ></div>
+  </div>
+
+  {% render 'product-final-sale', settings: section.settings, class: 'hide-desktop' %}
+
+  {% if product.tags contains 'FinalSale' %}
+    <input type="hidden" name="properties[_FinalSale]" value="true">
+  {% endif %}
+
+  {% assign membership_discount_except = product.metafields.teamwork.membershipdiscountexcept.value | default: product.metafields.teamwork.membershipdiscountexcept %}
+  {% if membership_discount_except != blank %}
+    <input
+      type="hidden"
+      name="properties[_MembershipDiscountExcept]"
+      value="{{ membership_discount_except | strip_html | strip | escape }}"
+    >
+  {% endif %}
+
+  {%- comment -%}
+    When membership already applied to other products in cart
+    then add properties to newly added item
+  {%- endcomment -%}
+  {% render 'membership-checks', product_page: true %}
+{% endform %}

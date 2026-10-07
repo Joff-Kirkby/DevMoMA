@@ -1,0 +1,37 @@
+{%- comment -%}
+  Gift Card Balance Check Section
+{%- endcomment -%}
+
+{%- render 'gift-card-balance-check', {
+  section: section
+} -%}
+
+{% schema %}
+  {
+    "name": "E-Gift Card Balance Check",
+    "presets": [
+      {
+        "name": "E-Gift Card Balance Check"
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Section Heading",
+        "default": "Check Your Gift Card Balance"
+      },
+      {
+        "type": "richtext",
+        "id": "instructions",
+        "label": "Instructions",
+        "default": "<p>To view the balance on your card enter the gift card number on the back of the card or located in the e-gift card email. For physical cards please also enter the pin number.</p>"
+      },
+      {
+        "type": "image_picker",
+        "id": "card_example_image",
+        "label": "Card Example Image"
+      }
+    ]
+  }
+{% endschema %}

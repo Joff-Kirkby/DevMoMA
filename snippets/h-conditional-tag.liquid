@@ -1,0 +1,22 @@
+{%- comment -%}
+  Conditional HTML tag
+  @param {string} href
+  @param {string} tag - HTML tag if href is blank; defaults to "div"
+  @param {string} type - "opening" or "closing" tag
+{%- endcomment -%}
+
+{%- assign tag = tag | default: 'div' -%}
+{%- assign type = type | default: 'opening' -%}
+{%- if type == 'opening' -%}
+  {%- if href != blank -%}
+    a href="{%- render 'h-href', href: href -%}"
+  {%- else -%}
+    {{- tag -}}
+  {%- endif -%}
+{%- else -%}
+  {%- if href != blank -%}
+    a
+  {%- else -%}
+    {{- tag -}}
+  {%- endif -%}
+{%- endif -%}

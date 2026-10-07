@@ -1,0 +1,22 @@
+{% layout none %}
+{% for product in collection.products limit: 8 %}
+  <a
+    href="{{ product.url }}"
+    title="{{ product.title }}"
+    class="gifting-product-grid__product-item"
+  >
+    {% render 'c-responsive-image', {
+      image: product.featured_image,
+      image_class: 'image-css-class',
+      modifier: 'swatch',
+      wrapper_class: 'gifting-product-grid__product-item-image',
+      inline_ir: true
+    } %}
+    <p class="gifting-product-grid__product-item-title">
+      {{ product.title }}
+    </p>
+    <p class="gifting-product-grid__product-item-price">
+      {{ product.price | money_without_trailing_zeros }}
+    </p>
+  </a>
+{% endfor %}

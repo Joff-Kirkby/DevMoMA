@@ -1,0 +1,99 @@
+
+{% assign ss = section.settings %}
+{% assign blocks = section.blocks %}
+
+{% assign no_image_mobile_class = '' %}
+{% assign no_image_desktop_class = '' %}
+
+{% if ss.mobile_hero_image != nil %}
+  {% assign image_mobile_class = 'gift-finder-hero--with-image-mobile' %}
+{% endif %}
+
+{% if ss.desktop_hero_image != nil %}
+  {% assign image_desktop_class = 'gift-finder-hero--with-image-desktop' %}
+{% endif %}
+
+<div class="gift-finder-hero container js-gift-finder-hero {{ image_mobile_class }} {{ image_desktop_class }}">
+  {% if ss.mobile_hero_image != nil %}
+    {% render 'c-responsive-image', {
+      image: ss.mobile_hero_image,
+      image_class: 'gift-finder-hero__image',
+      wrapper_class: 'gift-finder-hero__image-wrapper hide-desktop',
+    } %}
+  {% endif %}
+  {% if ss.tablet_hero_image != nil %}
+    {% render 'c-responsive-image', {
+      image: ss.tablet_hero_image,
+      image_class: 'gift-finder-hero__image',
+      wrapper_class: 'gift-finder-hero__image-wrapper  show-tablet',
+    } %}
+{% endif %}
+  {% if ss.desktop_hero_image != nil %}
+    {% render 'c-responsive-image', {
+      image: ss.desktop_hero_image,
+      image_class: 'gift-finder-hero__image',
+      wrapper_class: 'gift-finder-hero__image-wrapper hide-mobile',
+    } %}
+  {% endif %}
+  <div class="gift-finder-hero__content">
+    {% if ss.header_text != blank %}
+      <div class="gift-finder-hero__header">
+        <h1>{{ ss.header_text }}</h1>
+      </div>
+    {% endif %}
+    {% if ss.description != blank %}
+      <div class="gift-finder-hero__description">
+        {{ ss.description }}
+      </div>
+    {% endif %}
+    <div class="gift-finder-hero__form">
+      <ul class="gift-finder-hero__form-list form-list">
+        {% for block in blocks %}
+          {% assign index = forloop.index %}
+          {% assign bs = block.settings %}
+          <li class="gift-finder-hero__form-item form-item">
+            <div class="select">
+              <select name="option_{{ forloop.index }}" class="js-gift-finder-filter-select">
+                <option value="option-title">{{ bs.title }}</option>
+
+                {% for i in (1..8) -%}
+                  {%- comment -%} Option Label {%- endcomment -%}
+                  {% assign option_label_key = i | prepend: 'option_' | append: '_label' %}
+                  {% assign option_label = bs[option_label_key] %}
+                  {%- comment -%} Option value {%- endcomment -%}
+                  {% assign option_collection_key = i | prepend: 'option_' | append: '_collection' %}
+                  {% assign option_collection = bs[option_collection_key] %}
+
+                  {% if option_collection != blank %}
+                    {% assign value = option_collection.handle %}
+                    {% unless index == 1 %}
+                      {% assign value = option_collection.id %}
+                    {% endunless %}
+                    <option value="{{ value }}">
+                      {% if option_label != blank %}
+                        {{ option_label }}
+                      {% else %}
+                        {{ option_collection.title }}
+                      {% endif %}
+                    </option>
+                  {% endif %}
+                {% endfor %}
+
+                <option value="option-all">All</option>
+              </select>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+      <input type="text" class="gift-finder-hero__hidden-url-input js-gift-finder-hidden-url-input hide" placeholder="Searchspring URL">
+      <div class="gift-finder-hero__form-error-message message message--error js-gift-finder-error-msg hide">
+        <p>Please select more criteria.</p>
+      </div>
+      <div class="gift-finder-hero__cta" style="--cta-text-color: {{ ss.cta_text_color }}; --cta-background-color: {{ ss.cta_background_color }};">
+        <button type="button" class="gift-finder-hero__cta-btn btn btn--empty js-gift-finder-submit-btn">
+          {{ ss.cta_text }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

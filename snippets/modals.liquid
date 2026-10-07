@@ -1,0 +1,23 @@
+{%- render 'account-registration-submission-modal' -%}
+{%- render 'membership-benefits-modal' -%}
+{%- render 'product-bopis-modal' -%}
+{%- render 'bag-shipping-details-modal' -%}
+{%- render 'membership-upsell-modal' -%}
+{%- render 'oos-modal' -%}
+{%- render 'product-size-chart-modal' -%}
+{%- render 'international-shipping-notification-modal' -%}
+{%- render 'product-video-modal' -%}
+
+{% liquid 
+  unless template contains 'customers/register'
+    render 'register-drawer'
+  endunless
+
+  if template == 'page.rewards'
+    render 'rewards-redeem-modal'
+  endif
+
+  if template == 'product'
+    echo '<div id="productGalleryZoomRoot"></div>'
+  endif
+-%}

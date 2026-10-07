@@ -1,0 +1,35 @@
+{%- comment -%}
+  Sticky Add to Cart
+  Template-level section for the desktop sticky Add to Cart bar, so the PDP is
+  composed in the product JSON templates (main, sticky bar, FAQ, reviews…).
+  The bar itself is the product-sticky-atc snippet + <product-sticky-atc>
+  element (assets/product-sticky-atc.js); this file only owns the schema.
+
+  The bar is live wherever the section is placed; remove the section to turn
+  the feature off on a template.
+{%- endcomment -%}
+
+{%- unless template contains 'e-gift-card' -%}
+  {% render 'product-sticky-atc', product: product %}
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Sticky Add to Cart",
+  "class": "product-sticky-atc-section",
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Desktop only. Shows a fixed Add to Cart bar once the buy box scrolls out of view; it mirrors the product section's title, options, price, quantity and button. Remove the section to turn it off."
+    }
+  ],
+  "presets": [
+    {
+      "name": "Sticky Add to Cart"
+    }
+  ]
+}
+{% endschema %}

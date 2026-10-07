@@ -1,0 +1,50 @@
+<section
+  id="searchspring-recs-carousel-tabs"
+  class="ss-product-recommendations-snippet container hide-mobile ss-pdp-recommendations--stacked"
+>
+  <div class="product-recommendations__wrapper">
+    {%- comment -%} Snap tab triggers required for placement; visually hidden when stacked (ECOM-1143) {%- endcomment -%}
+    <div class="product-recommendations__heading-container">
+      <div class="product-recommendations__links ss-pdp-recommendations__snap-tabs">
+        <div class="product-recommendations__links-wrapper">
+          <div class="product-recommendations__link is-active" ss-tab="1">
+            Recommendations
+          </div>
+          <div class="product-recommendations__link" ss-tab="2">
+            Recently Viewed
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="_product-recommendations__inner">
+      <div ss-tab-content="1">
+        <script type="searchspring/personalized-recommendations" profile="similar">
+          seed = "{{ product.variants[0].sku }}";
+          options = {
+            dedupe: false,
+            batched: false,
+          };
+        </script>
+      </div>
+      <div ss-tab-content="2">
+        <script type="searchspring/personalized-recommendations" profile="recently-viewed">
+          options = {
+            batched: false,
+          };
+        </script>
+      </div>
+    </div>
+  </div>
+</section>
+
+{%- comment -%} Mobile: bare scripts (release/1.25.0) for Snap 2-up carousels {%- endcomment -%}
+<div class="hide-desktop container" data-ss-recommendations-mobile>
+  <script type="searchspring/personalized-recommendations" profile="similar">
+    seed = "{{ product.variants[0].sku }}";
+    options = {
+      dedupe: false,
+    };
+  </script>
+
+  <script type="searchspring/personalized-recommendations" profile="recently-viewed"></script>
+</div>

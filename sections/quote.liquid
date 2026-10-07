@@ -1,0 +1,34 @@
+{%- comment -%}
+  Quote Section
+{%- endcomment -%}
+
+{% render 'c-quote', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "Quote",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Quote"
+      },
+      {
+        "type": "richtext",
+        "id": "quote",
+        "label": "Quote"
+      },
+      {
+        "type": "text",
+        "id": "quoter",
+        "label": "Quoter"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Quote"
+      }
+    ]
+  }
+{% endschema %}

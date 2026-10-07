@@ -1,0 +1,119 @@
+{% comment %}
+  Membership Product List Section
+  @param {Object} section theme settings
+{% endcomment %}
+
+{%- assign blocks = section.blocks -%}
+<script>SDG.Data.membershipData = SDG.Data.membershipData || {};</script>
+
+<section class="membership-products">
+  <div class="membership-products__inner">
+    {%- if blocks.size > 0 -%}
+      <ul class="membership-products__list">
+        {%- for block in blocks -%}
+          {% liquid
+            assign bs = block.settings
+            assign product = bs.product
+            assign index = forloop.index0
+
+            assign member_count = 1
+            if bs.member_count == 'two'
+              assign member_count = 2
+            endif
+            assign gift_cta_text = product.metafields.custom.gift_membership_cta_text
+            assign gift_cta_link = product.metafields.custom.gift_membership_cta_link
+          %}
+          <li style="--dynamic-background: {{ bs.background_color }};" class="membership-products__list-item" data-handle="{{ product.handle }}" data-member-count="{{ bs.member_count }}" data-index="{{ forloop.index0 }}">
+            <div class="membership-products__list-background">
+              <div class="membership-products__list-item-inner">
+                <div class="membership-products__list-item-content-wrapper">
+                  <div class="membership-products__list-item-content-header">
+                    <h2 class="membership-products__list-item-content-heading">
+                      {{ bs.custom_title | default: product.title }}
+                    </h2>
+                  </div>
+
+                  <div class="membership-products__list-item__cardholder">
+                    {%- for i in (1..member_count) -%}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="17" viewBox="0 0 16 17" fill="none">
+                        <path d="M1 15.6338C1 15.3091 1 14.1895 1 13.4056C1 12.9763 1.18604 12.5177 1.43802 12.3425C3.65191 10.6121 6.20745 10.3187 7.92793 10.3187C11.1576 10.3187 14.3305 11.9659 14.6414 12.3425C14.9524 12.7191 15 12.9763 15 13.4056C15 13.9731 15 15.2567 15 15.6338H1Z" stroke="black" stroke-width="1.5"/>
+                        <path d="M8.07652 7.96297C9.94067 7.96297 11.4519 6.45623 11.4519 4.59757C11.4519 2.73892 9.94067 1.23218 8.07652 1.23218C6.21236 1.23218 4.70117 2.73892 4.70117 4.59757C4.70117 6.45623 6.21236 7.96297 8.07652 7.96297Z" stroke="black" stroke-width="1.5"/>
+                      </svg>
+                    {%- endfor -%}
+                    <span>{{ member_count}} cardholder{% if member_count == 2 %}s{% endif %}</span>
+                  </div>
+
+                  <h3 class="membership-products__list-item-content-price">
+                    {{ product.price | money_without_trailing_zeros }}/year
+                  </h3>
+
+                  {%- if bs.tax_deductible != blank -%}
+                    <div class="membership-products__list-item__tax-deductible">
+                      {{ bs.tax_deductible }}
+                    </div>
+                  {%- endif -%}
+
+                  {%- if bs.body != blank -%}
+                  <div class="membership-products__list-item__body">
+                    {{ bs.body }}
+                  </div>
+                  {%- endif -%}
+                  {%- if bs.description != blank -%}
+                  <div class="membership-products__list-content-body">
+                    {{ bs.description }}
+                  </div>
+                  {%- endif -%}
+
+                  {%- if bs.readmore != blank -%}
+                    <div id="membershipBenefitsContent-{{ index }}" class="membership-content">
+                      {{ bs.readmore }}
+                    </div>
+
+                    <div class="membership-products__list-item__ctas">
+                      <button class="btn btn--empty benefits-tab-btn" type="button" data-handle="{{ product.handle }}" data-index="{{ index }}">
+                        <span>Learn More</span>
+                        <i class="membership-products__list-item__ctas__icon icon icon--chevron-right"></i>
+                      </button>
+                    </div>
+                  {%- endif -%}
+
+                  <div class="membership-products__list-item-content-cta-wrapper">
+                    <button
+                      class="btn btn--quinary renew-btn accordion-btn"
+                      data-first-name="{{ customer.first_name }}"
+                      data-last-name="{{ customer.last_name }}"
+                      type="button"
+                    >
+                      {{ bs.cta_copy }}
+                    </button>
+                  </div>
+                  {% if gift_cta_text != blank and gift_cta_link != blank %}
+                    <div class="membership-products__list-item-content-cta-wrapper membership-products__list-item-content-link-wrapper">
+                      <a
+                        class="btn btn--quinary link"
+                        href="{{ gift_cta_link }}"
+                      >
+                        {{ gift_cta_text }}
+                      </a>
+                    </div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="membership-products__list-item-form-container js-acc-menu"></div>
+            </div>
+          </li>
+          <script>
+            {% assign variant = product.variants | first %}
+            SDG.Data.membershipData['{{ product.handle }}'] = {
+              heading: '{{ product.title }}',
+              body: {{ product.description | json }},
+              variantId: {{ variant.id }},
+            } ;
+          </script>
+        {%- endfor -%}
+      </ul>
+    {%- else -%}
+      <h2>No Membership Products to display</h2>
+    {%- endif -%}
+  </div>
+</section>

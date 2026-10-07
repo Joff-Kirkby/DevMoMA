@@ -1,0 +1,38 @@
+{%- assign youtube_video_id = product.metafields.teamwork.youtubevideoid.value | default: product.metafields.teamwork.YoutubeVideoID.value -%}
+
+<section class="pv-essentials">
+  <div class="pv-essentials__container container">
+    {% render 'product-breadcrumbs' %}
+    <div class="pv-essential js-product-essential">
+      {% if product != blank and product.media.size > 0 %}
+        <div class="sticky-wrapper pv-gallery">
+          {% render 'product-gallery' %}
+        </div>
+      {% endif %}
+      <div class="pv-header-wrapper">
+        {% render 'product-header' %}
+      </div>
+      <div class="pv-essential__info">
+        {% render 'product-configurable', section: section %}
+        {% render 'product-details' %}
+        {% if youtube_video_id != blank %}
+          {% render 'product-video', {
+            youtube_video_id: youtube_video_id
+          } %}
+        {% endif %}
+        {% render 'product-guarantee' %}
+        {% if template contains 'malachyte' %}
+          {% render 'malachyte-pairs-well-with' %}
+        {% else %}
+          <script type="searchspring/personalized-recommendations" profile="{{ settings.bundle_profile_id }}">
+            product = "{{ product.sku }}";
+          </script>
+        {% endif %}
+        {% if has_related_product %}
+          {% render 'product-related' %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+

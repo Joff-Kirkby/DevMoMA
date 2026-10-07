@@ -1,0 +1,26 @@
+{% comment %}
+  Breadcrumbs
+  @param {Object} breadcrumbs
+{% endcomment %}
+
+{%- assign breadcrumbs = "" -%}
+{%- if template.name == 'page' -%}
+  {%- assign breadcrumbs = page.metafields.page.breadcrumbs.value -%}
+{%- endif -%}
+
+{%- if breadcrumbs != blank -%}
+  <nav class="container breadcrumbs" role="navigation" aria-label="breadcrumbs">
+    <ol class="breadcrumbs__list list-reset">
+      {%- for breadcrumb in breadcrumbs -%}
+        <li class="breadcrumbs__breadcrumb">
+          <a href="{{ breadcrumb.url }}" class="breadcrumbs__link">
+            {{ breadcrumb.title }}
+          </a>
+          {%- unless forloop.last -%}
+            <span class="breadcrumbs__separator"> / </span>
+          {%- endunless -%}
+        </li>
+      {%- endfor -%}
+    </ol>
+  </nav>
+{%- endif -%}

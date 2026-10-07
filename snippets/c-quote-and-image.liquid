@@ -1,0 +1,18 @@
+{%- comment -%}
+  Quote + Image
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="quote-and-image quote-and-image--{{ ss.image_position }} container">
+  <div class="quote-and-image__text">
+    {{ ss.text }}
+  </div>
+  <div class="quote-and-image__image">
+    {% render 'c-responsive-image', {
+      image: ss.image,
+      inline_ir: true,
+      wrapper_class: 'quote-and-image__image-wrapper',
+    } %}
+  </div>
+</section>

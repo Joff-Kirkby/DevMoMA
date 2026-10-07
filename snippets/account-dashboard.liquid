@@ -1,0 +1,18 @@
+{% comment %}
+This view is handled by Vue
+@see > src/js/build/account-dashboard.js
+@see > src/js/lib/account-dashboard.js
+@see > src/js/components/AccountDashboard.vue
+{% endcomment %}
+
+{% render 'account-dashboard-messages' %}
+
+<div id="acDashboard"></div>
+
+{%- capture account_scripts -%}
+  {% render 'account-data' %}
+{%- endcapture -%}
+<script type="text/javascript" src="https://connect.letslinc.com/v1/myAccountWidget.js" defer="defer"></script>
+<div id="letslinc-params" data-shop-id="e585a993-e159-11e9-ae84-06b2a9c787bc"></div>
+
+{% render 'h-minify', variable: account_scripts %}

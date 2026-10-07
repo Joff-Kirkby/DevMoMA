@@ -1,0 +1,134 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "page",
+      "disabled": true,
+      "settings": {}
+    },
+    "673986f0-494b-4464-913d-caf9aa465325": {
+      "type": "banner",
+      "settings": {
+        "is_page_hero": false,
+        "image_overlay_color": "#000000",
+        "image_overlay_opacity": 0,
+        "link_wrapper": "https://store.moma.org/collections/a-vida-portuguesa",
+        "mobile_stack": false,
+        "mobile_stack_color": "#d5edbc",
+        "content_position_horizontal_desktop": "left",
+        "content_position_vertical_desktop": "start",
+        "content_position_vertical_mobile": "start",
+        "sub_heading_text": "",
+        "screen_reader_text": "Our Accessories Buying Process",
+        "sub_heading_position_desktop": "left",
+        "sub_heading_position_mobile": "left",
+        "sub_heading_color": "#000000",
+        "heading_text": "",
+        "heading_position_desktop": "left",
+        "heading_position_mobile": "left",
+        "heading_color": "#000000",
+        "body_text": "",
+        "body_text_position_desktop": "left",
+        "body_text_position_mobile": "left",
+        "body_text_color": "#000000",
+        "body_max_width": 40,
+        "max_width_unit": "%",
+        "cta_text": "",
+        "cta_url": "",
+        "cta_position_desktop": "left",
+        "cta_position_mobile": "left",
+        "static_cta_style": "solid_background",
+        "cta_static_background_color": "#ffffff",
+        "cta_static_text_color": "#000000",
+        "hover_cta_style": "transparent_background",
+        "cta_hover_background_color": "#ffffff",
+        "cta_hover_text_color": "#000000",
+        "secondary_cta": false,
+        "cta_text_2": "",
+        "cta_url_2": "",
+        "static_cta_style_2": "solid_background",
+        "cta_static_background_color_2": "#ffffff",
+        "cta_static_text_color_2": "#000000",
+        "hover_cta_style_2": "transparent_background",
+        "cta_hover_background_color_2": "#ffffff",
+        "cta_hover_text_color_2": "#000000"
+      }
+    },
+    "two_column_text_image_bd3ftr": {
+      "type": "two-column-text-image",
+      "name": "Two Column Text + Image",
+      "settings": {
+        "title": "Our Accessories Buying Process",
+        "copy": "MoMA was the first museum to establish a curatorial department dedicated to architecture and design. That legacy continues to inform how we source accessories today—products that combine beauty, function, and purpose. \nOur buying team takes a global, hands-on approach. We travel to shops, studios, and showrooms around the world to discover and assess products in person. We also dive into the stories behind each designer or brand to ensure their work aligns with our values.\nWhether searching for travel, jewelry and handbags, we focus on accessories that are: \n\n• Designed with longevity in mind—timeless, trend-aware, or nostalgic\n • Made with intention, often using sustainable or innovative materials\n • Beautifully crafted and practical for everyday life",
+        "image_position": "right",
+        "hide_mobile_image": true
+      }
+    },
+    "two_column_text_image_7pBn4f": {
+      "type": "two-column-text-image",
+      "name": "Two Column Text + Image",
+      "settings": {
+        "title": "How We Select the Accessories We Carry",
+        "copy": "Every item we carry is evaluated for how well it reflects MoMA’s core values: innovation, functionality, and design excellence. Some are directly featured in MoMA exhibitions or collections; other accessories share the same spirit of creative problem-solving.\nWhen selecting products, we prioritize:\nThoughtful reimagining of everyday objects\n\n• Solution-driven design that’s accessible at a range of price points\n• Items that demonstrate cultural or historical relevance\n• Custom designs made exclusively for MoMA\n\nAt MoMA Design Store, we want you to purchase thoughtfully made accessories that brighten your home, bring joy and endure.",
+        "image_position": "left",
+        "hide_mobile_image": true
+      }
+    },
+    "5828fb89-0742-4b21-a542-5a62af290be1": {
+      "type": "section-spacer",
+      "settings": {
+        "section_spacer_mobile_size": 0,
+        "section_spacer_desktop_size": 0
+      }
+    },
+    "ss_recommendations_ehRYNm": {
+      "type": "ss-recommendations",
+      "name": "Searchspring Recommendations",
+      "settings": {
+        "custom_title": "Discover More",
+        "ss_profile_id": "accessories-landing-page",
+        "ss_collection_list": [
+          "accessories"
+        ],
+        "ss_batched": false
+      }
+    },
+    "f67f9332-d975-4a47-bda5-29ed6f4b97c8": {
+      "type": "product-carousel",
+      "disabled": true,
+      "settings": {
+        "limit": 12,
+        "searchspring_tag": "accessories-landing-page",
+        "layout": "header_top_cta_bottom",
+        "heading_alignment_desktop": "center",
+        "heading_alignment_mobile": "center",
+        "heading_text": "Discover More",
+        "cta_text": "Shop All Accessories",
+        "cta_url": "shopify://collections/accessories",
+        "static_cta_style": "solid_background",
+        "cta_static_background_color": "#ffffff",
+        "cta_static_text_color": "#000000",
+        "hover_cta_style": "solid_background",
+        "cta_hover_background_color": "#000000",
+        "cta_hover_text_color": "#ffffff"
+      }
+    }
+  },
+  "order": [
+    "main",
+    "673986f0-494b-4464-913d-caf9aa465325",
+    "two_column_text_image_bd3ftr",
+    "two_column_text_image_7pBn4f",
+    "5828fb89-0742-4b21-a542-5a62af290be1",
+    "ss_recommendations_ehRYNm",
+    "f67f9332-d975-4a47-bda5-29ed6f4b97c8"
+  ]
+}

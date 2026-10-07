@@ -1,0 +1,136 @@
+{%- comment -%}
+  4-Up Featured Collections Section
+{%- endcomment -%}
+
+<div class="featured-collections-four container">
+  {% render 'c-featured-collections-four', {
+    section: section
+  } %}
+</div>
+
+{% schema %}
+  {
+    "name": "4-Up Featured Collections",
+    "max_blocks": 4,
+    "settings": [
+      {
+        "type": "header",
+        "content": "4-Up Featured Collections"
+      },
+      {
+        "type": "range",
+        "label": "Font Size desktop",
+        "id": "font_size_desktop",
+        "min": 12,
+        "max": 48,
+        "step": 2,
+        "default": 28
+      },
+      {
+        "type": "range",
+        "label": "Font Size mobile",
+        "id": "font_size_mobile",
+        "min": 10,
+        "max": 32,
+        "step": 1,
+        "default": 22
+      },
+      {
+        "type": "range",
+        "label": "Column/Row Gap",
+        "id": "flex_gap",
+        "min": 12,
+        "max": 48,
+        "step": 2,
+        "default": 30
+      },
+      {
+        "type": "checkbox",
+        "id": "stack_on_mobile",
+        "label": "Stack blocks on mobile",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "text_alignment",
+        "label": "Text Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "left"
+          },
+          {
+            "value": "center",
+            "label": "center"
+          },
+          {
+            "value": "right",
+            "label": "right"
+          }
+        ],
+        "default": "left"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "Category",
+        "settings": [
+          {
+            "type": "textarea",
+            "id": "category_heading",
+            "label": "Category Heading",
+            "default": "Gifts $25 and Under"
+          },
+          {
+            "type": "image_picker",
+            "id": "category_image",
+            "label": "Category Image Desktop",
+            "info": "Format: JPG or GIF. Recommended dimensions: width: 900px; height: 540px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "category_image_mobile",
+            "label": "Category Image Mobile",
+            "info": "Format: JPG or GIF. Recommended dimensions: width: 900px; height: 540px;"
+          },
+          {
+            "type": "checkbox",
+            "id": "full_width_image",
+            "label": "Use full width image",
+            "default": false
+          },
+          {
+            "type": "text",
+            "id": "cta_text",
+            "label": "CTA Text",
+            "default": "Default CTA text"
+          },
+          {
+            "type": "text",
+            "id": "cta_url",
+            "label": "CTA URL",
+            "default": "https://moma-design-store.myshopify.com"
+          },
+          {
+            "type": "color",
+            "id": "background_color",
+            "label": "Background Color",
+            "default": "#eeeeee"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#000000"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "4-Up Featured Collections"
+      }
+    ]
+  }
+{% endschema %}

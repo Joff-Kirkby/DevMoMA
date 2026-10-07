@@ -1,0 +1,89 @@
+{% comment %}
+  Search form
+  @param {boolean} is_mobile
+{% endcomment %}
+
+{%- capture input_id -%}
+  {%- if is_mobile -%}
+    headerSearchMobile
+  {%- else -%}
+    headerSearchDesktop
+  {%- endif -%}
+{%- endcapture -%}
+
+{% if settings.ss_enable %}
+	<form
+    class="search"
+    role="search"
+    action="{{ routes.collections_url }}/{{ settings.ss_collection_handle }}"
+    method="get"
+  >
+    <div class="input-placeholder input-placeholder--search">
+      <label
+        class="search__label search__floating-label screenreader"
+        for="searchInput"
+      >
+        Search
+      </label>
+      <div class="search__suggested-text js-search-suggested-text screenreader"></div>
+      <input
+        class="input search__input"
+        type="search"
+        role="combobox"
+        aria-controls="autocompleteItems"
+        aria-owns="autocompleteItems"
+        placeholder="Search"
+        name="q"
+      >
+    </div>
+    <button
+      class="search__input-button js-search btn-icon"
+      id="searchMenuBtn"
+      type="button"
+      title="Search"
+    >
+      <i class="search__icon icon icon--search"></i>
+      <span class="screenreader">Search</span>
+    </button>
+  </form>
+
+{% else %}
+  	
+  
+  <form
+    class="search"
+    role="search"
+    action="/search"
+    method="get"
+  >
+    <div class="input-placeholder input-placeholder--search">
+      <label
+        class="search__label search__floating-label screenreader"
+        for="searchInput"
+      >
+        Search
+      </label>
+      <div class="search__suggested-text js-search-suggested-text screenreader"></div>
+      <input
+        class="input search__input"
+        id="searchInput-{{ input_id }}"
+        type="search"
+        role="combobox"
+        aria-controls="autocompleteItems"
+        aria-owns="autocompleteItems"
+        placeholder="Search"
+        name="q"
+      >
+    </div>
+    <button
+      class="search__input-button js-search btn-icon"
+      id="searchMenuBtn"
+      type="button"
+      title="Search"
+    >
+      <i class="search__icon icon icon--search"></i>
+      <span class="screenreader">Search</span>
+    </button>
+  </form>
+
+{% endif %}	

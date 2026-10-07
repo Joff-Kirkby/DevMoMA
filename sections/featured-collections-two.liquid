@@ -1,0 +1,73 @@
+{%- comment -%}
+  2-Up Featured Collections Section
+{%- endcomment -%}
+
+<div class="featured-collections-two container">
+  {% render 'c-featured-collections-two', {
+    section: section
+  } %}
+</div>
+
+{% schema %}
+{
+  "name": "2-Up Featured Collections",
+  "presets": [
+    {
+      "category": "Components",
+      "name": "2-Up Featured Collections"
+    }
+  ],
+  "settings": [
+    {
+      "type": "header",
+      "content": "Required 1st Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_1",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_1",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_1",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Required 2nd Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_2",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_2",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_2",
+      "label": "CTA Link"
+    }
+  ]
+}
+{% endschema %}

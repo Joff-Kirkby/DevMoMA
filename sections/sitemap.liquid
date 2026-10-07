@@ -1,0 +1,60 @@
+{%- comment -%}
+  Sitemap
+{%- endcomment -%}
+{% assign ss = section.settings %}
+
+<div class="sitemap container">
+  {% render 'c-page-navigation', {
+    title: ss.sidebar_title,
+    store_links: ss.linklist,
+    store_links_title: ss.links_title,
+    wrapper_id: 'sitemapAcc'
+  } %}
+  <div class="sitemap__right">
+    <h3 class="sitemap__subheading">{{ shop.name }}</h3>
+    <ul class="sitemap__list">
+      {% for link in linklists['sitemap'].links %}
+        <li class="sitemap__list-line">
+          <a href="{{ link.url }}" class="sitemap__list-link">{{ link.title }}</a>
+          {% if link.links.size != 0 %}
+            <ul class="sitemap__list-sublist">
+              {% for sublink in link.links %}
+                <li class="sitemap__list-subline">
+                  <a href="{{ sublink.url }}" class="sitemap__list-sublink">{{ sublink.title }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+{% schema %}
+  {
+    "name": "Sitemap sidebar",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Sitemap Sidebar"
+      },
+      {
+        "type": "text",
+        "id": "sidebar_title",
+        "label": "Sidebar Title"
+      },
+      {
+        "type": "link_list",
+        "id": "linklist",
+        "label": "Sidebar Linklist"
+      },
+      {
+        "type": "text",
+        "id": "links_title",
+        "label": "Mobile Sidebar Links Title",
+        "default": "Support menu"
+      }
+    ]
+  }
+{% endschema %}

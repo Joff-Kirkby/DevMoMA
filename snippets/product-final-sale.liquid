@@ -1,0 +1,12 @@
+{%- liquid
+  assign is_final_sale = false
+  if product.tags contains 'FinalSale' or product.tags contains 'ShipFromVendor:Always' or product.tags contains 'ShipFromVendor:Ok'
+    assign is_final_sale = true
+  endif
+-%}
+
+{% if is_final_sale %}
+  <p class="pv-final-sale__text {{ class }}" style="color: {{ settings.final_sale_text_color }};">
+    {{ settings.final_sale_text }}
+  </p>
+{% endif %}

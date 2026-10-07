@@ -1,0 +1,142 @@
+{% assign breadcrumbs = product.metafields.breadcrumbs.pdp.value %}
+
+{% if breadcrumbs != blank %}
+  <!-- Breadcrumb schema -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {% for b in breadcrumbs %}
+        {
+          "@type": "ListItem",
+          "position": {{ forloop.index }},
+          "name": "{{ b.text | strip }}",
+          "item": "{{ shop.url | append: b.url }}"
+        }{% unless forloop.last %},{% endunless %}
+      {% endfor %}
+    ]
+  }
+  </script>
+  <!-- END Breadcrumb schema -->
+{% endif %}
+
+<!-- Product schema -->
+<script type="application/ld+json">
+{
+  "@context": "http://schema.org/",
+  "@type": "Product",
+  "name": "{{ product.title | escape }}",
+  "image": "https:{{ product.featured_image | img_url: '348x' }}",
+  {% if page_description %}
+  "description": "{{ product.description | strip_html | escape | strip_newlines }}",
+  {% endif %}
+  {% if product.vendor %}
+  "brand": {
+    "@type": "Brand",
+    "name": "{{ product.vendor | escape }}"
+  },
+  {% endif %}
+  {% if product.metafields.yotpo.reviews_count and
+  product.metafields.yotpo.reviews_count != "0" %}
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "{{ product.metafields.yotpo.reviews_average }}",
+    "reviewCount": "{{ product.metafields.yotpo.reviews_count }}"
+  },
+  {% endif %}
+  "offers": {
+    "@type": "Offer",
+    "url": "{{ shop.url | append: product.url }}",
+    "priceCurrency": "{{ cart.currency.iso_code }}",
+    "price": "{{ product.price | money_without_currency | remove: ',' | remove: ' ' }}",
+    {%- if product.available == true %}
+    "availability": "https://schema.org/InStock",
+    {% else -%}
+    {%- if product.selected_or_first_available_variant.metafields.teamwork.po_date.value != blank %}
+    "availability": "https://schema.org/BackOrder",
+    {% else %}
+    "availability": "https://schema.org/OutOfStock",
+    {%- endif %}
+    {%- endif -%}
+    "seller": {
+      "@type": "Organization",
+      "name": "{{ shop.name }}",
+      "sameAs": [
+          "https://www.instagram.com/momadesignstore/",
+          "https://www.facebook.com/momadesignstore/",
+          "https://www.youtube.com/SHOPMoMADesignStore",
+          "https://x.com/MoMAstore"
+        ]
+    },
+    "shippingDetails": {
+      "@type": "OfferShippingDetails",
+      "shippingRate": {
+        "@type": "MonetaryAmount",
+        "currency": "{{ shop.currency }}"
+      },
+      "shippingDestination": {
+        "@type": "DefinedRegion",
+        "addressCountry": "{{ shop.address.country_code }}"
+      },
+      "deliveryTime": {
+        "@type": "ShippingDeliveryTime"
+      }
+    },
+    "priceSpecification": [
+      {
+        "@type": "UnitPriceSpecification",
+        "price": "{{ product.price | money_without_currency | remove: ',' | remove: ' ' }}",
+        "priceCurrency": "{{ cart.currency.iso_code }}"
+      }
+      {% if product.compare_at_price > product.price %}
+        ,{
+          "@type": "UnitPriceSpecification",
+          "priceType": "https://schema.org/StrikethroughPrice",
+          "price": "{{ product.compare_at_price | money_without_currency | remove: ',' | remove: ' ' }}",
+          "priceCurrency": "{{ cart.currency.iso_code }}"
+        }
+      {% endif %}
+      {% if settings.membership_collection != blank %},
+        {% for membership_product in collections[settings.membership_collection].products %}
+          {% assign membership_discount = membership_product.metafields.custom.membership_discount.value | default: 0 %}
+          {% assign membership_discount_percentage = 100 | minus: membership_discount | divided_by: 100.0 %}
+          {
+            "@type": "UnitPriceSpecification",
+            "price": "{{ product.price | times: membership_discount_percentage | money_without_currency | remove: ',' | remove: ' ' }}",
+            "priceCurrency": "{{ cart.currency.iso_code }}",
+            "validForMemberTier": {
+              "@type": "MemberProgramTier",
+              "@id": "https://store.moma.org/pages/memberships#{{ membership_product.handle }}"
+            }
+          }{% unless forloop.last %},{% endunless %}
+        {% endfor %}
+      {% endif %}
+    ]
+  },
+  "hasMerchantReturnPolicy": {
+    "@context": "https://schema.org/",
+    "@type": "MerchantReturnPolicy",
+    "applicableCountry": "{{ shop.address.country_code }}",
+    "returnPolicyCategory": "{{ settings.return_policy_category }}",
+    "returnPolicyCountry": "{{ settings.return_policy_country }}",
+    {%- if settings.merchant_return_days != blank and settings.merchant_return_days > 0 -%}
+    "merchantReturnDays": {{ settings.merchant_return_days }},
+    {%- endif %}
+    "returnMethod": "{{ settings.return_method }}",
+    "nonReturnable": [
+      "Sale items",
+      "Special order items",
+      "Gift cards",
+      "Items marked non‑returnable"
+    ],
+    "returnShippingFees": {
+      "@type": "MonetaryAmount",
+      "value": "9.95",
+      "currency": "USD",
+      "description": "Pre‑paid return label fee per package (deducted from refund)"
+    }
+  }
+}
+</script>
+<!-- END Product schema -->

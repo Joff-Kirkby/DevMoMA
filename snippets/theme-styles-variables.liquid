@@ -1,0 +1,18 @@
+{%- comment -%}
+  Theme style variables
+  Design tokens as CSS custom properties, for components that ship their own
+  CSS in a {% stylesheet %} tag instead of the compiled SCSS bundle (Horizon
+  convention). Values mirror src/scss/core/vars — keep both in sync until the
+  SCSS side reads from here. Rendered once in layout/theme.liquid, before the
+  stylesheets, so every component can rely on the tokens.
+{%- endcomment -%}
+<style>
+  :root {
+    --font-primary: 'MoMA Sans', arial, sans-serif;
+    --font-secondary: 'MoMA Sans Store', arial, sans-serif;
+    --font-weight-regular: 400;
+    --color-foreground: #000;
+    --color-background: #fff;
+    --color-foreground-muted: #696969;
+  }
+</style>

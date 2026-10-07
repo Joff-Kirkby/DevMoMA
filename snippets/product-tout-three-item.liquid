@@ -1,0 +1,30 @@
+{%- comment -%}
+  @param {object} item
+{%- endcomment -%}
+
+<div class="pv-tout-three__item">
+  {% assign image = item.image %}
+  {% assign header = item.header %}
+  {% assign body_text = item.body_text %}
+
+  {% if image != nil and image != blank %}
+    <div class="ir ir--tout-three-image is-loading pv-tout-three__item-image-wrapper">
+      <img
+        class="lazyload pv-tout-three__item-image js-product-tout-item-image"
+        data-src="{{ image }}"
+        data-sizes="auto"
+        alt="{{ header }}"
+      >
+    </div>
+  {% endif %}
+  {% if header != nil and header != blank %}
+    <div class="pv-tout-three__item-header">
+      {{ header }}
+    </div>
+  {% endif %}
+  {% if body_text != nil and body_text != blank %}
+    <p class="pv-tout-three__item-body-text">
+      {{ body_text }}
+    </p>
+  {% endif %}
+</div>

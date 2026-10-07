@@ -1,0 +1,118 @@
+{% assign current_variant = product.selected_or_first_available_variant | default: product.variants.first %}
+
+{% assign description_title = 'Description' %}
+{% assign details_title = 'Details' %}
+{% assign care_title = 'Care' %}
+{% assign shipping_returns_title = 'Shipping & Returns' %}
+
+{%- comment -%} Detail fields {%- endcomment -%}
+{% assign teamwork_metafields = product.metafields.teamwork %}
+{%- assign detail_size = teamwork_metafields.detailsize | default: teamwork_metafields.DetailSize -%}
+{%- assign detail_material = teamwork_metafields.materialdescription
+  | default: teamwork_metafields.MaterialDescription
+-%}
+{%- assign detail_origin = teamwork_metafields.countryoforigin | default: teamwork_metafields.CountryOfOrigin -%}
+{%- assign detail_designer = '' -%}
+{%- assign detail_year = '' -%}
+{%- assign detail_age = false -%}
+{%- assign detail_choking_hazard = false -%}
+
+{% for tag in product.tags %}
+  {%- assign tag_downcase = tag | downcase -%}
+  {% if tag_downcase contains 'designername:' %}
+    {% assign detail_designer = tag | split: ':' | last %}
+  {% endif %}
+  {% if tag_downcase == 'chokinghazard' %}
+    {% assign detail_choking_hazard = true %}
+  {% endif %}
+  {% if tag_downcase contains 'designyear:' %}
+    {% assign detail_year = tag | split: ':' | last %}
+  {% endif %}
+  {% if tag_downcase contains '5 and up' %}
+    {% assign detail_age = tag %}
+  {% endif %}
+  {% if tag_downcase contains 'authorname:' %}
+    {% assign detail_author = tag | split: ':' | last %}
+  {% endif %}
+  {% if tag_downcase contains 'publisher:' %}
+    {% assign detail_publisher = tag | split: ':' | last %}
+  {% endif %}
+  {% if tag_downcase contains 'pages:' %}
+    {% assign detail_pages = tag | split: ':' | last %}
+  {% endif %}
+{% endfor %}
+
+{%- capture all_details -%}{{- detail_size -}}{{- detail_material -}}{{- detail_origin -}}{{- detail_designer -}}{{- detail_year -}}{%- endcapture -%}
+
+{% for variant in product.variants %}
+  {% assign care_text = variant.metafields.teamwork.care.value %}
+
+  <section
+    class="pv-details js-product-details{% if variant.id == current_variant.id %} is-active{% endif %}"
+    data-variant-id="{{ variant.id }}"
+  >
+    {%- comment -%} Tabs {%- endcomment -%}
+    <nav class="pv-details__nav">
+      <div class="pv-details__nav-marker js-product-details-nav-marker"></div>
+      {%- comment -%} Description tab {%- endcomment -%}
+      {% if product.description != blank %}
+        {% render 'product-details-nav-button', { title: description_title } %}
+      {% endif %}
+      {%- comment -%} Details tab {%- endcomment -%}
+      {% if all_details != blank %}
+        {% render 'product-details-nav-button', { title: details_title } %}
+      {% endif %}
+      {%- comment -%} Care tab {%- endcomment -%}
+      {% if care_text != blank %}
+        {% render 'product-details-nav-button', { title: care_title } %}
+      {% endif %}
+      {%- comment -%} Shipping & Returns tab {%- endcomment -%}
+      {% if current_variant.requires_shipping %}
+        {% render 'product-details-nav-button', { title: shipping_returns_title } %}
+      {% endif %}
+    </nav>
+    {%- comment -%} Panels {%- endcomment -%}
+    <div class="pv-details__content js-product-details-content">
+      {%- comment -%} Description panel {%- endcomment -%}
+      {% if product.description != blank %}
+        {%
+          render 'product-details-description', {
+          description_title: description_title
+          }
+        %}
+      {% endif %}
+      {%- comment -%} Details panel {%- endcomment -%}
+      {% if all_details != blank %}
+        {%
+          render 'product-details-details', {
+          details_title: details_title,
+          detail_size: detail_size,
+          detail_material: detail_material,
+          detail_origin: detail_origin,
+          detail_designer: detail_designer,
+          detail_year: detail_year,
+          detail_age: detail_age,
+          detail_choking_hazard: detail_choking_hazard,
+          detail_pages: detail_pages,
+          detail_publisher: detail_publisher,
+          detail_author: detail_author
+          }
+        %}
+      {% endif %}
+      {%- comment -%} Care panel {%- endcomment -%}
+      {%
+        render 'product-details-care', {
+        care_title: care_title,
+        variant: variant
+        }
+      %}
+      {%- comment -%} Shipping & Returns panel {%- endcomment -%}
+      {%
+        render 'product-details-shipping-returns', {
+        shipping_returns_title: shipping_returns_title,
+        variant: variant
+        }
+      %}
+    </div>
+  </section>
+{% endfor %}

@@ -1,0 +1,74 @@
+{% assign current_variant = product.selected_or_first_available_variant | default: product.variants.first %}
+{% assign is_choose_amount = false %}
+{% assign variant_downcase = current_variant.title | downcase %}
+{% if variant_downcase == 'choose amount' %}
+  {% assign is_choose_amount = true %}
+{% endif %}
+<div class="pv-gift-card-details">
+  <hr>
+  <p class="pv-gift-card-details__header">
+    Gift Card Details
+  </p>
+  <ul class="form-list">
+    <li class="form-item js-gift-card-amount{% unless is_choose_amount %} hide{% endunless %}">
+      {% assign money_placeholder_class = '' %}
+      {% assign first_money_char = shop.money_format | slice: 0 %}
+      {% if first_money_char == '$' %}
+        {% assign money_placeholder_class = ' input-placeholder--money' %}
+      {% endif %}
+      <div class="input-placeholder{{ money_placeholder_class }}">
+        <label for="giftcard_chooseamount" class="label--money">Amount*</label>
+        <input id="giftcard_chooseamount" class="input input--money js-gift-card-input" type="number" name="properties[giftcard_chooseamount]" min="1" max="10000" step="1" pattern="/d+" required{% unless is_choose_amount %} disabled{% endunless %} />
+      </div>
+    </li>
+    {% unless is_physical_gift_card %}
+      <li class="form-item form-item--half">
+        <div class="input-placeholder">
+          <label for="giftcard_sender_name">Sender Name*</label>
+          <input id="giftcard_sender_name" class="input js-gift-card-input" type="text" name="properties[giftcard_sender_name]" maxlength="128" required />
+        </div>
+      </li>
+      <li class="form-item form-item--half">
+        <div class="input-placeholder">
+          <label for="giftcard_sender_email">Sender Email*</label>
+          <input id="giftcard_sender_email" class="input js-gift-card-input" type="email" name="properties[giftcard_sender_email]" maxlength="128" required />
+        </div>
+      </li>
+      <li class="form-item form-item--half">
+        <div class="input-placeholder">
+          <label for="giftcard_recipient_name">Recipient Name*</label>
+          <input id="giftcard_recipient_name" class="input js-gift-card-input" type="text" name="properties[giftcard_recipient_name]" maxlength="128" required />
+        </div>
+      </li>
+      <li class="form-item form-item--half">
+        <div class="input-placeholder">
+          <label for="giftcard_recipient_email">Recipient Email*</label>
+          <input id="giftcard_recipient_email" class="input js-gift-card-input" type="email" name="properties[giftcard_recipient_email]" maxlength="128" required />
+        </div>
+      </li>
+      <li class="form-item">
+        <div class="input-placeholder datepicker-wrapper">
+          <label for="giftcard_send_on_date_time">Send on*</label>
+          <input
+            type="date"
+            id="giftcard_send_on_date_time"
+            class="js-gift-card-input"
+            name="properties[giftcard_send_on_date_time]"
+            required
+            min="{{ 'now' | date: '%Y-%m-%dT%H:%M' }}"
+            value="{{ 'now' | date: '%Y-%m-%d' }}"
+          />
+        </div>
+      </li>
+      <li class="form-item">
+        <div class="input-placeholder">
+          <label for="giftcard_message">Gift Message</label>
+          <textarea id="giftcard_message" class="input js-gift-card-input" name="properties[giftcard_message]" maxlength="500"></textarea>
+        </div>
+      </li>
+    {% endunless %}
+    <li class="form-item">
+      <small>* Required Fields</small>
+    </li>
+  </ul>
+</div>

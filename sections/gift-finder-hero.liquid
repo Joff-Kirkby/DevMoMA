@@ -1,0 +1,214 @@
+{%- comment -%}
+  Gift Finder Hero Section
+{%- endcomment -%}
+
+{%- render 'c-gift-finder-hero', {
+  section: section
+} -%}
+
+<div id="giftFinderProductGridApp"></div>
+
+{%- capture gift_finder_vars -%}
+  <script>
+    SDG.Data.contentBlocks = { blocks:[] };
+  </script>
+{%- endcapture -%}
+{%- render 'h-minify', variable: gift_finder_vars -%}
+
+{% schema %}
+  {
+    "name": "Gift Finder Hero",
+    "max_blocks": 3,
+    "presets": [
+      {
+        "category": "Components",
+        "name": "Gift Finder Hero"
+      }
+    ],
+    "blocks": [
+      {
+        "type": "block",
+        "name": "Select Dropdown",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Select Dropdown Label"
+          },
+          {
+            "type": "header",
+            "content": "Option 1"
+          },
+          {
+            "type": "text",
+            "id": "option_1_label",
+            "label": "Option 1: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_1_collection",
+            "label": "Option 1: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 2"
+          },
+          {
+            "type": "text",
+            "id": "option_2_label",
+            "label": "Option 2: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_2_collection",
+            "label": "Option 2: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 3"
+          },
+          {
+            "type": "text",
+            "id": "option_3_label",
+            "label": "Option 3: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_3_collection",
+            "label": "Option 3: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 4"
+          },
+          {
+            "type": "text",
+            "id": "option_4_label",
+            "label": "Option 4: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_4_collection",
+            "label": "Option 4: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 5"
+          },
+          {
+            "type": "text",
+            "id": "option_5_label",
+            "label": "Option 5: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_5_collection",
+            "label": "Option 5: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 6"
+          },
+          {
+            "type": "text",
+            "id": "option_6_label",
+            "label": "Option 6: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_6_collection",
+            "label": "Option 6: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 7"
+          },
+          {
+            "type": "text",
+            "id": "option_7_label",
+            "label": "Option 7: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_7_collection",
+            "label": "Option 7: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 8"
+          },
+          {
+            "type": "text",
+            "id": "option_8_label",
+            "label": "Option 8: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_8_collection",
+            "label": "Option 8: Collection"
+          },
+          {
+            "type": "header",
+            "content": "Option 9"
+          },
+          {
+            "type": "text",
+            "id": "option_9_label",
+            "label": "Option 9: Label"
+          },
+          {
+            "type": "collection",
+            "id": "option_9_collection",
+            "label": "Option 9: Collection"
+          }
+        ]
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "header_text",
+        "label": "Header Text",
+        "default": "Gift Finder"
+      },
+      {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description"
+      },
+      {
+        "type": "image_picker",
+        "id": "desktop_hero_image",
+        "label": "Desktop Hero Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "tablet_hero_image",
+        "label": "Tablet Hero Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "mobile_hero_image",
+        "label": "Mobile Hero Image"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text",
+        "default": "See Gift Suggestions"
+      },
+      {
+        "type": "color",
+        "id": "cta_text_color",
+        "label": "CTA Text Color",
+        "default": "#ffffff"
+      },
+      {
+        "type": "color",
+        "id": "cta_background_color",
+        "label": "CTA Background Color",
+        "default": "#000000"
+      }
+    ]
+  }
+{% endschema %}

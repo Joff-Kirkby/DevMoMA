@@ -1,0 +1,22 @@
+{%  liquid
+  assign is_member = false
+  if customer.tags contains 'moma-membership-active'
+    assign is_member = true
+  endif
+%}
+
+<mini-cart data-css="{{ 'mini-cart.css' | asset_url }}" {% if is_member == true %} class="is-member" {% endif %}>
+</mini-cart>
+
+{%- liquid
+  assign member_discount_ratio = shop.metafields.global.pdp_member_discount.value | default: 10
+-%}
+
+<script>
+  window.SDG = window.SDG || {};
+
+  window.SDG.Data.member_discount = '{{ member_discount_ratio }}';
+  window.SDG.Data.gift_wrap_message = '{{ settings.gift_wrapping_text | escape}}';
+  window.SDG.Data.gift_wrap_message_color = '{{ settings.gift_wrapping_color }}';
+</script>
+

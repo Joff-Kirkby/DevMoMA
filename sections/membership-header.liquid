@@ -1,0 +1,37 @@
+{%- comment -%}
+  Mem Section
+{%- endcomment -%}
+
+{%- render 'c-membership-header', {
+  section: section
+} -%}
+
+{% schema %}
+  {
+    "name": "Membership Header",
+    "class": "membership__header",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading Text",
+        "default": "Membership"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_heading_text",
+        "label": "Sub-Heading Text",
+        "default": "Join now to get 10% off at the MoMA stores and free shipping every day, plus access to exclusive product launches. As a member, you provide critical support to the Museum and gain access to an exclusive array of benefits and opportunities."
+      }
+    ],
+    "presets": [
+      {
+        "name": "Membership Header"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,258 @@
+{% comment %}
+  Sentry error tracking bootstrap.
+
+  Uses the Sentry Loader Script with the documented async setup: window.sentryOnLoad
+  is defined before the loader tag, the loader calls it once the SDK bundle is ready,
+  and because Sentry.init() runs synchronously inside it the loader never falls back
+  to its default (environment-less, integration-less) auto-init.
+
+  data-lazy="no": lazy loading only fetches the full SDK once window.onerror,
+  unhandledrejection, or an explicit Sentry.capture* call fires. None of our proactive
+  integrations (httpClientIntegration, captureConsoleIntegration) are in that trigger
+  list — a failed fetch or a console.error() alone would never bootstrap the SDK, so
+  those integrations would silently never turn on. Eager loading trades a bit of
+  always-on bytes for integrations that are actually active from page load.
+
+  The loader tag is injected from JS instead of being a static <script>, so that the
+  bot gate below can skip Sentry entirely: automated traffic (headless browsers,
+  scrapers spoofing mobile UAs) produced 93% of the biggest issue and the whole
+  4 Sep 2026 event burst, and every event it sends eats quota that real sessions
+  then lose to sampling. The `moma:sentry` localStorage switch ('on' / 'off')
+  overrides the gate for automation we run ourselves (Playwright tests).
+{% endcomment %}
+{%- comment -%}
+  Default for the "Ignored resource URLs" setting, kept in sync with its schema
+  default: tracking pixels and fonts that ad-blockers, ITP and privacy lists block
+  for part of the audience by design, plus SmarterHQ, whose domain no longer resolves.
+{%- endcomment -%}
+{%- capture sentry_default_ignored_resources -%}
+bat.bing.com/*
+*.smarterhq.io/*
+fonts.googleapis.com/*
+fonts.gstatic.com/*
+*.google-analytics.com/*
+*.googletagmanager.com/*
+*.doubleclick.net/*
+connect.facebook.net/*
+{%- endcapture -%}
+{% liquid
+  # The theme setting only overrides the key (e.g. for rotation without a deploy).
+  # The fallback lives here because config/*_data.json is shopifyignored, so a
+  # schema default never reaches existing themes — without it Sentry would be
+  # silently disabled everywhere.
+  assign sentry_loader_key = settings.sentry_loader_key | default: '4e0abb7f87c0d75e1f0be3e7a12cd4e1'
+  # Same reason for the sampling fallback: the range setting's schema default (5%)
+  # never reaches themes that have not saved the setting yet. `default` leaves 0
+  # alone, so 0% really means no events. Divided by 100.0 to get Sentry's 0..1 float.
+  assign sentry_sample_rate = settings.sentry_sample_rate_percent | default: 5 | divided_by: 100.0
+  # Same again for the ignore list: one glob per line, turned into a JSON array below.
+  assign sentry_ignored_resources = settings.sentry_ignored_resources | default: sentry_default_ignored_resources | newline_to_br | split: '<br />'
+  if shop.permanent_domain contains 'staging'
+    assign sentry_environment = 'staging'
+  else
+    assign sentry_environment = 'production'
+  endif
+%}
+{% unless request.design_mode %}
+  <link rel="preconnect" href="https://js.sentry-cdn.com" crossorigin>
+  <link rel="preconnect" href="https://browser.sentry-cdn.com" crossorigin>
+  <script>
+    (function () {
+      {% comment %}
+        Bot gate. Only signals that cannot come from a real visitor are used:
+        - navigator.webdriver: set by every WebDriver/CDP-driven browser (Playwright,
+          Puppeteer, Selenium), never by a human session.
+        - HeadlessChrome in the UA: Chrome's own headless build.
+        - an iOS user agent on a Blink engine: every browser on iOS is WebKit and
+          reports vendor "Apple Computer, Inc.", so an iPhone/iPad/CriOS UA with
+          vendor "Google Inc." is desktop Chrome spoofing a phone.
+        Softer heuristics (maxTouchPoints, platform) are deliberately left out:
+        they would also drop some real users.
+
+        localStorage 'moma:sentry' = 'off' disables Sentry regardless of the gate,
+        'on' forces it (our Playwright runs set navigator.webdriver, so they need
+        'on' to keep reporting). The value is exposed as a tag for filtering.
+      {% endcomment %}
+      var sentrySwitch = 'auto';
+      try {
+        var stored = window.localStorage.getItem('moma:sentry');
+        if (stored === 'on' || stored === 'off') sentrySwitch = stored;
+      } catch (e) {
+        // localStorage blocked (private mode, storage policy): fall through to the gate.
+      }
+      if (sentrySwitch === 'off') return;
+      if (sentrySwitch === 'auto') {
+        var ua = navigator.userAgent || '';
+        var automated = navigator.webdriver === true
+          || ua.indexOf('HeadlessChrome') !== -1
+          || (/iPhone|iPad|CriOS/.test(ua) && navigator.vendor === 'Google Inc.');
+        if (automated) return;
+      }
+
+      {% comment %}
+        Resource load failures (img/script/link 404s etc.) fire a capture-phase-only
+        'error' event on the element, not on window.onerror, so Sentry's default
+        integrations never see them. The loader is async, so failures that happen
+        before window.Sentry exists are queued and flushed from sentryOnLoad; if the
+        loader never arrives (ad-blocker, CDN outage) the queue is simply never sent.
+      {% endcomment %}
+      window._sentryResourceErrors = [];
+
+      // Theme setting "Ignored resource URLs": one glob per line, * = any characters,
+      // matched against host + path (no protocol, no query string). Everything except *
+      // is escaped, so a pattern typed in the admin can never throw.
+      var ignoredResources = {{ sentry_ignored_resources | json }}
+        .map(function (line) { return line.trim(); })
+        .filter(Boolean)
+        .map(function (glob) {
+          var escaped = glob.replace(/[.+?^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*');
+          return new RegExp('^' + escaped + '$', 'i');
+        });
+      function isIgnoredResource(src) {
+        var bare = src.replace(/^[a-z][a-z0-9+.-]*:\/\//i, '').replace(/[?#].*$/, '');
+        return ignoredResources.some(function (pattern) { return pattern.test(bare); });
+      }
+      // One event per failing third-party host per page view: pixels retry and
+      // re-inject, and what matters is "this vendor failed", not how many times.
+      var reportedThirdPartyHosts = {};
+
+      window.addEventListener('error', function (event) {
+        var target = event.target;
+        if (!target || target === window) return; // JS errors: handled by Sentry's default integration
+
+        var tagName = target.tagName;
+        if (tagName !== 'IMG' && tagName !== 'SCRIPT' && tagName !== 'LINK') return;
+
+        var src = target.src || target.href || '';
+        // Lazy-load placeholders (empty src, data: gif) are not failed downloads.
+        if (!src || src.indexOf('data:') === 0) return;
+        if (isIgnoredResource(src)) return;
+
+        // Theme assets are served from the store origin (/cdn/shop/...) or the legacy
+        // cdn.shopify.com/s/files/ path; everything else (GTM tags, pixels, app
+        // extensions, vendor scripts) is a third party.
+        var firstParty = src.indexOf(window.location.origin + '/') === 0
+          || src.indexOf('https://cdn.shopify.com/s/files/') === 0;
+
+        var message;
+        var context;
+        if (firstParty) {
+          message = 'Failed to load resource: ' + tagName + ' ' + src;
+          context = {
+            level: 'warning',
+            tags: { resource_type: tagName.toLowerCase(), resource_party: 'first' },
+          };
+        } else {
+          var url;
+          try {
+            url = new URL(src);
+          } catch (e) {
+            return;
+          }
+          // Browser extensions (chrome-extension://, safari-web-extension://) are not ours.
+          if (url.protocol !== 'https:' && url.protocol !== 'http:') return;
+          var host = url.hostname;
+          if (reportedThirdPartyHosts[tagName + ' ' + host]) return;
+          reportedThirdPartyHosts[tagName + ' ' + host] = true;
+
+          // Host rather than full URL in the message and fingerprint: pixel query strings
+          // would otherwise split one vendor outage into hundreds of issues.
+          message = 'Failed to load third-party resource: ' + tagName + ' ' + host;
+          context = {
+            level: 'info',
+            fingerprint: ['third-party-resource', tagName, host],
+            tags: {
+              resource_type: tagName.toLowerCase(),
+              resource_party: 'third',
+              resource_host: host,
+            },
+            extra: { url: src },
+          };
+        }
+
+        if (window.Sentry && window.Sentry.captureMessage) {
+          Sentry.captureMessage(message, context);
+        } else {
+          window._sentryResourceErrors.push([message, context]);
+        }
+      }, true);
+
+      window.sentryOnLoad = function () {
+        Sentry.init({
+          environment: '{{ sentry_environment }}',
+          sampleRate: {{ sentry_sample_rate }},
+          // Shopify runs app pixels in a sandboxed worker; its importScripts() failing
+          // (ad-blocker on /web-pixels/, slow network) is Shopify's frame, not theme code.
+          ignoreErrors: [
+            /Failed to execute 'importScripts' on 'WorkerGlobalScope'/,
+          ],
+          denyUrls: [/\/web-pixels@/],
+        });
+
+        Sentry.setTag('shopify.theme', {{ theme.name | json }});
+        Sentry.setTag('shopify.theme_id', {{ theme.id | json }});
+        Sentry.setTag('shopify.page_type', {{ request.page_type | json }});
+        Sentry.setTag('moma.sentry_switch', sentrySwitch);
+
+        window._sentryResourceErrors.splice(0).forEach(function (queued) {
+          Sentry.captureMessage(queued[0], queued[1]);
+        });
+
+        {% comment %}
+          The Loader Script's bundle (configured in the Sentry project's Loader Script
+          settings) doesn't include httpClientIntegration/captureConsoleIntegration —
+          calling Sentry.httpClientIntegration(...) directly throws "is not a function".
+          lazyLoadIntegration() fetches the missing bundles at runtime; if that fetch
+          fails (blocker, flaky network) the base SDK stays initialized without them.
+        {% endcomment %}
+        Promise.all([
+          Sentry.lazyLoadIntegration('httpClientIntegration'),
+          Sentry.lazyLoadIntegration('captureConsoleIntegration'),
+        ]).then(function (integrations) {
+          // fetch/XHR calls don't throw on HTTP error status (only on network failure),
+          // so failed requests are otherwise invisible to Sentry. Limited to 5xx on
+          // first-party requests: routine 4xx (422 sold-out /cart/add.js, 401 logged-out
+          // account calls) and third-party failures are expected traffic, not errors.
+          Sentry.addIntegration(integrations[0]({
+            failedRequestStatusCodes: [[500, 599]],
+            failedRequestTargets: [/^\//, window.location.origin],
+          }));
+          // Catch-all: theme code reports failures via console.error instead of calling
+          // Sentry.captureException directly, so this integration is the single place
+          // that turns those into Sentry events. console.warn is left out: ~35 existing
+          // call sites fire it on routine traffic (missing grid images, default ajax
+          // success handler) and would flood the quota with full response payloads.
+          Sentry.addIntegration(integrations[1]({
+            levels: ['error'],
+          }));
+        }).catch(function () {
+          // Integration bundles unreachable: keep the base SDK running without them.
+        });
+
+        {% comment %} window.Shopify.* (theme details, country, currency, locale) is populated
+           asynchronously by the analytics script from content_for_header, so poll for it. {% endcomment %}
+        (function poll(attemptsLeft) {
+          if (!(window.Shopify && window.Shopify.theme)) {
+            if (attemptsLeft > 0) setTimeout(poll, 200, attemptsLeft - 1);
+            return;
+          }
+          Sentry.setTag('shopify.theme_schema_version', Shopify.theme.schema_version);
+          Sentry.setTag('shopify.country', Shopify.country);
+          Sentry.setTag('shopify.currency', Shopify.currency && Shopify.currency.active);
+          Sentry.setTag('shopify.locale', Shopify.locale);
+        })(50);
+      };
+
+      {% comment %}
+        The loader reads data-lazy from its own tag by scanning document.scripts for
+        its key, so the attribute must be set before the element is appended.
+      {% endcomment %}
+      var loader = document.createElement('script');
+      loader.src = 'https://js.sentry-cdn.com/{{ sentry_loader_key }}.min.js';
+      loader.crossOrigin = 'anonymous';
+      loader.async = true;
+      loader.setAttribute('data-lazy', 'no');
+      document.head.appendChild(loader);
+    })();
+  </script>
+{% endunless %}

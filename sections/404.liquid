@@ -1,0 +1,28 @@
+<div class="page-404 text-center">
+  <h1 class="page-404__heading">{{ section.settings.heading }}</h1>
+  <p class="page-404__copy">{{ section.settings.copy }}</p>
+  <a href="{{ routes.root_url }}" class="btn btn--quaternary">{{ section.settings.cta_text }}</a>
+</div>
+
+{% schema %}
+  {
+    "name": "404",
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading"
+      },
+      {
+        "type": "text",
+        "id": "copy",
+        "label": "Copy"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      }
+	  ]
+  }
+{% endschema %}

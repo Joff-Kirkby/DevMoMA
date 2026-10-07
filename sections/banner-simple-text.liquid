@@ -1,0 +1,63 @@
+<div class="banner banner--simple-text">
+  <h1 class="banner__title">
+    {{ section.settings.title }}
+  </h1>
+  <p class="banner__copy">
+    {{ section.settings.copy }}
+  </p>
+</div>
+
+<style>
+  #shopify-section-{{ section.id }} .banner {
+    background-color: {{ section.settings.background_color }};
+  }
+  #shopify-section-{{ section.id }} .banner__title,
+  #shopify-section-{{ section.id }} .banner__copy {
+    color: {{ section.settings.text_color }};
+  }
+</style>
+
+{% schema %}
+  {
+    "name": "Banner: Simple Text",
+    "class": "container container--medium",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title",
+        "default": "Meet the Makers"
+      },
+      {
+        "type": "text",
+        "id": "copy",
+        "label": "Copy",
+        "default": "Ever wondered how our designers create? Here are their stories."
+      },
+      {
+        "type": "url",
+        "id": "url",
+        "label": "Link URL"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner: Simple Text"
+      }
+    ]
+  }
+{% endschema %}

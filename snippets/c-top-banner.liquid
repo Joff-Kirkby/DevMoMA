@@ -1,0 +1,204 @@
+{%- comment -%}
+  Component: Top banner
+  @param {object<div id="{{section.id}}" style="background-color: {{ section.settings.bg_color }};">
+  <div class="top-banner__container container{% if marketing_messages.size > 1 %} is-carousel{% endif %}">
+    <div class="top-banner__left{% if marketing_messages.size > 1 %} js-top-banner-carousel{% endif %}">
+      <div
+        class="top-banner__left-message{% if marketing_messages.size > 1 %} is-carousel{% endif %}"
+        {% if marketing_messages.size > 1 %}id="js-top-banner-carousel"{% endif %}
+        style="color: {{ section.settings.text_color }};"
+      >n
+
+  Marketing messages are now configured as section blocks with the following settings:
+  - Desktop message: Rich text content for desktop devices
+  - Mobile message: Rich text content for mobile devices
+  - User visibility: Show for all users, logged-in only, or logged-out only
+  - Countdown timer: Optional countdown timer with custom heading
+{%- endcomment -%}
+
+{%- assign need_help_menu_items = section.blocks | where: 'type', 'need_help_menu_item' -%}
+{%- assign membership_cards = section.blocks | where: 'type', 'modal_membership_card' -%}
+{%- assign marketing_messages = section.blocks | where: 'type', 'marketing_message' -%}
+
+<div id="{{section.id}}" style="background-color: {{ section.settings.bg_color }};">
+  <div class="top-banner__container container{% if marketing_messages.size > 1 %} is-carousel{% endif %}">
+    <div class="top-banner__left{% if marketing_messages.size > 1 %} js-top-banner-carousel{% endif %}">
+      <div
+        class="top-banner__left-message{% if marketing_messages.size > 1 %} is-carousel{% endif %}"
+        {% if marketing_messages.size > 1 %}id="js-top-banner-carousel"{% endif %}
+        style="color: {{ section.settings.text_color }};"
+      >
+        {%- for message in marketing_messages -%}
+          {%- liquid
+            assign show_message = false
+            if message.settings.user_visibility == 'all'
+              assign show_message = true
+            elsif message.settings.user_visibility == 'logged_in' and customer
+              assign show_message = true
+            elsif message.settings.user_visibility == 'logged_out' and customer == nil
+              assign show_message = true
+            endif
+          -%}
+
+          {%- if show_message -%}
+            {%- if message.settings.enable_countdown_timer -%}
+              <div class="carousel-item">
+                {%- render 'c-countdown-timer', {
+                  label: message.settings.desktop_message,
+                  mobile_label: message.settings.mobile_message,
+                  target: message.settings.countdown_timer,
+                } -%}
+
+                {% assign left_modal_trigger_id = 'topBannerLearnMoreBtn_' | append: message.id %}
+                {%- if message.settings.enable_standard_modal -%}
+                  {% assign left_modal_trigger_id = 'topBannerDetailsBtn_' | append: message.id %}
+                {%- endif -%}
+
+                {% if message.settings.enable_banner_modal %}
+                  <div
+                    class="top-banner__left-modal-btn-wrapper{% if message.settings.enable_standard_modal %} top-banner__left-modal-btn-wrapper--learn-more{% endif %}"
+                  >
+                    <button type="button" class="top-banner__left-modal-trigger btn {% if message.settings.enable_standard_modal %} js-top-banner-details-btn {% else %} js-top-banner-membership-btn{% endif %}" id="{{ left_modal_trigger_id }}" data-modal-id="{{ message.id }}">
+                      <span
+                        class="top-banner__left-modal-trigger-text"
+                        style="color: {{ section.settings.text_color }};"
+                      >
+                        {{ message.settings.modal_trigger_text }}
+                      </span>
+                      <span
+                        class="top-banner__left-modal-trigger-symbol" id="topBannerModalClosedSymbol_{{ message.id }}"
+                        style="color: {{ section.settings.text_color }};"
+                      >
+                        {{ message.settings.modal_closed_symbol }}
+                      </span>
+                      <span
+                        class="top-banner__left-modal-trigger-symbol hide" id="topBannerModalOpenSymbol_{{ message.id }}"
+                        style="color: {{ section.settings.text_color }};"
+                      >
+                        {{ message.settings.modal_open_symbol }}
+                      </span>
+                    </button>
+              
+                    {%- if message.settings.enable_standard_modal -%}
+                      {%- render 'top-banner-details-modal', block: message -%}
+                    {%- endif -%}
+                  </div>
+                {% endif %}
+              </div>
+            {% else %}
+              <div class="carousel-item">
+                <div class="js-banner-message">
+                  <div
+                    class="top-banner__marketing-message hide-phone"
+                    style="color: {{ section.settings.text_color }};"
+                  >
+                    {{ message.settings.desktop_message }}
+                  </div>
+                  <div
+                    class="top-banner__marketing-message phone-only"
+                    style="color: {{ section.settings.text_color }};"
+                  >
+                    {{ message.settings.mobile_message }}
+                  </div>
+                </div>
+
+                {% assign left_modal_trigger_id = 'topBannerLearnMoreBtn_' | append: message.id %}
+                {%- if message.settings.enable_standard_modal -%}
+                  {% assign left_modal_trigger_id = 'topBannerDetailsBtn_' | append: message.id %}
+                {%- endif -%}
+
+                {% if message.settings.enable_banner_modal %}
+                  <div
+                    class="top-banner__left-modal-btn-wrapper{% if message.settings.enable_standard_modal %} top-banner__left-modal-btn-wrapper--learn-more{% endif %}"
+                  >
+                    <button type="button" class="top-banner__left-modal-trigger btn {% if message.settings.enable_standard_modal %} js-top-banner-details-btn {% else %} js-top-banner-membership-btn{% endif %}" id="{{ left_modal_trigger_id }}" data-modal-id="{{ message.id }}">
+                      <span
+                        class="top-banner__left-modal-trigger-text"
+                        style="color: {{ section.settings.text_color }};"
+                      >
+                        {{ message.settings.modal_trigger_text }}
+                      </span>
+                      <span
+                        class="top-banner__left-modal-trigger-symbol" id="topBannerModalClosedSymbol_{{ message.id }}"
+                        style="color: {{ section.settings.text_color }};"
+                      >
+                        {{ message.settings.modal_closed_symbol }}
+                      </span>
+                      <span
+                        class="top-banner__left-modal-trigger-symbol hide" id="topBannerModalOpenSymbol_{{ message.id }}"
+                        style="color: {{ section.settings.text_color }};"
+                      >
+                        {{ message.settings.modal_open_symbol }}
+                      </span>
+                    </button>
+              
+                    {%- if message.settings.enable_standard_modal -%}
+                      {%- render 'top-banner-details-modal', block: message -%}
+                    {%- endif -%}
+                  </div>
+                {% endif %}
+              </div>
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+    </div>
+    <div class="top-banner__right hide-phone">
+      <a
+        href="{{ section.settings.become_a_member_link }}"
+        class="top-banner__member-link"
+        style="color: {{ section.settings.text_color }};"
+      >
+        {{ section.settings.become_a_member_text }}
+      </a>
+      <div class="top-banner__need-help-wrapper" id="topBannerNeedHelpWrapper">
+        <style>
+          .top-banner__need-help-btn {
+            border-left: 1px solid {{ section.settings.text_color }};
+            border-right: 1px solid {{ section.settings.text_color }};
+          }
+        </style>
+        <button
+          type="button"
+          class="top-banner__need-help-btn btn"
+          id="topBannerNeedHelpBtn"
+          style="color: {{ section.settings.text_color }};"
+        >
+          {{ section.settings.need_help_text }}
+        </button>
+        <nav class="top-banner__need-help-menu" id="topBannerNeedHelpMenu">
+          <ul class="list-reset">
+            {%- for menu_item in need_help_menu_items -%}
+              <li class="top-banner__need-help-menu-item">
+                <a href="{{ menu_item.settings.link }}">
+                  {{ menu_item.settings.text }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        </nav>
+      </div>
+      {% render 'country-selector', {
+        section: section,
+      } %}
+    </div>
+    <style>
+      #{{ section.id }} .flickity-button-icon {
+        fill: {{ section.settings.text_color }};
+        width: 10px;
+      }
+    </style>
+
+    {% for message in marketing_messages %}
+      {% if message.settings.enable_banner_modal %}
+        {%- if message.settings.enable_standard_modal == false -%}
+          {% render 'top-banner-membership-modal', {
+            block: message,
+            membership_cards: membership_cards,
+          } %}
+        {%- endif -%}
+      {% endif %}
+    {% endfor %}
+   
+  </div>
+</div>

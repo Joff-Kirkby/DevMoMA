@@ -1,0 +1,14 @@
+<div
+  class="pv-details__content-section pv-details__content-section-description js-product-details-content-section is-active"
+  data-details-section-title="{{ description_title }}"
+>
+  <div class="pv-details__content-section-inner--truncated js-product-details-content-section-truncated">
+    {%- comment -%}
+      Truncated desciption created with JS
+    {%- endcomment -%}
+  </div>
+  <div class="pv-details__content-section-inner--full js-product-details-content-section-full hide">
+    {%- render 'h-description', description: product.description -%}
+    <button type="button" class="pv-details__less-btn btn btn-link js-product-details-read-less-btn">Read Less</button>
+  </div>
+</div>

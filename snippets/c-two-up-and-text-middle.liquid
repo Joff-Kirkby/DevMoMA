@@ -1,0 +1,33 @@
+{%- comment -%}
+  2-Up + Text Middle
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="two-up-text-middle container">
+  <div class="two-up-text-middle__image-left">
+    {% render 'c-responsive-image', {
+      image: ss.image,
+      inline_ir: true,
+      wrapper_class: 'two-up-text-middle__image-wrapper',
+      link: ss.cta_url,
+    } %}
+  </div>
+  <div class="two-up-text-middle__text">
+    <h2 class="two-up-text-middle__text-headline">{{ ss.headline }}</h2>
+    {{ ss.text }}
+    {% if ss.cta_text != blank and ss.cta_url != blank %}
+      <a class="btn btn--primary" href="{{ ss.cta_url }}">
+        {{ ss.cta_text }}
+      </a>
+    {% endif %}
+  </div>
+  <div class="two-up-text-middle__image-right">
+    {% render 'c-responsive-image', {
+      image: ss.image_2,
+      inline_ir: true,
+      wrapper_class: 'two-up-text-middle__image-wrapper',
+      link: ss.cta_url,
+    } %}
+  </div>
+</section>

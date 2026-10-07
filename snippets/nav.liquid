@@ -1,0 +1,118 @@
+{% comment %}
+  Accepts 'view' and 'modifier' when calling this snippet.
+  This snippet is used for both the mobile and dekstop navigation separately.
+{% endcomment %}
+{%- assign menu_items = shop.metafields.navigation.desktop.value -%}
+
+<nav id="nav" class="nav container hide-mobile">
+  <div class="nav__content js-nav-content">
+    {% comment %} Navigation List {% endcomment %}
+    <ul
+      class="nav__list list-reset"
+      aria-label="Main Navigation"
+    >
+      {% for menu_item in menu_items %}
+        {% assign namespace_key = menu_item.title | downcase | replace: ' ', '-' | prepend: 'font_color_' %}
+        {% assign color_metafield = shop.metafields.navigation[namespace_key].value %}
+        <li
+          class="nav__list-item js-megamenu-parent"
+        >
+          <a
+            href="{% render 'h-href', href: menu_item.url %}"
+            class="nav__list-item-link js-megamenu-trigger"
+            {% if color_metafield %}
+              style="color: {{ color_metafield }}"
+            {% endif %}
+            {% if menu_item.columns.size > 0 or menu_item.products != blank %}
+              aria-expanded="false"
+              aria-haspopup="true"
+              aria-controls="nav-megamenu-{{ forloop.index }}"
+            {% else %}
+              aria-haspopup="false"
+            {% endif %}
+          >
+            {{ menu_item.title }}
+          </a>
+
+          {%- if menu_item.columns.size > 0 or menu_item.products != blank -%}
+            <details class="nav__list-item-details js-megamenu-details">
+              <summary
+                class="nav__list-item-summary"
+                aria-label="Open {{ menu_item.title }} submenu"
+              >
+                <i class="nav__list-item-dropdown-icon icon icon--caret-down"></i>
+              </summary>
+              <div
+                id="nav-megamenu-{{ forloop.index }}"
+                class="nav__megamenu js-nav-sub-menu"
+              >
+                <div class="nav__megamenu-inner container">
+                  {% comment %} Left side columns {% endcomment %}
+                  {%- if menu_item.columns.size > 0 -%}
+                    <div class="nav__megamenu--left">
+                      {%- for column in menu_item.columns -%}
+                        {%- if column.list_items.size > 0 or column.title != blank -%}
+                          <ul
+                            class="list-reset"
+                            aria-label="{{ menu_item.title }}"
+                          >
+                            {%- if column.title != blank -%}
+                              <li
+                                class="nav__megamenu-column-title"
+                              >
+                                {%- if column.url != blank -%}
+                                  <a
+                                    href="{% render 'h-href', href: column.url %}"
+                                    class="nav__megamenu-column-title-link"
+                                  >
+                                    {{ column.title }}
+                                  </a>
+                                {%- else -%}
+                                  {{ column.title }}
+                                {%- endif -%}
+                              </li>
+                            {%- endif -%}
+                            {%- for list_item in column.list_items -%}
+                              <li
+                                class="nav__megamenu-list-item"
+                              >
+                                {%- if list_item.url != blank -%}
+                                  <a
+                                    href="{% render 'h-href', href: list_item.url %}"
+                                    class="nav__megamenu-list-item-link"
+                                  >
+                                    {{ list_item.title }}
+                                  </a>
+                                {%- else -%}
+                                  {{ list_item.title }}
+                                {%- endif -%}
+                              </li>
+                            {%- endfor -%}
+                          </ul>
+                        {%- endif -%}
+                      {%- endfor -%}
+                    </div>
+                  {%- endif -%}
+
+                  {% comment %} Right side product items {% endcomment %}
+                  {%- if menu_item.products != blank -%}
+                    <div class="nav__megamenu--right js-nav-megamenu-right">
+                      <h5 class="nav__megamenu-products-title">{{ menu_item.products.title }}</h5>
+                      <div
+                        class="nav__megamenu-products-wrapper js-megamenu-products-wrapper"
+                        data-products-loaded="false"
+                        data-product-handles='{{ menu_item.products.product_handles | json }}'
+                      >
+                        {% comment %} Product HTML injected via header.js {% endcomment %}
+                      </div>
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </details>
+          {%- endif -%}
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</nav>

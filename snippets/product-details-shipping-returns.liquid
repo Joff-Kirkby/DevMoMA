@@ -1,0 +1,70 @@
+{% comment %} Used to get locale {% endcomment %}
+{%- assign root_url = routes.root_url | replace: '/', '' | downcase -%}
+
+  <div class="pv-details__content-section pv-details__content-section-shipping-returns js-product-details-content-section" data-details-section-title="{{ shipping_returns_title }}">
+  {%- comment -%} Variant data {%- endcomment -%}
+  {%- assign flat_rate_shipping_eligible = variant.metafields.teamwork.FlatRateShippingEligible | downcase -%}
+  {% assign additional_shipping_value = variant.metafields.teamwork.AdditionalShipping.value | default: variant.metafields.teamwork.additionalshipping.value %}
+  {% assign additional_shipping_cost = additional_shipping_value | times: 100 | money %}
+  {% assign final_sale = variant.metafields.teamwork.FinalSale.value %}
+  {% assign shipping_method = variant.metafields.teamwork.ShippingMethod %}
+  {%- comment -%} Product data {%- endcomment -%}
+  {% assign additional_ec_message = product.metafields.teamwork.additionalecmessage %}
+  {% assign domestic_shipping_only = false %}
+  {% for tag in product.tags %}
+    {% if tag contains 'DomesticShippingOnly' %}
+      {% assign domestic_shipping_only = true %}
+    {% endif %}
+  {% endfor %}
+  {% if localization.country.name != "United States" %}
+    <div class="pv-details__intl-shipping-message">
+      {%- if product.metafields.pdp.intl_shipping_tab_data != blank -%}
+        {{ product.metafields.pdp.intl_shipping_tab_data | metafield_tag }}
+      {% else %}
+        {{ shop.metafields.globale.intl_shipping_tab_data | metafield_tag }}
+      {%- endif -%}
+    </div>
+  {% else %}
+    <ul class="pv-details__content-section-shipping-returns-list list-reset js-product-details-shipping-returns-list">
+      {% if additional_shipping_value > 0 %}
+        <li>Special shipping charge of {{ additional_shipping_cost }}</li>
+      {% endif %}
+      {% if shipping_method != blank %}
+        <li>Shipping Method: {{ shipping_method }}</li>
+      {% endif %}
+      {% if domestic_shipping_only %}
+        <li>This item cannot be shipped outside of the contiguous U.S.</li>
+      {% endif %}
+      {% if final_sale == true %}
+        <li>This item is final sale and non-returnable.</li>
+      {% else %}
+        <li>
+          If for any reason you are not satisfied with your purchase, you may return merchandise within 90 days for a refund in the form of original payment for contiguous U.S orders.
+          <a
+            class="btn btn-link pv-details__more-btn"
+            href="https://storehelpcenter.moma.org/hc/en-us/articles/360001267138-Returns-and-return-policy-"
+            target="_blank">Learn More.</a>
+        </li>
+      {% endif %}
+    </ul>
+    {%- if root_url == blank -%}
+      <div class="pv-details__content-section-shipping-returns-flat-rate js-product-details-shipping-returns-flat-rate{% unless flat_rate_shipping_eligible == 'y' %} hide{% endunless %}">
+        <p>
+          {{ settings.flat_shipping_fee_message }}
+          <a
+            class="btn btn-link"
+            href="https://storehelpcenter.moma.org/hc/en-us/articles/360001268418-Shipping-in-the-contiguous-U-S-"
+            target="_blank">Learn More.</a>
+        </p>
+      </div>
+    {%- endif -%}
+
+    {% if additional_ec_message != blank %}
+      <div class="pv-details__content-section-shipping-returns-additional-message">
+        <p>
+          {{ additional_ec_message }}
+        </p>
+      </div>
+    {% endif %}
+  {% endif %}
+</div>

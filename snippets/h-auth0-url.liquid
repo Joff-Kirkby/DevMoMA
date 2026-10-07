@@ -1,0 +1,23 @@
+{%- comment -%}
+  Auth0 URL
+  @param {string} type - 'login' or 'logout'
+{%- endcomment -%}
+
+{%- assign auth_url = settings.auth0_login_url -%}
+{%- assign return_to = '&return_to=' -%}
+
+{% if customer != nil %}
+  {%- assign return_url = shop.secure_url | append: '/account' -%}
+{% elsif template contains 'search' %}
+  {%- assign return_url = shop.secure_url -%}
+{% else %}
+  {%- assign return_url = shop.secure_url | append: request.path -%}
+{% endif %}
+
+{%- if type == 'logout' -%}
+  {%- assign auth_url = settings.auth0_logout_url -%}
+  {%- assign return_to = '&returnTo=' -%}
+  {%- assign return_url = shop.secure_url | append: '/account/logout' -%}
+{%- endif -%}
+
+{{- auth_url | append: return_to | append: return_url -}}

@@ -1,0 +1,83 @@
+<style>
+  #shopify-section-{{ section.id }}{
+    padding: 0;
+    margin: 0;
+    max-width: 100%;
+  }
+</style>
+<div class="grid-up-content-blocks">
+  {% for block in section.blocks %}
+    {% assign bs = block.settings %}
+    <div class="grid-up-content-blocks__block">
+      {% if bs.image != blank %}
+        {%- render 'c-responsive-image', {
+          image: bs.image,
+          inline_ir: false,
+          link: bs.url,
+          image_class: "grid-up-content-blocks__block-image"
+        } -%}
+      {% endif %}
+      {% if bs.title != blank %}
+        <{% if bs.url != blank %}a href="{{ bs.url }}"{% else %}div{% endif %} 
+          class="grid-up-content-blocks__block-text" style="--font-mobile: {{ bs.font_size_mobile }}px; --font-desktop: {{ bs.font_size_desktop }}px;">
+          {{ bs.title }}
+        </{% if bs.url != blank %}a{% else %}div{% endif %}>
+      {% endif %}
+    </div>
+  {% endfor %}
+</div>
+
+{% schema %}
+  {
+    "name": "4-Up Content Blocks",
+    "class": "container",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "Content block",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Shop $25 & Under"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "URL"
+          },
+          {
+            "type": "range",
+            "label": "Font Size Desktop",
+            "id": "font_size_desktop",
+            "min": 12,
+            "max": 40,
+            "step": 1,
+            "default": 17
+          },
+          {
+            "type": "range",
+            "label": "Font Size Mobile",
+            "id": "font_size_mobile",
+            "min": 10,
+            "max": 30,
+            "step": 1,
+            "default": 15
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "4-Up Content Blocks"
+      }
+    ]
+  }
+{% endschema %}

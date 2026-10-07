@@ -1,0 +1,28 @@
+{%- comment -%}
+  Product Reviews
+  Template-level section for the Yotpo reviews widget so the PDP order below
+  the buy box can be composed in the product JSON templates. This is the only
+  place reviews render, so every product template (except e-gift-card) needs
+  it added in the theme editor. The markup lives in the product-reviews
+  snippet, which also handles the yotpo_enable and e-gift-card checks.
+  The widget keeps id="yotpoLoaded" — lib/product-reviews.js removes any section
+  holding a Yotpo main widget without that id (the app-embedded duplicate).
+{%- endcomment -%}
+
+{% render 'product-reviews' %}
+
+{% schema %}
+{
+  "name": "Product Reviews",
+  "class": "pv-reviews-section",
+  "limit": 1,
+  "enabled_on": {
+    "templates": ["product"]
+  },
+  "presets": [
+    {
+      "name": "Product Reviews"
+    }
+  ]
+}
+{% endschema %}

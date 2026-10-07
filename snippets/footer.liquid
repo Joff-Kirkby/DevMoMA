@@ -1,0 +1,150 @@
+{% liquid
+  assign linkList = linklists.footer-main.links
+  assign video_embed_id = settings.membership_video_embed_url | split: '/' | last
+  assign membership_image = settings.membership_image | url
+%}
+
+<footer class="footer" role="contentinfo">
+  {%- if template contains 'index' and hide_membership_section != true -%}
+    <div class="footer__membership-section">
+      <div class="footer__membership-section-container">
+        <button
+          id="footerModalTrigger"
+          class="footer__modal-trigger-btn"
+          type="button"
+        >
+          <span class="screenreader">Open Modal and Play Video</span>
+          {% render 'c-responsive-image', {
+            image: membership_image,
+            modifier: 'footer-membership-section-image',
+            image_class: 'footer__membership-section-image',
+          } %}
+        </button>
+        <div class="footer__membership-content">
+          <h2 class="footer__membership-section-text">{{ settings.membership_section_text }}</h2>
+          <button
+            id="footerModalTrigger2"
+            class="footer__membership-section-cta"
+            type="button"
+          >
+            <span class="screenreader">Open Modal and Play Video</span>
+            {{ settings.membership_cta_text }}
+          </button>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+  <div class="footer__container">
+    <div class="place-holder-email-sign-up">
+      {%- render 'footer-sign-up-form' -%}
+    </div>
+    <div class="footer__hours-phone-number">
+      <a href="tel:18008514509" class="footer__phone-button">800.851.4509</a>
+    </div>
+    <p class="footer__hours-text">M-F 9:30am - 5pm EST</p>
+    <a href="https://storehelpcenter.moma.org/hc/en-us/requests/new" class="footer__contact-us-button">Contact Us</a>
+    <div class="footer__social-icons">
+      <a href="https://www.instagram.com/momadesignstore/" target="_blank" aria-label="MoMA Instagram"><i class="icon icon--instagram-black"></i></a>
+      <a href="https://www.facebook.com/momadesignstore/" target="_blank" aria-label="MoMA Facebook"><i class="icon icon--facebook-black-f"></i></a>
+      <a href="https://www.youtube.com/user/SHOPMoMA" target="_blank" aria-label="MoMA Youtube"><i class="icon icon--youtube-black"></i></a>
+      <a href="https://www.pinterest.com/momadesignstore/" target="_blank" aria-label="MoMA Pintrest"><i class="icon icon--pinterest-black"></i></a>
+    </div>
+    <a href="{% render 'h-href', href: '/pages/memberships' %}" class="footer__membership-cta-button btn--primary" type="button">
+      <span class="footer__membership-cta-button-text"><span class="footer__membership-cta-button-text--mobile">Explore</span> MoMA Memberships</span>
+      <i class="icon icon--cta-arrow"></i>
+    </a>
+    <nav id="footerNav" class="footer__nav">
+      {%- for link in linkList -%}
+        <div class="footer__list-nav{% unless forloop.first %} footer__list--pad{% endunless %}">
+          <h3 class="acc__btn-wrapper footer__list-heading-wrapper js-acc-btn">
+            <button
+              class="footer__list-heading footer__list-acc-btn"
+              id="{{ link.title | handle }}-trigger-{{ forloop.index }}"
+              type="button"
+              aria-expanded="false"
+              aria-controls="{{ link.title | handle }}-menu-{{ forloop.index }}"
+            >
+              {{ link.title }}
+            </button>
+          </h3>
+          <div
+            class="footer__list-item footer__list-acc-content js-acc-menu"
+            id="{{ link.title | handle }}-menu-{{ forloop.index }}"
+            aria-labelledby="{{ link.title | handle }}-trigger-{{ forloop.index }}"
+          >
+            <ul class="footer__list footer__list--child footer__flex">
+              {%- for subLink in link.links -%}
+                {% assign globaleClass = '' %}
+                <li class="footer__list-item{{ globaleClass }}">
+                  <a class="footer__link" href="{{ subLink.url }}">
+                    {{ subLink.title }}
+                  </a>
+                </li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        </div>
+      {%- endfor -%}
+    </nav>
+    {%- render 'back-to-top-button' -%}
+    <div class="footer__sub">
+      <a href="https://www.moma.org/" target="_blank" class="footer__sub-moma-org-link">Visit MoMA.org</a>
+      <div class="footer__sub-colophon">
+        &copy; {{ 'now' | date: '%Y' }} MoMA Design Store All Rights Reserved.
+      </div>
+      <div class="footer__sub-nav">
+        <ul class="list-reset">
+          {%- for link in linklists.footer.links -%}
+            <li class="footer__sub-nav-item">
+              <a class="footer__sub-nav-link" href="{{ link.url }}">
+                {{ link.title | strip }}
+              </a>
+            </li>
+          {%- endfor -%}
+          {% if settings.show_privacy_settings_link %}
+            <li class="footer__sub-nav-item">
+              <a class="footer__sub-nav-link" href="#privacy-settings" data-privacy-settings-trigger>
+                {{ 'layout.footer.privacy_settings' | t }}
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+<aside
+  id="footerModal"
+  class="modal js-modal footer__modal"
+  aria-modal="true"
+  aria-hidden="true"
+>
+  <button id="modalCloseBackgroundButton" class="footer__modal-background-button" type="button"></button>
+  <div id="modalInner" class="modal__inner footer__modal-inner">
+    <button id="modalClose" type="button" class="modal__close btn-icon js-modal-close">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close-white"></i>
+    </button>
+    <iframe
+      class="js-iframe"
+      data-src="https://www.youtube.com/embed/{{ video_embed_id}}?playlist={{ video_embed_id}}&loop=1&rel=0"
+      title="YouTube video player"
+      frameborder="0"
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+      allowfullscreen
+    ></iframe>
+  </div>
+</aside>
+<div id="footerModalOverlay" class="modal-overlay"></div>
+
+{% if settings.show_privacy_settings_link %}
+  <script type="text/javascript">
+    const privacySettingsTrigger = document.querySelector('[data-privacy-settings-trigger]');
+    if (privacySettingsTrigger) {
+      privacySettingsTrigger.addEventListener('click', function (event) {
+        event.preventDefault();
+        window.__ucCmp.showFirstLayer();
+      });
+    }
+  </script>
+{% endif %}

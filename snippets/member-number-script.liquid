@@ -1,0 +1,49 @@
+{%- comment -%} Set cart.attributes['membership.member_number'] when logged in {%- endcomment -%}
+{% assign cart_member_number = cart.attributes['membership.member_number'] %}
+<script>
+  (() => {
+    const cartUrl = '{{ routes.root_url }}cart.js';
+    const fetchOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    };
+    const handleError = (error) => console.warn(error);
+    const memberNumberData = (memberNumber) => ({
+      attributes: {
+        'membership.member_number': memberNumber
+      }
+    });
+
+    {%- comment -%} Set cart.attributes['membership.member_number'] to null when logged out {%- endcomment -%}
+    {% if cart_member_number and customer == nil %}
+      fetch(cartUrl, {
+        ...fetchOptions,
+        body: JSON.stringify(memberNumberData(null))
+      }).catch(handleError);
+    {% endif %}
+
+    {%- comment -%} Set cart.attributes['membership.member_number'] when logged in {%- endcomment -%}
+    {% unless cart_member_number %}
+      {% if customer != nil %}
+      {% assign customer_member_number = customer.metafields.membership.member_number %}
+        fetch(cartUrl, {
+          ...fetchOptions,
+          body: JSON.stringify(memberNumberData('{{ customer_member_number }}'))
+        }).catch(handleError);
+      {% endif %}
+    {% endunless %}
+
+    {%- comment -%} Ensure member number is reset on Checkout logout {%- endcomment -%}
+    {% unless cart_member_number %}
+      {% if customer == nil and checkout != nil %}
+        fetch(cartUrl, {
+          ...fetchOptions,
+          body: JSON.stringify(memberNumberData(null))
+        }).catch(handleError);
+      {% endif %}
+    {% endunless %}
+
+  })();
+</script>

@@ -1,0 +1,15 @@
+{% render 'footer', hide_membership_section: section.settings.hide_membership_section %}
+
+{% schema %}
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "hide_membership_section",
+        "label": "Hide Membership Section",
+        "default": false
+      }
+    ]
+  }
+{% endschema %}

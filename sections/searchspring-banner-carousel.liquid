@@ -1,0 +1,183 @@
+{%- comment -%}
+  2-Up Featured Collections Section
+{%- endcomment -%}
+{% assign ss = section.settings %}
+<div class="banner-carousel" style="background-color:{{ ss.bg_color }}; color:{{ ss.text_color }}">
+  <div class="container">
+    <div class="banner-carousel__inner">
+      <div class="banner-carousel__copy">
+        {%- if ss.header -%}
+          <div class="banner-carousel__header">
+            {{ ss.header }}
+          </div>
+        {%- endif -%}
+        {%- if ss.body -%}
+          <div class="banner-carousel__body">
+            {{ ss.body }}
+          </div>
+        {%- endif -%}
+        {%- if ss.cta_link -%}
+          <div class="banner-carousel__cta">
+            <a type="button" class="btn btn--primary" href="{{ ss.cta_link }}">{{ ss.cta_text }}</a>
+          </div>
+        {%- endif -%}
+      </div>
+      {% render 'c-responsive-image', {
+        image: ss.image_1
+        image_class: 'banner-carousel-imag',
+        wrapper_class: 'banner-carousel__image-wrapper hide-mobile',
+        inline_ir: true,
+      } %}
+      {% render 'c-responsive-image', {
+        image: ss.image_2
+        image_class: 'banner-carousel-image',
+        wrapper_class: 'banner-carousel__image-wrapper hide-mobile',
+        inline_ir: true,
+      } %}
+    </div>
+    <div class="js-banner-carousel-products-grid banner-carousel__products-grid" data-collection-handle="{{ ss.collection_handle }}"></div>
+  </div>
+</div>
+<style>
+  #shopify-section-{{ section.id }} .banner-carousel__header {
+    font-size: {{ ss.font_size_heading_mobile }}px;
+  }
+
+  #shopify-section-{{ section.id }} .banner-carousel__cta .btn--primary {
+    background-color: {{ ss.cta_bg_color }};
+  }
+
+  #shopify-section-{{ section.id }} .banner-carousel__cta .btn--primary:hover {
+    background-color: {{ ss.cta_hover_bg_color }};
+  }
+
+  #shopify-section-{{ section.id }} .banner-carousel__body {
+    font-size: {{ ss.font_size_body_mobile }}px;
+  }
+
+  @media screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} .banner-carousel__header {
+      font-size: {{ ss.font_size_heading_desktop }}px;
+    }
+
+    #shopify-section-{{ section.id }} .banner-carousel__body {
+      font-size: {{ ss.font_size_heading_body }}px;
+    }
+  }
+</style>
+{% schema %}
+{
+  "name": "Gifts Banner Carousel",
+  "presets": [
+    {
+      "category": "Components",
+      "name": "Gifts Banner Carousel"
+    }
+  ],
+  "settings": [
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background Color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "color",
+      "id": "cta_bg_color",
+      "label": "CTA Background Color",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "cta_hover_bg_color",
+      "label": "CTA Hover Background Color",
+      "default": "#F5F5F5"
+    },
+    {
+      "type": "text",
+      "id": "header",
+      "label": "Header Text",
+      "default": "White Elephant Gifts"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Body Text",
+      "default": "<p>Lorem ipsum dolor sit amet consectetur.</p>"
+    },
+    {
+      "type": "text",
+      "id": "cta_text",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link",
+      "label": "CTA Link"
+    },
+    {
+      "type": "range",
+      "label": "Header Font Size (desktop)",
+      "id": "font_size_heading_desktop",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "label": "Header Font Size (mobile)",
+      "id": "font_size_heading_mobile",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "label": "Body Font Size (desktop)",
+      "id": "font_size_body_desktop",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "range",
+      "label": "Body Font Size (mobile)",
+      "id": "font_size_body_mobile",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "default": 28
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image",
+      "info": "An image is required (780px:922px recommended)."
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image 2",
+      "info": "An image is required (780px:922px recommended)."
+    },
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection_handle",
+      "label": "Collection"
+    }
+  ]
+}
+{% endschema %}

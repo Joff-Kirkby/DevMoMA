@@ -1,0 +1,13 @@
+{%- assign breadcrumbs = product.metafields.breadcrumbs.pdp.value -%}
+
+<div class="pv-breadcrumbs">
+  <ul class="pv-breadcrumbs__breadcrumb-list list-reset">
+    {% for b in breadcrumbs %}
+      <li class="pv-breadcrumbs__breadcrumb-item">
+        <a class="pv-breadcrumbs__breadcrumb-link" href="{{ b.url }}">
+          {{ b.text | strip }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>

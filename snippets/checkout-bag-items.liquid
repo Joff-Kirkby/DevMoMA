@@ -1,0 +1,58 @@
+{%- comment -%}
+  Checkout bag items
+  IMPORTANT: Changes to this file should be consistent with bag.liquid
+{%- endcomment -%}
+
+{% assign is_member = false %}
+{% if customer.tags contains 'moma-membership-active' and customer %}
+  {% assign is_member = true %}
+{% endif %}
+
+{% assign has_membership_in_cart = false %}
+
+{%- for num in (0..9) -%}
+  {%- for discount_application in checkout.discount_applications -%}
+    {%- assign membership_starts_with = 'M' | append: num -%}
+    {%- assign discount_starts_with = discount_application.title | slice: 0, 2 -%}
+
+    {%- if discount_starts_with == membership_starts_with -%}
+      {%- assign is_member = true -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+{% assign regular_items_array = '' | split: '' %}
+{% assign special_delivery_items_array = '' | split: '' %}
+{% assign item_count = 0 %}
+
+{%- for item in checkout.line_items -%}
+  {%- assign item_array = checkout.line_items | where: 'key', item.key -%}
+  {%- assign ship_from_vendor = item.variant.metafields.teamwork.shipfromvendor | downcase -%}
+  {%- assign shipping_lead_time = item.variant.metafields.teamwork.shippingleadtime.value | default: item.variant.metafields.teamwork.shippingleadtime -%}
+  {%- if ship_from_vendor == 'ok' and shipping_lead_time != blank -%}
+    {%- assign special_delivery_items_array = special_delivery_items_array | concat: item_array -%}
+  {%- else -%}
+    {%- assign regular_items_array = regular_items_array | concat: item_array -%}
+  {%- endif -%}
+
+  {%- assign line_item_qty = item.quantity -%}
+  {%- assign item_count = item_count | plus: line_item_qty -%}
+
+  {%- if item.product.tags contains 'Department:REGULAR MEMBERSHIP' -%}
+    {%- assign has_membership_in_cart = true -%}
+  {%- endif -%}
+{%- endfor -%}
+
+<div class="checkout-bag-items">
+  <table cellspacing="0" cellpadding="0">
+    <thead class="bag__headings" aria-hidden="true">
+      <tr>
+        <th class="screenreader">Items ({{ item_count }})</th>
+        <th class="screenreader"></th>
+        <th class="screenreader">Item Price</th>
+        <th class="screenreader">Qty</th>
+        <th class="screenreader">Total</th>
+      </tr>
+    </thead>
+  </table>
+</div>

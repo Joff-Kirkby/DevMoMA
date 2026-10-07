@@ -1,0 +1,25 @@
+{% comment %}
+  Yotpo reviews widget, rendered by the Product Reviews section. Never rendered
+  on the e-gift-card template.
+{% endcomment %}
+{% if settings.yotpo_enable %}
+{% unless template contains 'e-gift-card' %}
+<section class="pv-reviews js-pv-reviews">
+  <div class="pv-reviews__header">
+    <h2 class="pv-reviews__title">Reviews</h2>
+  </div>
+  <div class="pv-reviews__reviews pv-yotpo">
+    <div
+      id="yotpoLoaded"
+      class="yotpo yotpo-main-widget yotpo-custom"
+      data-product-id="{{ product.id }}"
+      data-name="{{ product.title | escape }}"
+      data-url="{{ shop.url }}{{ product.url }}"
+      data-image-url="{{ product.featured_image | product_img_url: "large" |replace: '?', '%3F' | replace: '&','%26'}}"
+      data-description="{{ product.description | escape }}"
+    >
+    </div>
+  </div>
+</section>
+{% endunless %}
+{% endif %}

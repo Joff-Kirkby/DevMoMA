@@ -1,0 +1,14 @@
+{%- comment -%}
+  Quote
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="quote container">
+  <figure>
+    <blockquote class="quote__figure-blockquote">
+      {{ ss.quote }}
+    </blockquote>
+    <figcaption class="quote__figure-quoter">{{ ss.quoter }}</figcaption>
+  </figure>
+</section>

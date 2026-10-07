@@ -1,0 +1,91 @@
+{% comment %}
+  Membership Upsell Product
+
+  @param upsell_product {Object} - Product object
+  @param description {String} - Product description
+  @param type {String} - Product type (one or two)
+  @param number {String} - Product number (1, 2, or 3) to be used in the IDs of the input fields
+{% endcomment %}
+
+{% if upsell_product %}
+  <li class="membership-upsell__products-list-item js-membership-upsell-list-item">
+    {% assign variant = upsell_product.variants | first %}
+    {% assign type_num = 1 %}
+    {% if type == 'two' %}
+      {% assign type_num = 2 %}
+    {% endif %}
+    <div class="membership-upsell__products-list-item-form">
+      <div class="radio radio--label-top">
+        <input class="js-membership-upsell-product" id="membershipUpsellProduct{{ number }}" type="radio" name="id" value="{{ variant.id }}"{% if checkout.id != blank  %} data-product-handle="{{ upsell_product }}"{% endif %}/>
+        <label for="membershipUpsellProduct{{ number }}">
+          <div class="membership-upsell__products-list-item-title js-membership-upsell-title">
+            {{ upsell_product.title }} - {{ upsell_product.price | money_without_trailing_zeros }}
+          </div>
+          <div class="membership-upsell__products-list-item-description">
+            {{ description }}
+          </div>
+        </label>
+      </div>
+      <ul class="form-list membership-upsell__products-form-list js-membership-upsell-form-list">
+        <input class="js-membership-upsell-input-other" type="hidden" name="quantity" value="1" disabled>
+        <li class="membership-upsell__products-form-list-label">
+          Please enter your first and last name.
+        </li>
+        <li class="form-item first-name-item">
+          <div class="input-placeholder input-placeholder--gray">
+            <input class="input input--gray js-membership-upsell-input" id="firstName{{ number }}" type="text" name="properties[firstName1]" minlength="1" required disabled>
+            <label class="label js-membership-upsell-label" for="firstName{{ number }}">
+              First Name
+            </label>
+          </div>
+        </li>
+        <li class="form-item last-name-item">
+          <div class="input-placeholder input-placeholder--gray">
+            <input class="input input--gray js-membership-upsell-input" id="lastName{{ number }}" type="text" name="properties[lastName1]" minlength="1" required disabled>
+            <label class="label js-membership-upsell-label" for="lastName{{ number }}">
+              Last Name
+            </label>
+          </div>
+        </li>
+        {% if type_num > 1 %}
+          <li class="membership-upsell__products-form-list-label">
+            Secondary Cardholder (Optional):
+          </li>
+          <li class="form-item first-name-item">
+            <div class="input-placeholder input-placeholder--gray">
+              <input class="input input--gray js-membership-upsell-input" id="firstName{{ number }}Member2" type="text" name="properties[firstName2]" minlength="1" disabled>
+              <label class="label js-membership-upsell-label" for="firstName{{ number }}Member2">
+                First Name
+              </label>
+            </div>
+          </li>
+          <li class="form-item last-name-item">
+            <div class="input-placeholder input-placeholder--gray">
+              <input class="input input--gray js-membership-upsell-input" id="lastName{{ number }}Member2" type="text" name="properties[lastName2]" minlength="1" disabled>
+              <label class="label js-membership-upsell-label" for="lastName{{ number }}Member2">
+                Last Name
+              </label>
+            </div>
+          </li>
+          <li class="form-item last-name-item">
+            <div class="input-placeholder input-placeholder--gray">
+              <input class="input input--gray js-membership-upsell-input" id="email{{ number }}Member2" type="email" name="properties[email2]" minlength="1" disabled>
+              <label class="label js-membership-upsell-label" for="email{{ number }}Member2">
+                Email
+              </label>
+            </div>
+            <input class="js-membership-upsell-input-other" type="hidden" name="properties[_newsletterPreferenceMember2]" value="true" disabled>
+          </li>
+        {% endif %}
+        <li class="form-item form-item--center form-item--full-width hide">
+          <div class="input-wrapper checkbox">
+            <input class="input input-checkbox js-membership-upsell-input-other" id="autoRenew{{ number }}" type="checkbox" name="properties[_autoRenew]" value="false" disabled>
+            <label class="input-checkbox-label membership-upsell__products-form-list-label" for="autoRenew{{ number }}">
+              Auto-renew my membership anually
+            </label>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </li>
+{% endif %}

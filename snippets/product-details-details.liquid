@@ -1,0 +1,111 @@
+<div
+  class="pv-details__content-section pv-details__content-section-details js-product-details-content-section"
+  data-details-section-title="{{ details_title }}"
+>
+  <ul class="pv-details__content-section-details-list list-reset">
+    {%- comment -%} Designer {%- endcomment -%}
+    {% if detail_designer != blank %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Designer
+        </div>
+        <div class="pv-details__content-section-details-item value">
+          {{ detail_designer }}
+        </div>
+      </li>
+    {% endif %}
+    {%- comment -%} Size {%- endcomment -%}
+    {% if detail_size != blank %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Size
+        </div>
+        <div class="pv-details__content-section-details-item value">
+          {{ detail_size }}
+        </div>
+      </li>
+    {% endif %}
+    {%- comment -%} Material {%- endcomment -%}
+    {% if detail_material != blank %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Material
+        </div>
+        <div class="pv-details__content-section-details-item value">
+          {{ detail_material }}
+        </div>
+      </li>
+    {% endif %}
+    {%- comment -%} Year of Design {%- endcomment -%}
+    {% if detail_year != blank %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Year of Design
+        </div>
+        <div class="pv-details__content-section-details-item value">
+          {{ detail_year }}
+        </div>
+      </li>
+    {% endif %}
+    {% if detail_origin != blank %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Origin
+        </div>
+        <div class="pv-details__content-section-details-item value">
+          {{ detail_origin }}
+        </div>
+      </li>
+    {% endif %}
+    {% if detail_age != blank  %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Age
+        </div>
+        <div class="pv-details__content-section-details-item value">
+         {{ detail_age }}
+        </div>
+      </li>
+    {% endif %}
+    {% if detail_choking_hazard == true %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Warning
+        </div>
+        <div class="pv-details__content-section-details-item value">
+          Choking Hazard — Item contains small parts. Not for children under 3.
+        </div>
+      </li>
+    {% endif %}
+    {% if detail_pages != blank  %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Pages
+        </div>
+        <div class="pv-details__content-section-details-item value">
+         {{ detail_pages }}
+        </div>
+      </li>
+    {% endif %}
+    {% if detail_publisher != blank  %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Publisher
+        </div>
+        <div class="pv-details__content-section-details-item value">
+         {{ detail_publisher }}
+        </div>
+      </li>
+    {% endif %}
+    {% if detail_author != blank  %}
+      <li class="pv-details__content-section-details-item">
+        <div class="pv-details__content-section-details-item-label">
+          Author
+        </div>
+        <div class="pv-details__content-section-details-item value">
+         {{ detail_author }}
+        </div>
+      </li>
+    {% endif %}
+  </ul>
+</div>

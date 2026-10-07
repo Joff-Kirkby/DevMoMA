@@ -1,0 +1,56 @@
+{%- comment -%}
+  Banner Multi-Asset Section
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section id="section-{{ section.id }}" class="banner-multi-asset container">
+  {%- if ss.url -%}
+    <a href="{{ ss.url }}" class="banner-multi-asset__link">
+  {%- else -%}
+    <div>
+  {%- endif -%}
+    <div class="banner-multi-asset__image-wrapper">
+      {% if ss.skinny_image_desktop != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.skinny_image_desktop,
+          wrapper_class: 'banner-multi-asset__image banner-multi-asset__image--skinny desktop-only',
+        } %}
+      {% endif %}
+      {% if ss.large_image_desktop != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.large_image_desktop,
+          wrapper_class: 'banner-multi-asset__image banner-multi-asset__image--large desktop-only',
+        } %}
+      {% endif %}
+      {% if ss.skinny_image_tablet != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.skinny_image_tablet,
+          wrapper_class: 'banner-multi-asset__image banner-multi-asset__image--skinny tablet-only',
+        } %}
+      {% endif %}
+      {% if ss.large_image_tablet != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.large_image_tablet,
+          wrapper_class: 'banner-multi-asset__image banner-multi-asset__image--large tablet-only',
+        } %}
+      {% endif %}
+      {% if ss.skinny_image_mobile != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.skinny_image_mobile,
+          wrapper_class: 'banner-multi-asset__image banner-multi-asset__image--skinny phone-only',
+        } %}
+      {% endif %}
+      {% if ss.large_image_mobile != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.large_image_mobile,
+          wrapper_class: 'banner-multi-asset__image banner-multi-asset__image--large phone-only',
+        } %}
+      {% endif %}
+    </div>
+  {%- if ss.url -%}
+    </a>
+  {%- else -%}
+    </div>
+  {%- endif -%}
+</section>

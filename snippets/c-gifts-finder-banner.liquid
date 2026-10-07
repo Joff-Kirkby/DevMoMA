@@ -1,0 +1,132 @@
+{%- comment -%}
+  Gifts Finder Banner Section
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+{% if ss.finder_hover_cta_style == 'transparent_background' %}
+  {% assign hover_text_color = '#000' %}
+  {% assign hover_background_color = 'transparent' %}
+{% endif %}
+
+{% if ss.finder_hover_cta_style == 'black_background' %}
+  {% assign hover_text_color = '#FFF' %}
+  {% assign hover_background_color = '#000' %}
+{% endif %}
+
+{% if ss.finder_content_position_horizontal_desktop == 'left' %}
+  {% assign left = '0' %}
+  {% assign right = 'unset' %}
+{% endif %}
+
+{% if ss.finder_content_position_horizontal_desktop == 'center' %}
+  {% assign left = '33%' %}
+  {% assign right = 'unset' %}
+{% endif %}
+
+{% if ss.finder_content_position_horizontal_desktop == 'right' %}
+  {% assign left = 'unset' %}
+  {% assign right = '0' %}
+{% endif %}
+
+{% if ss.finder_background_color != blank %}
+  {% assign background_color = ss.finder_background_color %}
+{% else %}
+  {% assign background_color = 'transparent' %}
+{% endif %}
+
+<section class="finder">
+  <style>
+    .gifts-finder-banner .finder {
+      background-color: {{ background_color }};
+    }
+
+    .finder__item-content__cta.finder__item-content__cta--hover p:hover,
+    .finder__item-content__cta.finder__item-content__cta--hover p:focus {
+      color: {{ hover_text_color }} !important;
+      background-color: {{ hover_background_color }} !important;
+      outline: 2px solid #000 !important;
+    }
+
+    @media only screen and (max-width: 1024px) {
+      .finder__item-content {
+        justify-content: {{ ss.finder_content_position_vertical_mobile }};
+      }
+
+      .finder__item-content__sub-heading {
+        text-align: {{ ss.finder_sub_heading_position_mobile }};
+      }
+
+      .finder__item-content__heading {
+        text-align: {{ ss.finder_heading_position_mobile }};
+      }
+
+      .finder__item-content__body-text {
+        text-align: {{ ss.finder_body_text_position_mobile }};
+      }
+
+      .finder__item-content__cta {
+        text-align: {{ ss.finder_cta_position_mobile }};
+      }
+    }
+
+    @media only screen and (min-width: 1025px) {
+      .finder__item-content {
+        left: {{ left }};
+        right: {{ right }};
+      }
+
+      .finder__item-content__sub-heading {
+        text-align: {{ ss.finder_sub_heading_position_desktop }};
+      }
+
+      .finder__item-content__heading {
+        text-align: {{ ss.finder_heading_position_desktop }};
+      }
+
+      .finder__item-content__body-text {
+        text-align: {{ ss.finder_body_text_position_desktop }};
+      }
+
+      .finder__item-content__cta {
+        text-align: {{ ss.finder_cta_position_desktop }};
+      }
+    }
+  </style>
+  <a
+    class="finder__item"
+    href="{{ ss.finder_cta_url }}"
+  >
+    <div class="finder__item-content">
+      <div class="finder__item-content__header-container">
+        {% if ss.finder_sub_heading_text != blank %}
+          <div class="finder__item-content__sub-heading" style="color: {{ ss.finder_sub_heading_color }};">
+            <p>{{ ss.finder_sub_heading_text | newline_to_br }}</p>
+          </div>
+        {% endif %}
+        {% if ss.finder_heading_text != blank %}
+          <div class="finder__item-content__heading" style="color: {{ ss.finder_heading_color }};">
+            <p>{{ ss.finder_heading_text | newline_to_br }}</p>
+          </div>
+        {% endif %}
+      </div>
+      {% if ss.finder_body_text != blank %}
+        <div class="finder__item-content__body-text" style="color: {{ ss.finder_body_text_color }};">
+          <p>{{ ss.finder_body_text | newline_to_br }}</p>
+        </div>
+      {% endif %}
+      {% if ss.finder_cta_text != blank %}
+        <div
+          class="finder__item-content__cta{% if ss.finder_cta_type == 'static' %} finder__item-content__cta--static{% endif %}{% if ss.finder_cta_type == 'hover' %} finder__item-content__cta--hover{% endif %}"
+        >
+          <p
+            style="{% if ss.finder_cta_type == 'static' %}color: {{ ss.finder_cta_static_text_color }}; background-color: {{ ss.finder_cta_static_background_color }};{% endif %}
+            {% if ss.finder_cta_type == 'hover' %}color: {{ ss.finder_cta_hover_text_color }}; background-color: {{ ss.finder_cta_hover_background_color }};{% endif %}"
+          >
+            {{ ss.finder_cta_text}}
+          </p>
+        </div>
+      {% endif %}
+    </div>
+  </a>
+</section>

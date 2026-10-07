@@ -1,0 +1,39 @@
+{% comment %}
+  Stores Main
+{% endcomment %}
+
+{% assign meta = page.metafields.store %}
+
+<div class="stores-list">
+  {% for group in meta.stores_list.value %}
+    <div class="our-stores__header">
+      <h2 class="our-stores__hdg">{{ group.group }}</h2>
+    </div>
+    {% for handle in group.store_handles %}
+      {% assign page_meta =  pages[handle].metafields.store %}
+      <div class="stores-list__content">
+        {% if page_meta.image.value %}
+          <div class="stores-list__content-image">
+            {% render 'c-responsive-image', {
+              image: page_meta.image.value,
+              inline_ir: true,
+            } %}
+          </div>
+        {% endif %}
+        <div class="stores-list__content-text">
+          <h3 class="stores-list__content-name">{{ page_meta.page_title }}</h3>
+          <p>{{ page_meta.description }}</p>
+          {% if page_meta.details_text %}
+            <a href="/pages/{{ handle }}" class="stores-list__content-link">{{ page_meta.details_text }}</a>
+          {% endif %}
+          {% if page_meta.details_text and page_meta.events_text %}
+            <span class="stores-list__content-separator">|</span>
+          {% endif %}
+          {% if page_meta.events_text %}
+            <a href="/pages/stores-events" class="stores-list__content-link">{{ page_meta.events_text }}</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  {% endfor %}
+</div>

@@ -1,0 +1,41 @@
+{% comment %}
+  Product video modal
+
+  Uses native HTML <dialog> element for built-in accessibility:
+  focus trapping, background isolation, Escape key, focus restore.
+
+  @param {string} youtube_video_id - YouTube video ID
+{% endcomment %}
+
+{%- assign youtube_video_id = product.metafields.teamwork.youtubevideoid.value | default: youtube_video_id -%}
+{% if youtube_video_id == blank %}
+  {% assign youtube_video_id = product.metafields.teamwork.YoutubeVideoID.value  %}
+{% endif %}
+
+{% if youtube_video_id %}
+  <dialog
+    id="productVideoModal"
+    class="pv-video__dialog"
+    aria-label="{{ 'products.product.video_modal_label' | t }}"
+  >
+    <div class="pv-video__dialog-inner">
+      <button
+        type="button"
+        id="productVideoModalClose"
+        class="pv-video__dialog-close btn-icon"
+        autofocus
+      >
+        <span class="screenreader">{{ 'products.product.video_modal_close' | t }}</span>
+        <i class="icon icon--close-white"></i>
+      </button>
+      <iframe
+        class="js-iframe"
+        data-src="https://www.youtube.com/embed/{{ youtube_video_id }}?playlist={{ youtube_video_id }}&loop=1&rel=0"
+        title="{{ 'products.product.video_modal_iframe_title' | t }}"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </dialog>
+{% endif %}

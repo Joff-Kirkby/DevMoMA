@@ -1,0 +1,23 @@
+{%- if settings.bag_oos_modal_enabled -%}
+<aside id="cartOOSModal" class="modal cart-oos__modal">
+  <button id="cartOOSModalBackgroundClose" class="cart-oos__modal-background-button modal__background-button js-modal-close" type="button"></button>
+  <div id="cartOOSModalInner" class="modal__inner cart-oos__modal-inner">
+    <button id="cartOOSModalClose" type="button" class="modal__close btn-icon js-modal-close">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div class="cart-oos__header">
+      <h3 class="cart-oos__header-title">{{ settings.bag_oos_modal_title }}</h3>
+      <h4 class="cart-oos__header-subtitle">{{ settings.bag_oos_modal_subtitle }}</h4>
+    </div>
+    <div class="cart-oos__content">
+      <!-- JS based content -->
+    </div>
+    <div class="cart-oos__links">
+      <button id="js-modal-remove" class="bag__action bag__checkout btn btn--quinary btn--full" type="button">Remove</button>
+      <button class="btn btn-icon btn-icon--with-text cart-oos__text-underline cart-oos__text-underline--center js-modal-close" type="button">Continue</button>
+    </div>
+  </div>
+</aside>
+<div id="cartOOSModalOverlay" class="modal-overlay"></div>
+{%- endif -%}

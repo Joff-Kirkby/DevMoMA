@@ -1,0 +1,38 @@
+{% comment %}
+  Our Stores Events
+  @param {Object} payload
+{% endcomment %}
+
+<div class="os-events">
+  <div class="os-events__header">
+    <h1 class="os-events__hdg">{{ payload.event_header }}</h1>
+  </div>
+
+  {% assign events = payload.events | sort: "date" %}
+  {% assign today_date = 'now' | date: '%s' | times: 1 %}
+
+  {% for event in events %}
+    {% assign event_date = event.date | date: '%s'  | times: 1 %}
+    {% if today_date < event_date %}
+      <div class="os-events__main">
+        <div class="os-events__main-image">
+          {% assign meta_image = event.image %}
+          {% assign store_image = images[meta_image] %}
+          {% render 'c-responsive-image', {
+            image: store_image,
+            inline_ir: true,
+          } %}
+        </div>
+        <div class="os-events__main-content">
+          <h3 class="os-events__main-header">{{ event.title }}</h3>
+          <p class="os-events__main-description">{{ event.description_1 }}</p>
+          <p class="os-events__main-description">{{ event.description_2 }}</p>
+          {% if event.description_link_url and event.description_link_text %}
+            <a href={{ event.description_link_url }} class="os-events__main-description-link">{{ event.description_link_text }}</a>
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  {% endfor %}
+
+</div>

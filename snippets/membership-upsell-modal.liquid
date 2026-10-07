@@ -1,0 +1,53 @@
+<aside id="membershipUpsellModal" class="modal membership-upsell__modal">
+  <button id="membershipUpsellModalBackgroundClose" class="membership-upsell__modal-background-button modal__background-button js-modal-close" type="button"></button>
+  <div id="membershipUpsellModalInner" class="modal__inner membership-upsell__modal-inner">
+    <button id="membershipUpsellModalClose" type="button" class="modal__close btn-icon js-modal-close">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div class="membership-upsell__header">
+      <h3 class="membership-upsell__header-title">{{ settings.membership_upsell_title }}</h3>
+      <h4 class="membership-upsell__header-subtitle">{{ settings.membership_upsell_subtitle }}</h4>
+    </div>
+    <form id="membershipUpsellForm" class="membership-upsell__form">
+      <div class="membership-upsell__products">
+        <ul class="membership-upsell__products-list list-reset">
+          {% render 'c-membership-upsell-product', {
+            upsell_product: settings.membership_product_upsell_1,
+            description: settings.membership_product_upsell_1_description,
+            type: settings.membership_product_upsell_1_type,
+            number: '1',
+          } %}
+          {% render 'c-membership-upsell-product', {
+            upsell_product: settings.membership_product_upsell_2,
+            description: settings.membership_product_upsell_2_description,
+            type: settings.membership_product_upsell_2_type,
+            number: '2',
+          } %}
+          {% render 'c-membership-upsell-product', {
+            upsell_product: settings.membership_product_upsell_3,
+            description: settings.membership_product_upsell_3_description,
+            type: settings.membership_product_upsell_3_type,
+            number: '3',
+          } %}
+        </ul>
+      </div>
+      <div class="membership-upsell__btn-wrap">
+        <button class="btn btn--quinary membership-upsell__btn" type="submit">Add Membership</button>
+        <button class="btn btn-icon btn-icon--with-text membership-upsell__text-underline js-modal-close" type="button">Cancel</button>
+      </div>
+      <div class="membership-upsell__links">
+        <a class="membership-upsell__text-underline" href="{% render 'h-href', href: '/pages/memberships' %}">
+          View All Memberships
+        </a>
+      </div>
+    </form>
+    <div class="membership-upsell__content">
+      {{ settings.membership_upsell_bottom_content }}
+    </div>
+    <div class="membership-upsell__links">
+      <button class="btn btn-icon btn-icon--with-text membership-upsell__text-underline membership-upsell__text-underline--center js-modal-close" type="button">Cancel</button>
+    </div>
+  </div>
+</aside>
+<div id="membershipUpsellModalOverlay" class="modal-overlay"></div>

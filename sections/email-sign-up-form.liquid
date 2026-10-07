@@ -1,0 +1,78 @@
+{% if section.settings.image %}
+  <a href="{{ section.settings.url }}">
+    {% render 'c-responsive-image', {
+      image: section.settings.image,
+      inline_ir: true,
+    } %}
+  </a>
+{% endif %}
+<div class="email-signup__title">{{ section.settings.title }}</div>
+<div class="email-signup__note">
+  <div class="email-signup__description">
+    {{ section.settings.description }}
+  </div>
+</div>
+<div class="email-signup__container">
+  <div class="email-signup__required-note">{{ section.settings.required_text }}</div>
+</div>
+<div class="email-signup__form">
+  {% render 'email-signup-form' %}
+</div>
+
+{% schema %}
+{
+  "name": "Email Sign Up Form",
+  "tag": "section",
+  "class": "email-signup",
+  "settings": [
+    {
+      "type": "text",
+      "id": "api_endpoint",
+      "label": "API Endpoint",
+      "default": "https://moma-emarsys.netlify.app/api/contact/add"
+    },
+    {
+      "type": "text",
+      "id": "api_source",
+      "label": "API Source",
+      "info": "This is only needed if you need to specific source. Example: 5L or etc.;"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image",
+      "info": "Format: JPG or GIF. Recommended dimensions: width: 1280px; height: 500px;"
+    },
+    {
+      "type": "url",
+      "id": "url",
+      "label": "Url"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "LEGO® Ideas The Starry Night"
+    },
+    {
+      "type": "richtext",
+      "id": "description",
+      "label": "Description",
+      "default": "<p>Conceived by a LEGO Ideas fan, this set lets you reimagine van Gogh’s The Starry Night in LEGO bricks. Sign up for our emails to be the first to shop this exciting launch on June 1.</p>"
+    },
+    {
+      "type": "text",
+      "id": "required_text",
+      "label": "Required Text",
+      "default": "(All fields required unless marked as optional)"
+    }
+  ],
+  "blocks": [],
+  "presets": [
+    {
+      "name": "Email Sign Up Form",
+      "blocks": []
+    }
+  ]
+}
+{% endschema %}

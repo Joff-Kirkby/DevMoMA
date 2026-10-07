@@ -1,0 +1,115 @@
+<header
+  class="header"
+  id="header"
+  data-cy="header"
+>
+  <div class="header__container container">
+    <div class="header__hamburger-menu-wrapper tablet-only">
+      <button
+        class="header__hamburger-menu-btn btn-icon js-mobile-nav-trigger"
+        type="button"
+      >
+        <i class="icon icon--menu js-mobile-nav-icon"></i>
+      </button>
+    </div>
+    {%- if request.page_type == 'index' -%}
+      <h1>
+    {%- endif -%}
+    <div class="header__logo">
+      <a
+        class="header__logo-link"
+        href="{{ routes.root_url }}"
+      >
+        <i class="header__icon icon icon--logo">
+          <span class="screenreader">{{ shop.name }}</span>
+        </i>
+      </a>
+    </div>
+    {%- if request.page_type == 'index' -%}
+      </h1>
+    {%- endif -%}
+    <div class="header__right">
+      <div
+        class="header__search-container hide-phone"
+        id="searchContainer"
+      >
+        {%- render 'search-form', is_mobile: false -%}
+      </div>
+
+      <a
+        class="header__account-btn btn btn-icon"
+        href="{{ routes.account_url }}"
+        aria-label="{{ 'layout.customer.account' | t }}"
+      >
+        <i class="icon icon--account"></i>
+      </a>
+
+      <div class="header__wishlist-btn-wrapper">
+        <a
+          class="header__wishlist-btn btn btn-icon"
+          href="/apps/wishlist"
+          aria-label="{{ 'general.header.wishlist' | t }}"
+        >
+          <i class="icon icon--wishlist"></i>
+        </a>
+        <span
+          class="header__wishlist-count"
+          id="wishlistBtnCount"
+          aria-hidden="true"
+          hidden
+        ></span>
+      </div>
+
+      <div class="header__cart-btn-wrapper">
+        <a
+          class="header__cart-btn"
+          href="{{ routes.cart_url }}"
+          {% unless template == 'cart' %}
+            data-open-mini-cart
+          {% endunless %}
+        >
+          <i class="icon icon--cart"></i>
+        </a>
+        <span
+          class="header__cart-count"
+          id="bagBtnCount"
+        ></span>
+      </div>
+      <div class="header__hamburger-menu-wrapper phone-only">
+        <button
+          class="header__hamburger-menu-btn btn-icon js-mobile-nav-trigger"
+          type="button"
+        >
+          <i class="icon icon--menu js-mobile-nav-icon"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div
+    class="header__search-container phone-only"
+    id="mobileSearchContainer"
+  >
+    {%- render 'search-form', is_mobile: true -%}
+  </div>
+
+  {% render 'nav' %}
+  {% render 'mobile-nav' %}
+  {% render 'search-menu' %}
+  {% render 'mobile-exposed-nav' %}
+</header>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const cartIconCount = document.querySelector('#bagBtnCount');
+    window.addEventListener('cartItemCountUpdated', (event) => {
+      if (!cartIconCount) return;
+      cartIconCount.textContent = event.detail.itemCount !== 0 ? event.detail.itemCount : '';
+    });
+    // Set header height to css variable
+    const header = document.querySelector('.header');
+    if (header) {
+      const headerHeight = header.offsetHeight;
+      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    }
+  });
+</script>

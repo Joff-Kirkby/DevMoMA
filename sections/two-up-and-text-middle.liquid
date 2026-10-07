@@ -1,0 +1,57 @@
+{%- comment -%}
+  2-Up + Text Middle Section
+{%- endcomment -%}
+
+{% render 'c-two-up-and-text-middle', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "2-Up + Text Middle",
+    "settings": [
+      {
+        "type": "header",
+        "content": "2-Up + Text Middle"
+      },
+      {
+        "type": "text",
+        "id": "headline",
+        "label": "Headline"
+      },
+      {
+        "type": "richtext",
+        "id": "text",
+        "label": "Text"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "URL",
+        "info": "For CTA/Image"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Format: JPG. Recommended dimensions: width: 800px; height: 800px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "image_2",
+        "label": "Image 2",
+        "info": "Format: JPG. Recommended dimensions: width: 800px; height: 800px;"
+      }
+    ],
+    "presets": [
+      {
+        "name": "2-Up + Text Middle"
+      }
+    ]
+  }
+{% endschema %}

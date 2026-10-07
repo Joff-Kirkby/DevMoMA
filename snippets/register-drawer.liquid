@@ -1,0 +1,122 @@
+<div id="registerDrawer" class="register-drawer">
+  <div class="register-drawer__inner-wrapper">
+    <div class="register-drawer__header">
+      <h3 class="register-drawer__heading">Create an Account</h3>
+      <span class="register-drawer__heading-info">All fields are required.</span>
+
+      <button class="register-drawer__close-icon js-rewards-login-close" type="button">
+        <span class="screenreader">Close Drawer</span>X
+      </button>
+    </div>
+
+    <h4 class="register-drawer__form-heading">Enter Email</h4>
+
+    <form id="create_customer" class="ac-form-col" autocomplete="off">
+      <ul class="form-list">
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper js-email-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerEmail"
+              type="email"
+              name="Email"
+              autocorrect="off"
+              autocapitalize="off"
+              minlength="5"
+              maxlength="255"
+              required
+              pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+            >
+            <label class="js-acc-sign-up-label label" for="registerEmail">
+              {{ 'customer.register.email' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item form-item--password">
+          <div class="input-placeholder js-acc-sign-up-wrapper js-password-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerPassword"
+              type="password"
+              name="Password"
+              minlength="8"
+              required
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+            >
+            <label class="js-acc-sign-up-label label" for="registerPassword">
+              {{ 'customer.register.password' | t }}
+            </label>
+            <button
+              class="password-requirements"
+              id="acRegisterModalBtn"
+              type="button"
+            >Password Requirements</button>
+            {%- render 'account-registration-modal' -%}
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerPasswordConfirm"
+              type="password"
+              name="Password"
+              minlength="8"
+              required
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+            >
+            <label class="js-acc-sign-up-label label" for="registerPasswordConfirm">
+              {{ 'customer.register.confirm_password' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item form-item--center form-item--full-width">
+          <div class="input-wrapper checkbox">
+            <input
+              id="addToList"
+              class="input input-checkbox"
+              type="checkbox"
+              name="customer[emailList]"
+            >
+            <label class="input-checkbox-label" for="addToList">
+              Please add me to MoMA Design Store email list
+            </label>
+          </div>
+        </li>
+        <li class="form-item form-item--center form-item--full-width">
+          <div class="terms-item">
+            By signing up via email, you agree to receive recurring automated promotional emails from MoMA Design Store at the email address used when signing up. Consent is not a condition of any purchase.
+          </div>
+        </li>
+        <li class="form-item ac-form-action">
+          <button class="btn btn--quinary btn--full btn-submit" id="registerSubmit" type="submit">
+            {{ 'customer.register.submit' | t }}
+          </button>
+        </li>
+        <li class="form-item form-item--center form-item--account">
+          <div class="terms-item">
+            By clicking "Create Account" you agree to the MoMA Design Store Rewards program terms & conditions. See our <a class="terms-item__link" href="https://www.moma.org/about/about-this-site/?_gl=1*1gskvfg*_ga*MTIwNzY2MzU2NS4xNjcwNzk0MzQ1*_ga_8QY3201SLC*MTY3MTU3MzY0MS45LjEuMTY3MTU3OTg4NC4wLjAuMA..#privacy-policy">Privacy Policy</a> for details about our information practices.
+          </div>
+        </li>
+        <li class="form-item form-item--center form-item--account">
+          <div class="ac-btn-link button-link">
+            Already have an account? Login <a href="{% render 'h-auth0-url' %}" class="login-btn">here.</a>
+          </div>
+        </li>
+        <li class="form-item form-item--sso">
+          <p class="sso-text">or, create or login to your account using...</p>
+          <div class="button-wrapper">
+            <button class="btn--empty btn--apple js-apple-auth" type="button">
+              <img src="https://cdn.shopify.com/s/files/1/0623/7962/2630/files/appleid_shadow.png?v=1656659758" alt="temp apple">
+            </button>
+            <button class="btn--empty js-google-auth" type="button">
+              <img src="https://cdn.shopify.com/s/files/1/0623/7962/2630/files/btn_google_signin_light_normal_web_2x_704f85c7-74b1-4264-a00f-14028438100f.png?v=1656599086" alt="temp google">
+            </button>
+          </div>
+        </li>
+      </ul>
+    </form>
+  </div>
+</div>
+
+<div class="register-drawer-blocker js-rewards-login-close js-register-drawer-blocker"></div>

@@ -1,0 +1,66 @@
+{%- comment -%}
+  @param {string} title
+  @param {string} store_links
+  @param {string} store_links_title
+  @param {string} wrapper_id
+{%- endcomment -%}
+
+<aside class="cp-nav"{% if wrapper_id != blank %} id="{{- wrapper_id -}}"{% endif %}>
+  <h2 class="cp-nav__heading">{{ title }}</h2>
+  <h3 class="acc__btn-wrapper cp-nav__acc-btn-wrapper js-acc-btn">
+    <button
+      class="cp-nav__acc-btn"
+      id="{{ store_links_title | handle }}-trigger"
+      type="button"
+      aria-expanded="false"
+      aria-controls="{{ store_links_title | handle }}-menu"
+    >
+      {{ store_links_title }}
+    </button>
+  </h3>
+  {% comment %} <button
+    class="cp-nav__acc-btn js-acc-btn"
+    type="button"
+  >
+    {{ store_links_title }}
+  </button> {% endcomment %}
+  <div
+    class="cp-nav__accordion-menu js-acc-menu"
+    id="{{ store_links_title | handle }}-menu"
+    aria-labelledby="{{ store_links_title | handle }}-trigger"
+  >
+    <div class="cp-nav-settings__link-container">
+      <ul class="cp-nav-settings__list">
+        {% for link in linklists[store_links].links %}
+          {% assign link_title_prefix = link.title | slice: 0, 2 %}
+          <li class="cp-nav-settings__list-item">
+            {% if link_title_prefix == '**' %}
+              {% assign link_title = link.title | remove_first: '**' %}
+              <div class="cp-nav-settings__list-item-subtitle">{{ link_title }}</div>
+            {% else %}
+              <a href="{{ link.url }}" class="cp-nav-settings__list-item-link">{{ link.title }}</a>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+
+    <div class="cp-nav-order-help">
+      <h2 class="cp-nav-settings__heading-2">{{ settings.cs_title_1 }}</h2>
+      {{ settings.cs_description_1 }}
+      <div  class="cp-nav-settings__schedule">
+        <p class="cp-nav-settings__schedule-days">
+          {{ settings.cs_schedule_days }}
+        </p>
+        <p class="cp-nav-settings__schedule-hours">
+          {{ settings.cs_schedule_time }}
+        </p>
+      </div>
+      <a class="cp-nav-settings__phone" href="{{ settings.cs_schedule_phone_link }}">
+        {{ settings.cs_schedule_phone }}
+      </a>
+      <h2 class="cp-nav-settings__heading-2--int">{{ settings.cs_title_2 }}</h2>
+      {{ settings.cs_description_2 }}
+    </div>
+  </div>
+</aside>

@@ -1,0 +1,99 @@
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant | default: product.variants.first
+  assign isSale = false
+  assign is_choose_amount = false
+  if current_variant.title == 'Choose Amount'
+    assign is_choose_amount = true
+  endif
+  assign show_compare_at = false
+  if current_variant.compare_at_price > current_variant.price
+    assign show_compare_at = true
+    assign isSale = true
+  endif
+  assign is_e_gift_card = false
+  if template contains 'e-gift-card'
+    assign is_e_gift_card = true
+  endif
+  assign member_discount = current_variant.metafields.teamwork.memberdiscount | default: current_variant.metafields.teamwork.MemberDiscount
+  assign membership_discount_except = product.metafields.teamwork.membershipdiscountexcept.value
+-%}
+
+<div id="productPrice" class="pv-price">
+  <div class="pv-price__prices{% if isSale == true %} pv-price__prices--sale{% endif %}">
+    {% unless is_choose_amount %}
+      <div
+        class="pv-price__compare js-price-compare"
+        {{ display_none }}
+      >
+        <span class="pv-price__compare-price js-price-compare-text">
+          {%- if isSale == true -%}
+            {{ current_variant.compare_at_price | money_without_trailing_zeros }}
+          {%- endif -%}
+        </span>
+      </div>
+    {% endunless %}
+    <div class="pv-price__original js-price-original{% if isSale == true %} pv-price__original--padded{% endif %}">
+      {%- if is_choose_amount -%}
+        <span class="pv-price__original-price js-price-original-text">
+          Choose Amount
+        </span>
+      {%- else %}
+        <span class="pv-price__original-price js-price-original-text{% if isSale == true %} pv-price__original-price--sale{% endif %}">
+          {{- current_variant.price | money_without_trailing_zeros -}}
+        </span>
+      {%- endif -%}
+      {% unless is_e_gift_card %}
+        <span class="pv-price__original-text">Non-Member</span>
+      {% endunless %}
+    </div>
+    {% assign display_none = '' %}
+    {% unless show_compare_at %}
+      {% assign display_none = ' style="display: none;"' %}
+    {% endunless %}
+
+    {%- comment -%} Member Discount {%- endcomment -%}
+    {% assign member_discount_display_none = '' %}
+    {% if member_discount != true %}
+      {% assign member_discount_display_none = ' style="display: none;"' %}
+    {% endif %}
+    <div
+      class="pv-price__member js-price-member{% if isSale == true %} pv-price__member--sale{% endif %}"
+      {{ member_discount_display_none }}
+    >
+      <span class="pv-price__member-price js-price-member-text">
+        {% render 'h-member-discount-text', {
+          price: current_variant.price
+        } %}
+      </span>
+      <span class="pv-price__member-text">Member</span>
+    </div>
+  </div>
+  <div class="pv-price__members-message js-price-members-message{% if member_discount != true %} hide{% endif %}">
+    <span class="pv-price__members-message-text">
+      {{ settings.product_membership_savings_text }}
+    </span>
+    <button
+      type="button"
+      class="pv-price__members-message-details-btn btn btn-link  js-membership-details-trigger"
+    >
+      Details
+    </button>
+    <aside
+      class="pv-price__members-message-details-tooltip js-membership-details"
+    >
+      <div class="pv-price__members-message-details-tooltip-inner container">
+        <button
+          type="button"
+          class="pv-price__members-message-details-tooltop-close btn-icon js-membership-details-close"
+        >
+          <span class="screenreader">Close</span>
+          <i class="icon icon--close-white"></i>
+        </button>
+        {{ settings.product_membership_savings_tooltip_text }}
+      </div>
+    </aside>
+  </div>
+  {% render 'product-discount-exception', {
+    class: 'pv-price__discount-except hide-phone'
+  } %}
+</div>

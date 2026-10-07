@@ -1,0 +1,75 @@
+{%- comment -%}
+  8-Up + Text Section
+{% render 'c-eight-up-and-text', {
+  section: section
+} %}
+{%- endcomment -%}
+
+{% for block in section.blocks %}
+  {% assign ss = block.settings %}
+  <a href="{{ ss.url }}" class="eight-up-text__item">
+    <div class="eight-up-text__images">
+      {% render 'c-responsive-image', {
+        image: ss.image,
+        inline_ir: true,
+        wrapper_class: 'eight-up-text__image-wrapper',
+        link: ss.cta_url,
+      } %}
+      {% render 'c-responsive-image', {
+        image: ss.image_hover,
+        inline_ir: true,
+        wrapper_class: 'eight-up-text__image-hover',
+        link: ss.cta_url,
+      } %}
+    </div>
+    <div class="eight-up-text__text">
+      <h2 class="eight-up-text__text-headline">{{ ss.headline }}</h2>
+      {{ ss.text }}
+    </div>
+  </a>
+{% endfor %}
+
+{% schema %}
+  {
+    "name": "8-Up + Text",
+    "class": "container eight-up-text",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "card",
+        "name": "Card",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image",
+            "info": "Format: JPG or PNG. Recommended dimensions: width: 900px; height: 540px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_hover",
+            "label": "Hover Image",
+            "info": "Format: JPG or PNG. Recommended dimensions: width: 900px; height: 540px;"
+          },
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Royal Jelly Harlem"
+          },
+          {
+            "type": "text",
+            "id": "url",
+            "label": "URL",
+            "default": "https://moma-design-store.myshopify.com"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "8-Up + Text"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,165 @@
+
+<div class="ac-register-wrapper container">
+  {% render 'account-aside' %}
+  <section class="ac-register">
+    <header class="section-header">
+      <div class="section-header__wrapper">
+        <h1 class="section-header__hdg">
+          {{ 'customer.register.title' | t }}
+        </h1>
+        <p class="section-header__sub-hdg">
+          ({{ 'customer.register.sub_text' | t }})
+        </p>
+      </div>
+      <h2 class="section-header__instructions">
+        {{ 'customer.register.enter_text' | t }}
+      </h2>
+    </header>
+
+    <form id="create_customer" class="ac-form-col" autocomplete="off">
+      <ul class="form-list">
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerFirstName"
+              type="text"
+              name="First Name"
+              autofocus
+              minlength="1"
+              required
+             >
+            <label class="js-acc-sign-up-label label" for="registerFirstName">
+              {{ 'customer.register.first_name' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerLastName"
+              type="text"
+              name="Last Name"
+              minlength="1"
+              required
+            >
+            <label class="js-acc-sign-up-label label" for="registerLastName">
+              {{ 'customer.register.last_name' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper js-email-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerEmail"
+              type="email"
+              name="Email"
+              autocorrect="off"
+              autocapitalize="off"
+              minlength="5"
+              maxlength="255"
+              required
+              pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+            >
+            <label class="js-acc-sign-up-label label" for="registerEmail">
+              {{ 'customer.register.email' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerEmailConfirm"
+              type="email"
+              name="Email"
+              autocorrect="off"
+              autocapitalize="off"
+              minlength="5"
+              maxlength="255"
+              required
+              pattern="^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$"
+            />
+            <label class="js-acc-sign-up-label label" for="registerEmailConfirm">
+              {{ 'customer.register.confirm_email' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item form-item--password">
+          <div class="input-placeholder js-acc-sign-up-wrapper js-password-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerPassword"
+              type="password"
+              name="Password"
+              minlength="8"
+              required
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+            >
+            <label class="js-acc-sign-up-label label" for="registerPassword">
+              {{ 'customer.register.password' | t }}
+            </label>
+            <button
+              class="password-requirements"
+              id="acRegisterModalBtn"
+              type="button"
+            >Password Requirements</button>
+            {%- render 'account-registration-modal' -%}
+          </div>
+        </li>
+        <li class="form-item">
+          <div class="input-placeholder js-acc-sign-up-wrapper">
+            <input
+              class="input js-acc-sign-up-input"
+              id="registerPasswordConfirm"
+              type="password"
+              name="Password"
+              minlength="8"
+              required
+              pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$"
+            >
+            <label class="js-acc-sign-up-label label" for="registerPasswordConfirm">
+              {{ 'customer.register.confirm_password' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item form-item--center form-item--full-width">
+          <div class="input-wrapper checkbox">
+            <input
+              id="addToList"
+              class="input input-checkbox"
+              type="checkbox"
+              name="customer[emailList]"
+            >
+            <label class="input-checkbox-label" for="addToList">
+              {{ 'customer.register.add_to_list' | t }}
+            </label>
+          </div>
+        </li>
+        <li class="form-item ac-form-action">
+          <button class="btn btn--quinary btn--full btn-submit" id="registerSubmit" type="submit">
+            {{ 'customer.register.submit' | t }}
+          </button>
+        </li>
+        <li class="form-item form-item--center form-item--account">
+          <div class="ac-btn-link button-link">
+            Already have an account? Login <a href="{% render 'h-auth0-url' %}" class="login-btn">here.</a>
+          </div>
+        </li>
+        <li class="form-item form-item--sso">
+          <p class="sso-text">or, create or login to your account using...</p>
+          <div class="button-wrapper">
+            <button class="btn--empty btn--apple js-apple-auth" type="button">
+              <img src="https://cdn.shopify.com/s/files/1/0623/7962/2630/files/appleid_shadow.png?v=1656659758" alt="temp apple">
+            </button>
+            <button class="btn--empty js-google-auth" type="button">
+              <img src="https://cdn.shopify.com/s/files/1/0623/7962/2630/files/btn_google_signin_light_normal_web_2x_704f85c7-74b1-4264-a00f-14028438100f.png?v=1656599086" alt="temp google">
+            </button>
+          </div>
+        </li>
+      </ul>
+    </form>
+  </section>
+</div>

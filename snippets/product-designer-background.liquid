@@ -1,0 +1,41 @@
+{% assign designer_background_settings = product.metafields.pdp.designer_background.value %}
+{% assign designer_background_settings_json_first_character = product.metafields.pdp.designer_background | slice: 0 %}
+
+{%- comment -%}
+  Check if JSON value is an object for backwards compatibility with initial
+  implentation that allowed only one section
+{%- endcomment -%}
+{% assign is_object = false %}
+{% if designer_background_settings_json_first_character == '{' %}
+  {% assign is_object = true %}
+{% endif %}
+
+{% if designer_background_settings and is_object == false %}
+  {% for s in designer_background_settings %}
+    {%- assign section_id = '' -%}
+    {% if forloop.index == 1 %}
+      {%- assign section_id = 'product-designer-background' -%}
+    {% endif %}
+
+    {% render 'c-product-designer-background', {
+      image: s.image,
+      image_align: s.image_align,
+      header: s.header,
+      body_text: s.body_text,
+      cta_text: s.cta_text,
+      cta_url: s.cta_url,
+      section_id: section_id
+    } %}
+  {% endfor %}
+{% elsif designer_background_settings %}
+  {% assign s = designer_background_settings %}
+  {% render 'c-product-designer-background', {
+    image: s.image,
+    image_align: s.image_align,
+    header: s.header,
+    body_text: s.body_text,
+    cta_text: s.cta_text,
+    cta_url: s.cta_url,
+    section_id: 'product-designer-background'
+  } %}
+{% endif %}

@@ -1,0 +1,94 @@
+{%- liquid
+  capture valid_promotional_messages_array
+    render 'template-messages' with template_name: 'collection'
+  endcapture
+
+  render 'collection-app', is_search: false, section: section, collection_messages: valid_promotional_messages_array
+-%}
+
+{% schema %}
+{
+  "name": "Collection page",
+  "class": "collection-page",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "filters_with_animation",
+      "label": "Activate scroll animation when filters change",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "scroll_animation_duration",
+      "label": "Speed of scroll animation",
+      "default": "0.5",
+      "options": [
+        {
+          "value": "0.3",
+          "label": "0.3s"
+        },
+        {
+          "value": "0.5",
+          "label": "0.5s"
+        },
+        {
+          "value": "1",
+          "label": "1s"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "block",
+      "name": "Content Blocks",
+      "settings":[
+        {
+          "id": "heading",
+          "label": "Name",
+          "type": "text"
+        },
+        {
+          "id": "collection_handle",
+          "label": "Collection Handle",
+          "type": "text",
+          "info": "Collection handle related to the collection to display the block on"
+        },
+        {
+          "id": "position",
+          "label": "Position in Grid",
+          "type": "number",
+          "default": 1,
+          "info": "The number chosen will indicate the position the content block will be displayed in the grid"
+        },
+        {
+          "id": "image",
+          "label": "Image",
+          "type": "image_picker",
+          "info": "Recommended Size: 300px x 300px"
+        },
+        {
+          "id": "header",
+          "label": "Header Copy",
+          "type": "text"
+        },
+        {
+          "id": "copy",
+          "label": "Body Copy",
+          "type": "textarea"
+        },
+        {
+          "id": "cta_copy",
+          "label": "CTA Copy",
+          "type": "text"
+        },
+        {
+          "id": "link",
+          "label": "CTA Link",
+          "type": "url"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

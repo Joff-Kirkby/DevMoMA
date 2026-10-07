@@ -1,0 +1,538 @@
+{%- comment -%}
+  Gifts Hero Grid
+{%- endcomment -%}
+{% assign ss = section.settings %}
+<div class="gifts-hero-grid" style="margin-top: {{ ss.section_top_margin }}px; margin-bottom: {{ ss.section_bottom_margin }}px;">
+
+  <div class="gifts-hero-grid__hero" style="background-color: var(--main-hero-bg-color);">
+    {%- if ss.main_hero_cta_url != blank -%}
+      <a href="{{ ss.main_hero_cta_url }}" class="gifts-hero-grid__hero-link">
+    {%- endif -%}
+    {% if ss.main_hero_background_image_desktop != blank %}
+      {% render 'c-responsive-image', {
+        image: ss.main_hero_background_image_desktop,
+        image_class: 'gifts-hero-grid__hero-image--desktop',
+        wrapper_class: 'gifts-hero-grid__hero-image-wrapper desktop-only',
+        inline_ir: false,
+      } %}
+    {% endif %}
+    {% if ss.main_hero_background_image_tablet != blank %}
+      {% render 'c-responsive-image', {
+        image: ss.main_hero_background_image_tablet,
+        image_class: 'gifts-hero-grid__hero-image--tablet',
+        wrapper_class: 'gifts-hero-grid__hero-image-wrapper tablet-only',
+        inline_ir: false,
+      } %}
+    {% endif %}
+    {% if ss.main_hero_background_image_mobile != blank %}
+      {% render 'c-responsive-image', {
+        image: ss.main_hero_background_image_mobile,
+        image_class: 'gifts-hero-grid__hero-image--mobile',
+        wrapper_class: 'gifts-hero-grid__hero-image-wrapper phone-only',
+        inline_ir: false,
+      } %}
+    {% endif %}
+  <div class="gifts-hero-grid__hero-copy"  style="color: {{ ss.main_hero_heading_color }};">
+    {% if ss.main_hero_heading_text != blank %}
+      <div class="gifts-hero-grid__hero-copy--heading">
+        <h2>{{ ss.main_hero_heading_text | newline_to_br }}</h2>
+      </div>
+    {% endif %}
+    {% if ss.main_hero_body_text != blank %}
+      <div class="gifts-hero-grid__hero-copy--body">
+        <p>{{ ss.main_hero_body_text | newline_to_br }}</p>
+      </div>
+    {% endif %}
+    {% if ss.main_hero_cta_text != blank %}
+      <div class="gifts-hero-grid__hero-copy--cta">
+        <div class="btn btn--primary">
+          {{ ss.main_hero_cta_text }}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  {%- if ss.main_hero_cta_url != blank -%}
+  </a>
+  {%- endif -%}
+</div>
+<div class="gifts-hero-grid__finder" style="background-color: var(--finder-bg-color)">
+  {%- if ss.finder_cta_url != blank -%}
+    <a href="{{ ss.finder_cta_url }}" class="full-width-url">
+  {%- endif -%}
+  {% if ss.finder_background_image_desktop != blank %}
+    {% render 'c-responsive-image', {
+      image: ss.finder_background_image_desktop,
+      image_class: 'gifts-hero-grid__finder-image--desktop',
+      wrapper_class: 'gifts-hero-grid__finder-image-wrapper hide-mobile',
+      inline_ir: false,
+    } %}
+  {%- endif -%}
+  {% if ss.finder_background_image_mobile != blank %}
+    {% render 'c-responsive-image', {
+      image: ss.finder_background_image_mobile,
+      image_class: 'gifts-hero-grid__finder-image--mobile',
+      wrapper_class: 'gifts-hero-grid__finder-image-wrapper hide-desktop',
+      inline_ir: false,
+    } %}
+  {%- endif -%}
+
+  <div class="gifts-hero-grid__finder-copy">
+    {% if ss.finder_heading_text != blank %}
+      <div class="gifts-hero-grid__finder-copy--heading" style="color: {{ ss.finder_heading_color }};">
+        {{ ss.finder_heading_text | newline_to_br }}
+      </div>
+    {% endif %}
+    {% if ss.finder_body_text != blank %}
+      <div class="gifts-hero-grid__finder-copy--body hide-mobile" style="color: {{ ss.finder_body_text_color }};">
+        {{ ss.finder_body_text | newline_to_br }}
+      </div>
+    {% endif %}
+    {% if ss.finder_cta_text != blank %}
+      <div class="gifts-hero-grid__finder-copy--cta" style="color: {{ ss.finder_cta_static_text_color }};">
+        {{ ss.finder_cta_text }}
+      </div>
+    {% endif %}
+  </div>
+  {%- if ss.finder_cta_url != blank -%}
+  </a>
+  {%- endif -%}
+</div>
+<div class="gifts-hero-grid__gift-card" style="background-color: var(--finder-bg-color-secondary)">
+  {%- if ss.finder_cta_url_secondary != blank -%}
+    <a href="{{ ss.finder_cta_url_secondary }}" class="full-width-url">
+  {%- endif -%}
+  {% if ss.finder_background_image_desktop_secondary != blank %}
+    {% render 'c-responsive-image', {
+      image: ss.finder_background_image_desktop_secondary,
+      image_class: 'gifts-hero-grid__gift-card-image--desktop',
+      wrapper_class: 'gifts-hero-grid__gift-card-image-wrapper',
+    } %}
+  {%- endif -%}
+  <div class="gifts-hero-grid__gift-card-copy">
+    {% if ss.finder_heading_text_secondary != blank %}
+      <div class="gifts-hero-grid__gift-card-copy--heading" style="color: {{ ss.finder_heading_color_secondary }};">
+        {{ ss.finder_heading_text_secondary | newline_to_br }}
+      </div>
+    {% endif %}
+    {% if ss.finder_body_text_secondary != blank %}
+      <div class="gifts-hero-grid__gift-card-copy--body" style="color: {{ ss.finder_body_text_color_secondary }};">
+        {{ ss.finder_body_text_secondary | newline_to_br }}
+      </div>
+    {% endif %}
+    {% if ss.finder_cta_text_secondary != blank %}
+      <div class="gifts-hero-grid__gift-card-copy--cta">
+        {{ ss.finder_cta_text_secondary }}
+      </div>
+    {% endif %}
+  </div>
+  {%- if ss.finder_cta_url_secondary != blank -%}
+    </a>
+  {%- endif -%}
+</div>
+  {% for block in section.blocks %}
+    {% assign bs = block.settings %}
+    <div class="gifts-hero-grid__block gifts-hero-grid__block-{{forloop.index}}" style="color: {{ bs.text_color }}; background-color: {{ bs.bg_color}}">
+      {% if bs.url != blank %}
+        <a href="{{ bs.url }}" style="color: {{ bs.text_color }}">
+      {% endif %}
+      <div> {{ bs.title }}</div>
+      {% if bs.url != blank %}
+      </a>
+      {% endif %}
+    </div>
+  {% endfor %}
+
+  <style>
+    .gifts-hero-grid {
+      --main-hero-bg-color: {% if ss.main_hero_background_image_mobile != blank %}transparent{% else %}{{ ss.main_hero_background_color | default: 'transparent' }}{% endif %};
+      --finder-bg-color: {% if ss.finder_background_image_mobile != blank %}transparent{% else %}{{ ss.finder_background_color | default: 'transparent' }}{% endif %};
+      --finder-bg-color-secondary: {% if ss.finder_background_image_desktop_secondary != blank %}transparent{% else %}{{ ss.finder_background_color_secondary | default: 'transparent' }}{% endif %};
+    }
+
+    .gifts-hero-grid__hero-copy--cta .btn.btn--primary {
+      color: {{ ss.main_hero_cta_static_text_color }};
+      background-color: {{ ss.main_hero_cta_static_background_color }};
+    }
+    .gifts-hero-grid__hero-copy--cta .btn.btn--primary:hover {
+      color: {{ ss.main_hero_cta_hover_text_color }};
+      background-color: {{ ss.main_hero_cta_hover_background_color }};
+    }
+  </style>
+</div>
+
+{% schema %}
+  {
+    "name": "Gifts Hero 3 Up Grid",
+    "class": "container",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "main_hero_background_image_desktop",
+        "label": "Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1920px; height: 1140px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "main_hero_background_image_tablet",
+        "label": "Background Image (Tablet)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 728px; height: 1693px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "main_hero_background_image_mobile",
+        "label": "Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 750px; height: 1188px;"
+      },
+      {
+        "type": "color",
+        "id": "main_hero_background_color",
+        "label": "Background Color"
+      },
+      {
+        "type": "header",
+        "content": "Main Content"
+      },
+      {
+        "type": "header",
+        "content": "Main Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "main_hero_heading_text",
+        "label": "Heading Text",
+        "default": "Heading text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "main_hero_heading_color",
+        "label": "Heading Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Main Body Text"
+      },
+      {
+        "type": "textarea",
+        "id": "main_hero_body_text",
+        "label": "Body Text",
+        "default": "Body text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "main_hero_body_text_color",
+        "label": "Body Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Main CTA"
+      },
+      {
+        "type": "text",
+        "id": "main_hero_cta_text",
+        "label": "CTA Text",
+        "default": "Default CTA text"
+      },
+      {
+        "type": "url",
+        "id": "main_hero_cta_url",
+        "label": "CTA URL"
+      },
+      {
+        "type": "header",
+        "content": "Main Static CTA Options"
+      },
+      {
+        "type": "color",
+        "id": "main_hero_cta_static_background_color",
+        "label": "CTA Background Color",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "main_hero_cta_static_text_color",
+        "label": "CTA Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Main Hover CTA Options"
+      },
+      {
+        "type": "color",
+        "id": "main_hero_cta_hover_background_color",
+        "label": "CTA Background Color",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "main_hero_cta_hover_text_color",
+        "label": "CTA Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder"
+      },
+      {
+        "type": "image_picker",
+        "id": "finder_background_image_desktop",
+        "label": "Gift Finder: Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 960px; height: 1140px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "finder_background_image_mobile",
+        "label": "Gift Finder: Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 750px; height: 715px;"
+      },
+      {
+        "type": "color",
+        "id": "finder_background_color",
+        "label": "Gift Finder: Background Color"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Content"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Heading"
+      },
+      {
+        "type": "textarea",
+        "id": "finder_heading_text",
+        "label": "Gift Finder: Heading Text",
+        "default": "Heading text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "finder_heading_color",
+        "label": "Gift Finder: Heading Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Body Text"
+      },
+      {
+        "type": "textarea",
+        "id": "finder_body_text",
+        "label": "Gift Finder: Body Text",
+        "default": "Body text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "finder_body_text_color",
+        "label": "Gift Finder: Body Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder CTA"
+      },
+      {
+        "type": "text",
+        "id": "finder_cta_text",
+        "label": "Gift Finder: CTA Text",
+        "default": "Default CTA text"
+      },
+      {
+        "type": "url",
+        "id": "finder_cta_url",
+        "label": "Gift Finder: CTA URL"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Static CTA Options"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_static_background_color",
+        "label": "Gift Finder: CTA Background Color",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_static_text_color",
+        "label": "CTA Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Hover CTA Options"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_hover_background_color",
+        "label": "Gift Finder: CTA Background Color",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_hover_text_color",
+        "label": "Gift Finder: CTA Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder (Secondary)"
+      },
+      {
+        "type": "image_picker",
+        "id": "finder_background_image_desktop_secondary",
+        "label": "Gift Finder: Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 960px; height: 1140px;"
+      },
+      {
+        "type": "color",
+        "id": "finder_background_color_secondary",
+        "label": "Gift Finder: Background Color"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Content (Secondary)"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Heading (Secondary)"
+      },
+      {
+        "type": "textarea",
+        "id": "finder_heading_text_secondary",
+        "label": "Gift Finder: Heading Text",
+        "default": "Heading text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "finder_heading_color_secondary",
+        "label": "Gift Finder (Secondary): Heading Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Body Text"
+      },
+      {
+        "type": "textarea",
+        "id": "finder_body_text_secondary",
+        "label": "Gift Finder: Body Text",
+        "default": "Body text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      },
+      {
+        "type": "color",
+        "id": "finder_body_text_color_secondary",
+        "label": "Gift Finder (Secondary): Body Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder CTA (Secondary)"
+      },
+      {
+        "type": "text",
+        "id": "finder_cta_text_secondary",
+        "label": "Gift Finder (Secondary): CTA Text",
+        "default": "Default CTA text"
+      },
+      {
+        "type": "url",
+        "id": "finder_cta_url_secondary",
+        "label": "Gift Finder (Secondary): CTA URL"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Static CTA Options (Secondary)"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_static_background_color_secondary",
+        "label": "Gift Finder (Secondary): CTA Background Color",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_static_text_color_secondary",
+        "label": "CTA Text Color (Secondary)",
+        "default": "#000"
+      },
+      {
+        "type": "header",
+        "content": "Gift Finder Hover CTA Options (Secondary)"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_hover_background_color_secondary",
+        "label": "Gift Finder (Secondary): CTA Background Color ",
+        "default": "#FFF"
+      },
+      {
+        "type": "color",
+        "id": "finder_cta_hover_text_color_secondary",
+        "label": "Gift Finder (Secondary): CTA Text Color",
+        "default": "#000"
+      },
+      {
+        "type": "range",
+        "label": "Section top margin",
+        "id": "section_top_margin",
+        "min": 0,
+        "max": 500,
+        "step": 5,
+        "default": 0,
+      },
+      {
+        "type": "range",
+        "label": "Section bottom margin",
+        "id": "section_bottom_margin",
+        "min": 0,
+        "max": 500,
+        "step": 5,
+        "default": 0,
+      }
+    ],
+    "blocks": [
+      {
+        "type": "card",
+        "name": "Featured Block",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Shop $25 & Under"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "URL"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#fff"
+          },
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background Color",
+            "default": "#000"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Gifts Hero 3 Up Grid"
+      }
+    ]
+  }
+{% endschema %}

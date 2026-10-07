@@ -1,0 +1,191 @@
+{%- assign s = section.settings -%}
+
+<section class="featured-collections featured-collections--blocks__wrapper featured-collections--{{ s.block_type }} container">
+  {% if s.header_text != blank %}
+    <h3
+      class="featured-collections__header-text featured-collections__header-text--gift-finder desktop-font-size--{{ s.desktop_font_size }} mobile-font-size--{{ s.mobile_font_size }}"
+      style="
+        --mobile-header-align: {{ s.mobile_header_alignment }};
+        --desktop-header-align: {{ s.desktop_header_alignment }};
+      "
+    >
+      {{ s.header_text }}
+    </h3>
+  {% endif %}
+    <div class=" featured-collections  featured-collections--blocks featured-collections__collections-wrapper featured-collections__collections-wrapper--carousel{% if s.block_type == 'stacked'%} desktop-stacked{% endif %}" style="margin-top: {{ s.section_spacing }}px;">
+      {%- for block in section.blocks -%}
+        {% assign bs = block.settings %}
+        {% render 'c-featured-collection', {
+          image: bs.image,
+          header: bs.header,
+          subheader: bs.subheader,
+          cta_text: bs.cta_text,
+          cta_link: bs.cta_link,
+          mobile_flex_items: section.settings.products_per_row_mobile,
+          desktop_flex_items: section.settings.products_per_row_desktop,
+          modifier: 'gift-guide',
+        } %}
+      {%- endfor -%}
+    </div>
+</section>
+
+{% schema %}
+{
+  "name": "Collections (Gift Finder)",
+  "presets": [
+    {
+      "category": "Components",
+      "name": "Gift Finder Featured Collections with blocks"
+    }
+  ],
+  "settings": [
+    {
+      "type": "text",
+      "id": "header_text",
+      "label": "Section Header Text",
+      "default": "You May Also Like"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Section Spacing between Title and Block",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "desktop_font_size",
+      "label": "Desktop Font Size",
+      "options": [
+        {
+          "value": "big",
+          "label": "Big"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "select",
+      "id": "mobile_font_size",
+      "label": "Mobile Font Size",
+      "options": [
+        {
+          "value": "big",
+          "label": "Big"
+        },
+        {
+          "value": "small",
+          "label": "Small"
+        }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "select",
+      "id": "block_type",
+      "label": "Block Type",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "select",
+      "id": "mobile_header_alignment",
+      "label": "Mobile Header Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "desktop_header_alignment",
+      "label": "Desktop Header Alignment",
+      "options": [
+        {
+          "value": "left",
+          "label": "Left"
+        },
+        {
+          "value": "center",
+          "label": "Center"
+        },
+        {
+          "value": "right",
+          "label": "Right"
+        }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "label": "Products Per Row Mobile",
+      "id": "products_per_row_mobile",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "label": "Products Per Row Desktop",
+      "id": "products_per_row_desktop",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 3
+    }
+  ],
+
+  "blocks": [
+    {
+      "name": "Featured Collection Block",
+      "type": "block",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image",
+          "info": "An image is required (1:1 recommended)."
+        },
+        {
+          "type": "text",
+          "id": "cta_text",
+          "label": "CTA Text"
+        },
+        {
+          "type": "url",
+          "id": "cta_link",
+          "label": "CTA Link"
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

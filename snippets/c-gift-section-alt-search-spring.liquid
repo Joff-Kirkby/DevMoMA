@@ -1,0 +1,8 @@
+<script>
+  SDG.Data.contentBlocks = { blocks:[] };
+  SDG.Data.collectionId = 0;
+  SDG.Data.productCount = {{ section.settings.product_count | default: 9 }};
+  SDG.Data.collectionHandle = {{ section.settings.collection | json }};
+</script>
+
+<div vue-product-grid></div>

@@ -1,0 +1,42 @@
+{%- comment -%}
+  Mem Section
+{%- endcomment -%}
+
+{%- render 'c-membership-footer', {
+  section: section
+} -%}
+
+{% schema %}
+  {
+    "name": "Membership Footer",
+    "class": "membership__footer",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "textarea",
+        "id": "footer_text",
+        "label": "Footer Text",
+        "default": "Questions? Please call the Department of Membership <br/> toll-free during our regular business hours, <br/> Monday - Friday, <br/> 9:30 a.m. - 5:00 p.m. EST <br/> U.S. (888) 999-8861 <br/> Outside U.S. (212) 708-9888 <br/> or send us an email at"
+      },
+      {
+        "type": "text",
+        "id": "link_text",
+        "label": "Link Text",
+        "default": "membership@moma.org"
+      },
+      {
+        "type": "url",
+        "id": "url",
+        "label": "Link URL"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Membership Footer"
+      }
+    ]
+  }
+{% endschema %}

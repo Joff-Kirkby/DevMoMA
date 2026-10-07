@@ -1,0 +1,87 @@
+{%- comment -%}
+  Text On Image Section
+{%- endcomment -%}
+
+{% render 'c-text-on-image', {
+  section: section
+} %}
+
+{% schema %}
+  {
+    "name": "Text On Image",
+    "presets": [
+      {
+        "name": "Text On Image",
+        "category": "Components"
+      }
+    ],
+    "settings": [
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Section Heading"
+      }
+    ],
+    "blocks": [
+      {
+        "name": "Text On Image Block",
+        "type": "text_on_image_block",
+        "settings": [
+          {
+            "type": "header",
+            "content": "Image"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_mobile",
+            "label": "Image (Mobile)",
+            "info": "Format: JPG. Recommended dimensions: width: 692px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_tablet",
+            "label": "Image (Tablet)",
+            "info": "Note: Content height is limited by tablet image height. Format: JPG. Recommended dimensions: width: 1024px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "image_desktop",
+            "label": "Image (Desktop)",
+            "info": "Note: Content height is limited by desktop image height. Format: JPG. Recommended dimensions: width: 1280px;"
+          },
+          {
+            "type": "header",
+            "content": "Text"
+          },
+          {
+            "type": "richtext",
+            "id": "text",
+            "label": "Text"
+          },
+          {
+            "type": "color",
+            "id": "text_background_color_mobile",
+            "label": "Text Background Color (Mobile)",
+            "default": "transparent"
+          },
+          {
+            "type": "radio",
+            "id": "text_position_desktop",
+            "label": "Text Position (Tablet/Desktop)",
+            "options": [
+              {
+                "value": "left",
+                "label": "Left"
+              },
+              {
+                "value": "right",
+                "label": "Right"
+              }
+            ],
+            "default": "right"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

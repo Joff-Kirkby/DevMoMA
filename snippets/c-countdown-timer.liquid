@@ -1,0 +1,87 @@
+{%- comment -%}
+  Countdown Timer Component
+  - Snippet Usage:
+    {% render 'countdown-timer', {
+      target: { string } - A datetime string (YYYY-MM-DD HH:MM:SS) that this timer should countdown towards.
+      timezone : { string } a proper timezone.  Defaults to 'America/Los_Angeles' (Note: default should probably be wherever the company HQ is)
+      label: { string } - String to attach to the timer.  Requires a '[timer]' placeholder be present, otherwise it's ignored.
+      style: { string } - ['normal', 'adaptive', 'incremented'] see slate/models/timer.js for details
+    } %}
+{% endcomment -%}
+
+{%- if target != blank -%}
+  {% comment %} Placeholder we'll swap with the countdown element {% endcomment %}
+  {% assign timer_placeholder = '[timer]' %}
+
+  {% comment %} Timezone should default to wherever the business is headquartered.  Left it configurable for multi-national use. {% endcomment %}
+  {% if timezone == blank %}
+    {% assign timezone = 'America/New_York' %}
+  {% endif %}
+
+  {% comment %} Countdown timer type {% endcomment %}
+  {% unless style != blank %}
+    {% assign style = 'normal' %}
+  {% endunless %}
+
+  {% comment %} This is the element that will contain the actual timer {% endcomment %}
+  {% capture countdown_timer_output_html %}
+
+    <div class="countdown-timer__output" data-countdown-timer-rendered>
+      <div class="countdown-timer__output-item">
+        <span class="countdown-timer__output-value" data-countdown-timer-rendered="days"></span>
+        <span class="countdown-timer__output-label">D</span>
+      </div>
+      <div class="countdown-timer__output-item">
+        <span class="countdown-timer__output-value" data-countdown-timer-rendered="hours"></span>
+        <span class="countdown-timer__output-label">hrs</span>
+      </div>
+      <div class="countdown-timer__output-item">
+        <span class="countdown-timer__output-value" data-countdown-timer-rendered="minutes"></span>
+        <span class="countdown-timer__output-label">min</span>
+      </div>
+      <div class="countdown-timer__output-item">
+        <span class="countdown-timer__output-value" data-countdown-timer-rendered="seconds"></span>
+        <span class="countdown-timer__output-label">sec</span>
+      </div>
+    </div>
+
+  {% endcapture %}
+
+  {% comment %}
+    1) If the label isn't blank, and contains the '[timer]' placeholder, we'll add the output element there.
+    2) Else if the label isn't blank, we'll append the countdown timer's output to the end.
+    3) Else we'll just output the timer itself.
+  {% endcomment %}
+  {% if mobile_label != blank %}
+    {% assign mobile_message = mobile_label %}
+    {% assign desktop_message = label %}
+  {% elsif label != blank and label contains timer_placeholder %}
+    {% assign countdown_timer_html = label | replace: timer_placeholder, countdown_timer_output_html %}
+  {% elsif label != blank %}
+    {% assign countdown_timer_html = label | append: " " | append: countdown_timer_output_html %}
+  {% else %}
+    {% assign countdown_timer_html = countdown_timer_output_html %}
+  {% endif %}
+
+  <div class="countdown-timer js-countdown-timer hide"
+    data-countdown-timer-target="{{ target }}"
+    data-countdown-timer-timezone="{{ timezone }}"
+    data-countdown-timer-type="{{ style }}"
+  >
+    <div class="countdown-timer__inner"
+      role="timer"
+      {% if style == 'adaptive' %}aria-live="polite"{% else %}aria-live="off"{% endif %}
+      aria-atomic="true"
+    >
+    {% if mobile_label != blank %}
+      <div class="countdown-timer__mobile-wrapper">
+        <span class='phone-only'>{{ mobile_message }}</span>
+        <span class='hide-phone'>{{ desktop_message }}</span>
+        {{ countdown_timer_output_html }}
+      </div>
+    {% else %}
+      {{ countdown_timer_html }}
+    {% endif %}
+    </div>
+  </div>
+{%- endif -%}

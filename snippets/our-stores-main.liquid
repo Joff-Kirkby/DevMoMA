@@ -1,0 +1,47 @@
+{% comment %}
+  Our Stores Main
+{% endcomment %}
+
+{% assign meta = page.metafields.store %}
+{% assign meta_image = page.metafields.store.image.value %}
+
+
+<div class="os-main">
+  <div class="our-stores__header">
+    <h1 class="our-stores__hdg">{{ meta.page_title }}</h1>
+  </div>
+  <div class="os-main__content">
+    <div class="os-main__content-description">
+      <div class="os-main__content-image">
+        {% render 'c-responsive-image', {
+          image: meta_image,
+          inline_ir: true,
+        } %}
+      </div>
+      <div class="os-main__content-text">
+        <p>{{ meta.description }}</p>
+      </div>
+      {% if meta.is_accessible %}
+        <div class="os-main__content-accessibility">
+          <span class="screenreader">Is Accessible</span>
+        </div>
+      {% endif %}
+      <a
+        href="{{ meta.directions_url }}"
+        class="os-main__content-directions"
+      >
+        {{ meta.directions_text }}
+      </a>
+    </div>
+    <div class="os-main__content-map">
+      <iframe src="{{ meta.map_src }}" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+  </div>
+
+  <div class="our-stores__header">
+    <h1 class="our-stores__hdg">{{ meta.about_heading }}</h1>
+  </div>
+  <div class="os-main__about">
+    <p>{{ meta.about_description }}</p>
+  </div>
+</div>

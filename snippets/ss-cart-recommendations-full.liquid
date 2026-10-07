@@ -1,0 +1,32 @@
+<section
+  id="searchspring-recs-carousel-tabs"
+  class="ss-product-recommendations-snippet container"
+>
+  <div class="product-recommendations__wrapper">
+    <div class="product-recommendations__heading-container">
+      <h1 class="product-recommendations__heading" id="searchspring-recommendations-title">
+        You Might Also Like
+      </h1>
+      <div class="product-recommendations__links">
+        <div class="product-recommendations__links-wrapper">
+          <div class="product-recommendations__link is-active" ss-tab="1">
+            Recommendations
+          </div>
+          <div class="product-recommendations__link" ss-tab="2">
+            Recently Viewed
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="_product-recommendations__inner">
+      <div ss-tab-content="1">
+        <script type="searchspring/personalized-recommendations" profile="similar">
+            seed = "{{ cart.items.last.product.variants[0].sku }}";
+        </script>
+      </div>
+      <div ss-tab-content="2">
+        <script type="searchspring/personalized-recommendations" profile="recently-viewed"></script>
+      </div>
+    </div>
+  </div>
+</section>

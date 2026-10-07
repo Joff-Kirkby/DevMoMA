@@ -1,0 +1,16 @@
+{% comment %}
+inherited variables from parent file:
+- href
+{% endcomment %}
+
+{%- comment -%}
+  Return the href early if it's an absolute URL
+{%- endcomment -%}
+{%- if href contains 'https://' or href contains 'http://' -%}
+  {%- assign href = href -%}
+{%- else -%}
+  {%- if routes.root_url != '/' -%}
+    {%- assign href = routes.root_url | append: href -%}
+  {%- endif -%}
+{%- endif -%}
+{{- href -}}

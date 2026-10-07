@@ -1,0 +1,66 @@
+{% assign ss = section.settings %}
+
+<div class="gift-card-balance-check container js-gift-card-balance-check">
+  <div class="gift-card-balance-check__inner">
+    <h3 class="gift-card-balance-check__header">
+      {{- ss.heading -}}
+    </h3>
+    <form class="gift-card-balance-check__form js-gift-card-balance-check-form">
+      <fieldset>
+        <div>
+          {{- ss.instructions -}}
+        </div>
+        <ul class="gift-card-balance-check__form-list form-list">
+          <li class="gift-card-balance-check__form-item form-item">
+            <label for="giftcard_id">
+              Gift Card Number*
+            </label>
+            <input
+              id="giftcard_id"
+              class="input"
+              type="text"
+              name="giftcard_id"
+              maxlength="128"
+              pattern="\d*"
+              required
+            />
+          </li>
+          <li class="form-item">
+            <small>* Required Fields</small>
+          </li>
+        </ul>
+        <input
+          type="hidden"
+          name="egiftcard_proxy_key"
+          value="{{- shop.metafields.global.egiftcard_proxy_key -}}"
+        >
+      </fieldset>
+      <div class="gift-card-balance-check__details">
+        <div class="gift-card-balance-check__image">
+          {% if ss.card_example_image != nil %}
+            {% render 'c-responsive-image', {
+              image: ss.card_example_image.src
+              wrapper_class: 'gift-card-balance-check__image-wrapper'
+            } %}
+          {% endif %}
+        </div>
+        <div class="gift-card-balance-check__balance">
+          <button
+            type="submit"
+            class="gift-card-balance-check__form-btn btn btn--quinary"
+            name="submit_btn"
+          >
+            <span class="btn__label">Check Balance</span>
+          </button>
+          <p class="gift-card-balance-check__balance-text js-gift-card-balance-check-balance-text">
+            {% comment %}
+              This is a placeholder for the balance text. It is hidden by default
+              and shown when the balance is checked.
+            {% endcomment %}
+            &nbsp;
+          </p>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

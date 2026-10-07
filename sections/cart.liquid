@@ -1,0 +1,67 @@
+{% render 'bag-alert-top-bar', section: section %}
+
+{% render 'bag' %}
+
+{% schema %}
+  {
+    "name": "Cart",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Alert Top Banner"
+      },
+      {
+        "type": "richtext",
+        "id": "top_banner_text",
+        "label": "Text content"
+      },
+      {
+        "type": "select",
+        "id": "text_align",
+        "label": "Text align",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "range",
+        "id": "font_size",
+        "min": 10,
+        "max": 30,
+        "step": 1,
+        "unit": "px",
+        "label": "Font Size",
+        "default": 16
+      }, {
+        "type": "range",
+        "id": "line_height",
+        "min": 10,
+        "max": 60,
+        "step": 1,
+        "unit": "px",
+        "label": "Line Height",
+        "default": 24
+      }, {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#000"
+      }, {
+        "type": "color",
+        "id": "top_banner_background",
+        "label": "Background color",
+        "default": "#FEB4AB"
+      }
+    ]
+  }
+{% endschema %}

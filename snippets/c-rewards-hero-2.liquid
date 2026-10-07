@@ -1,0 +1,60 @@
+<section class="rewards-hero container">
+  <div class="rewards-hero__container{% if customer %} rewards-hero__container--logged-in{% endif %}">
+    <div class="rewards-hero__left">
+      {% if bs.sub_heading_text != blank %}
+        <p class="rewards-hero__header">{{bs.sub_heading_text}}</p>
+      {% endif %}
+      {% if bs.logo != blank %}
+        {% if bs.logo %}
+          <div class="rewards-hero__logo{% if customer %} rewards-hero__logo--logged-in{% endif %}">
+            {% render 'c-responsive-image', {
+              image: bs.logo,
+              modifier: 'rewards-hero-logo',
+            } %}
+          </div>
+        {% endif %}
+      {% endif %}
+      {% if bs.body_text_1 != blank %}
+        <div class="rewards-hero__slogan">{{ bs.body_text_1 }}</div>
+      {% endif %}
+      {% if bs.body_text_2 != blank  %}
+        <div class="rewards-hero__info">
+          <p class="rewards-hero__info-p">{{ bs.body_text_2  }}</p>
+        </div>
+      {% endif %}
+      {% if bs.cta_text != blank %}
+        {% if bs.cta_url == blank %}
+          <button class="rewards-hero__cta js-rewards-login" type="button">{{ bs.cta_text }}</button>
+        {% else %}
+          <a href="{{ bs.cta_url }}" class="rewards-hero__cta" type="button">{{ bs.cta_text }}</a>
+        {% endif %}
+      {% endif  %}
+      {% if bs.cta_text_2 != blank %}
+        {% if bs.cta_url_2 == blank %}
+          <button class="rewards-hero__cta js-rewards-login" type="button">{{ bs.cta_text_2 }}</button>
+        {% else %}
+          <a href="{{ bs.cta_url_2 }}" class="rewards-hero__cta" type="button">{{ bs.cta_text_2 }}</a>
+        {% endif %}
+      {% endif %}
+    </div>
+    <div class="rewards-hero__right">
+      <div class="rewards-hero__right-image">
+        {% render 'c-responsive-image', {
+          image: bs.background_image_desktop,
+          modifier: 'rewards-hero-img',
+          wrapper_class: 'hide-mobile',
+          image_class: 'rewards-hero__image',
+          inline_ir: true,
+        } %}
+
+        {% render 'c-responsive-image', {
+          image: bs.background_image_mobile,
+          image_class: 'image-css-class',
+          modifier: 'rewards-hero-img',
+          wrapper_class: 'hide-desktop',
+          inline_ir: true,
+        } %}
+      </div>
+    </div>
+  </div>
+</section>

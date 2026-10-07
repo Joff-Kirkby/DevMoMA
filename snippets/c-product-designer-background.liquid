@@ -1,0 +1,37 @@
+<div
+  {% if section_id != blank %}id="{{ section_id }}"{% endif %}
+  class="pv-designer-background container"
+>
+  <div class="pv-designer-background__inner{% if image_align == 'right' %} pv-designer-background__inner--image-right{% endif %}">
+    {% if image and image != blank %}
+      <div class="ir is-loading pv-designer-background__image-wrapper">
+        <img
+          class="lazyload pv-designer-background__image"
+          data-src="{{- image -}}"
+          data-sizes="auto"
+          alt="{{- header -}}"
+        >
+      </div>
+    {% endif %}
+    <div class="pv-designer-background__copy">
+      {% if header and header != blank %}
+        <div class="pv-designer-background__header">
+          {{- header -}}
+        </div>
+      {% endif %}
+      {% if body_text and body_text != blank %}
+        <p class="pv-designer-background__body-text">
+          {{- body_text -}}
+        </p>
+      {% endif %}
+      {% if cta_text and cta_text != blank and cta_url and cta_url != blank %}
+        <a
+          class="pv-designer-background__cta btn btn--primary"
+          href="{{- cta_url -}}"
+        >
+          {{- cta_text -}}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</div>

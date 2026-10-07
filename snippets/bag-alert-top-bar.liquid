@@ -1,0 +1,38 @@
+{% if section.settings.top_banner_text != blank %}
+  <style>
+    #shopify-section-{{ section.id }} {
+      --top-banner-background: {{ section.settings.top_banner_background }};
+      --text-color: {{ section.settings.text_color }};
+      --font-size: {{ section.settings.font_size }}px;
+      --text-align: {{ section.settings.text_align }};
+      --line-height: {{ section.settings.line_height }}px;
+    }
+    #shopify-section-{{ section.id }} .top-banner {
+      background-color: var(--top-banner-background);
+      text-align: var(--text-align, left);
+      color: var(--text-color);
+      font-size: 18px;
+      padding: 40px 20px;
+    }
+    #shopify-section-{{ section.id }} .top-banner p {
+      margin: 0;
+      font-size: var(--font-size);
+      line-height: var(--line-height);
+    }
+
+    #shopify-section-{{ section.id }} .top-banner a {
+      text-decoration: underline;
+      color: inherit;
+    }
+    @media(min-width: 768px) {
+      #shopify-section-{{ section.id }} .top-banner {
+        padding: 30px 60px;
+      }
+    }
+  </style>
+  <div class="container">
+    <div class="top-banner">
+      {{ section.settings.top_banner_text }}
+    </div>
+  </div>
+{% endif %}

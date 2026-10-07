@@ -1,0 +1,66 @@
+{% comment %}
+  Collection App
+  @param {Boolean} is_search
+  @param {Object} section
+{% endcomment %}
+
+{%- liquid
+  assign collection_hero = collection.metafields.collection.hero.value
+  assign category_carousel = collection.metafields.collection.category_carousel.value
+  assign sub_categories = collection.metafields.collection.sub_categories.value
+  assign open_filter_by_default = collection.metafields.collection.open_filter_by_default.value
+  assign desktop_navigation_meta = shop.metafields.navigation.desktop.value
+  assign mobile_navigation_meta = shop.metafields.navigation.mobile.value
+-%}
+<h1 class="screenreader">{{ collection.title }}</h1>
+<div id="collectionApp" class="collection-wrapper"></div>
+
+<script>
+  // disable browser scroll restoration for us to control later
+  if (window.history.scrollRestoration) {
+    window.history.scrollRestoration = 'manual';
+  }
+
+  SDG.Data.collectionMessages = {{ collection_messages | default: '[]' }} || [];
+</script>
+
+{%- capture collection_vars -%}
+  <script>
+    SDG.Data.contentBlocks = { blocks:[] };
+    let block;
+    {%- for block in section.blocks -%}
+      {%- assign collection_handle = block.settings.collection_handle-%}
+        block = {{ block.settings | json }};
+        block.collection_id = {{ collections[collection_handle].id | json }};
+        block.id = {{ block.settings.heading | json }};
+        SDG.Data.contentBlocks.blocks.push(block);
+    {%- endfor -%}
+    {%- if is_search -%}
+      SDG.Data.isSearch = true;
+      SDG.Data.searchTerms = {{ search.terms | json }};
+      SDG.Data.noResultsText = {{ section.settings.no_results_text | json }};
+    {%- else -%}
+      SDG.Data.collectionHero = {{ collection_hero | json }} || {};
+      SDG.Data.collectionId = {{ collection.id | json }};
+      SDG.Data.collectionHandle = {{ collection.handle | json }};
+      SDG.Data.collectionTitle = {{ collection.title | json }};
+      SDG.Data.desktopNavigationMeta = {{ desktop_navigation_meta | json }};
+      SDG.Data.isSearch = false;
+      SDG.Data.mobileNavigationMeta = {{ mobile_navigation_meta | json }};
+      SDG.Data.products = {{ collection.products | json }};
+      SDG.Data.mobileNav = {{ collection.metafields.collection.mobile_nav.value | json }};
+      SDG.Data.subCategories = {% render 'collection-sub-categories-data', data: sub_categories %};
+      SDG.Data.categoryCarousel = {% render 'category-carousel-data', data: category_carousel %};
+      SDG.Data.openFiltersByDefault = {{ open_filter_by_default | json }};
+      SDG.Data.scrollAnimation = {
+        enabled: {{ section.settings.filters_with_animation | json }},
+        duration: {{ section.settings.scroll_animation_duration | json }}
+      };
+      SDG.Data.copies = {
+        recommendedProducts: {{ 'collections.filters.related_collections' | t | json }},
+      }
+    {%- endif -%}
+  </script>
+{%- endcapture -%}
+{%- render 'h-minify', variable: collection_vars -%}
+

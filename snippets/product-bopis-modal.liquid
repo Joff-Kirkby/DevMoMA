@@ -1,0 +1,51 @@
+{% if product %}
+  {% assign current_variant = product.selected_or_first_available_variant %}
+  {% assign store_availabilities = current_variant.store_availabilities | where: 'pick_up_enabled', true %}
+  {% assign bopis_data = shop.metafields.bopis.data.value %}
+
+  <aside id="productBopisModal" class="modal pv-bopis__modal">
+    <button id="productBopisModalBackgroundClose" class="pv-bopis__modal-background-button modal__background-button" type="button"></button>
+    <div id="productBopisModalInner" class="modal__inner pv-bopis__modal-inner">
+      <button id="productBopisModalClose" type="button" class="modal__close btn-icon js-modal-close">
+        <span class="screenreader">Close</span>
+        <i class="icon icon--close"></i>
+      </button>
+      <h3 class="pv-bopis__title">{{ bopis_data.title }}</h3>
+      <p class="pv-bopis__subtitle">{{ bopis_data.subtitle }}</p>
+      <ul class="pv-bopis__locations list-reset">
+        {% for store in store_availabilities %}
+          {% assign location_id = store.location.name | split: ' - ' | first %}
+          {% assign location_data = bopis_data.locations[location_id] %}
+          {% if location_data %}
+            <li
+              class="pv-bopis__location js-bopis-location hide"
+              data-location="{{ location_id }}"
+            >
+              <address class="pv-bopis__location-address">
+                <p><strong>{{ location_data.title }}</strong></p>
+                <p>{{ location_data.address1 }}</p>
+                <p>{{ location_data.address2 }}</p>
+                <p>{{ location_data.hours }}</p>
+              </address>
+              {% if location_data.image %}
+                <div class="pv-bopis__location-image-wrap">
+                  {% render 'c-responsive-image', {
+                    image: images[location_data.image],
+                    modifier: 'bopis-location-image',
+                    image_class: 'pv-bopis__location-image',
+                  } %}
+                </div>
+              {% endif %}
+            </li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+      <div class="pv-bopis__close-text-btn-wrap">
+        <button id="productBopisModalCloseText" type="button" class="btn btn-icon btn-icon--with-text pv-bopis__close-text-btn underline js-modal-close">
+          Close
+        </button>
+      </div>
+    </div>
+  </aside>
+  <div id="productBopisModalOverlay" class="modal-overlay"></div>
+{% endif %}

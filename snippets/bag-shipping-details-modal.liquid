@@ -1,0 +1,16 @@
+{% if template == 'cart' or checkout != blank %}
+  <aside id="bagShippingDetailsModal" class="modal bag-shipping-details__modal">
+    <button id="bagShippingDetailsModalBackgroundClose" class="bag-shipping-details__modal-background-button modal__background-button" type="button"></button>
+    <div id="bagShippingDetailsModalInner" class="modal__inner bag-shipping-details__modal-inner">
+      <button id="bagShippingDetailsModalClose" type="button" class="modal__close btn-icon">
+        <span class="screenreader">Close</span>
+        <i class="icon icon--close"></i>
+      </button>
+      <h3 class="bag-shipping-details__title">{{ settings.bag_shipping_details_modal_title }}</h3>
+      <div class="bag-shipping-details__content">
+        {{ settings.bag_shipping_details_modal_content }}
+      </div>
+    </div>
+  </aside>
+  <div id="bagShippingDetailsModalOverlay" class="modal-overlay"></div>
+{% endif %}

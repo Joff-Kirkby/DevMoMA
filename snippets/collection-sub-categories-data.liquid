@@ -1,0 +1,9 @@
+{%- assign metafield_values = data | default: false %}
+[
+  {% for mf in metafield_values %}
+    {
+      "title": "{{ mf.title }}",
+      "url": "{{ mf.url }}"
+    }{% unless forloop.last %},{% endunless %}
+  {% endfor %}
+]

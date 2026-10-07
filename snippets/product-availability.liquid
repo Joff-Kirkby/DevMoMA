@@ -1,0 +1,26 @@
+{% assign variant = product.selected_or_first_available_variant %}
+{%- assign tags = product.tags -%}
+{%- assign hideInStockMessage = false -%}
+
+{% if tags contains 'ShipFromVendor:Ok' or tags contains 'ShipFromVendor:Always' %}
+  {%- assign hideInStockMessage = true -%}
+{% endif %}
+
+<div class="pv-availability">
+  <span class="pv-availability__sku js-product-availability-sku">
+    {%- if variant.sku != blank -%}
+      Item# {{ variant.sku }}
+    {%- endif -%}
+  </span>
+  {% unless variant.inventory_policy == 'continue' %}
+    <span class="pv-availability__stock-message js-product-availability-message">
+      {% if variant.available %}
+        {% if hideInStockMessage == false %}
+          In Stock
+        {% endif %}
+      {% else %}
+        This item is currently not available
+      {% endif %}
+    </span>
+  {% endunless %}
+</div>

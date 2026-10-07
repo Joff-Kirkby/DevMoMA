@@ -1,0 +1,34 @@
+{%- comment -%}
+  SEARCH MENU
+{%- endcomment -%}
+{%- assign button_id = 'viewAllBtn' -%}
+{%- assign menu_id = 'searchMenu' -%}
+{%- assign input_id = 'searchInput' -%}
+
+<div
+  class="search-menu"
+  id="{{ menu_id }}"
+>
+  <header class="container">
+    <div>
+      <div class="search-menu__results">
+        <div class="search-menu__search-autocomplete">
+          {% render 'search-autocomplete' %}
+        </div>
+        <div class="search-menu__view-all">
+          <div class="search-menu__view-all-container">
+            <span
+              class="search-menu__view-all-btn"
+              id="{{ button_id }}"
+            >
+              View All
+          </span>
+          </div>
+        </div>
+        <div class="search-menu__search-suggestions">
+          {% render 'search-suggestions' %}
+        </div>
+      </div>
+    </div>
+  </header>
+</div>

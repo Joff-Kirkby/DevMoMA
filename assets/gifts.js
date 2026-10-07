@@ -1,0 +1,1 @@
+(self.webpackChunkmoma_design_store=self.webpackChunkmoma_design_store||[]).push([["gifts"],{"./src/js/build/gifts.js":function(){eval("{/**\n * Gifts\n */\n\n//# sourceURL=webpack://moma-design-store/./src/js/build/gifts.js?\n}")}},function(s){var n;n="./src/js/build/gifts.js",s(s.s=n)}]);

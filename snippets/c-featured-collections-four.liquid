@@ -1,0 +1,98 @@
+{% comment %}
+  4-Up Featured Collections Section
+
+  @param {Object} section theme settings
+{% endcomment %}
+
+{%- assign ss = section.settings -%}
+{%- assign blocks = section.blocks -%}
+
+<section class="featured-collections">
+  {% if blocks.size > 0 %}
+    {% comment %} DESKTOP {% endcomment %}
+    <div class="featured-collections__desktop desktop-only">
+      <div class="featured-collections__wrapper">
+        {% for block in blocks %}
+          {% assign bs = block.settings %}
+
+          <a
+            class="featured-collection{% if bs.full_width_image %} full-width-image{% endif %}"
+            href="{{ bs.cta_url }}"
+            id="featured-collection-{{ block.id }}"
+            title="{{ bs.cta_text }}"
+            style="--bg-color: {{- bs.background_color -}}; color: {{- bs.text_color -}}"
+          >
+            <div class="featured-collection__heading-container">
+              <p class="featured-collection__heading" style="text-align: {{ section.settings.text_alignment}}">{{ bs.category_heading | newline_to_br }}</p>
+              <p class="featured-collection__cta">{{ bs.cta_text }}</p>
+            </div>
+            <div class="featured-collection__image">
+              {% if bs.category_image != blank %}
+                {% render 'c-responsive-image', {
+                  image: bs.category_image,
+                  modifier: 'featured-collection-image',
+                  wrapper_class: 'featured-collection__image',
+                  inline_ir: false
+                } %}
+              {% endif %}
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+
+    {% comment %} MOBILE {% endcomment %}
+    <div class="featured-collections__mobile mobile-only">
+      <div class="featured-collections__wrapper{% if ss.stack_on_mobile %} stack-mobile{% endif %}">
+        {% for block in blocks %}
+          {% assign bs = block.settings %}
+          <a
+            class="featured-collection"
+            id="featured-collection-{{ block.id }}"
+            href="{{ bs.cta_url }}"
+            title="{{ bs.cta_text }}"
+            style="--bg-color: {{- bs.background_color -}}; color: {{- bs.text_color -}}"
+          >
+            <div class="featured-collection__heading-container">
+              <p class="featured-collection__heading" style="text-align: {{ section.settings.text_alignment}}">{{ bs.category_heading | newline_to_br }}</p>
+              <p class="featured-collection__cta">{{ bs.cta_text }}</p>
+            </div>
+            <div class="featured-collection__image">
+              {% if bs.category_image != blank %}
+                {% render 'c-responsive-image', {
+                  image: bs.category_image_mobile,
+                  modifier: 'featured-collection-image',
+                  wrapper_class: 'featured-collection__image',
+                  inline_ir: false
+                } %}
+              {% endif %}
+              <style>
+                {%- if bs.category_image == blank -%}
+                  .featured-collection-{{ block.id }} {
+                    height: unset;
+                  }
+                {%- endif -%}
+              </style>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+</section>
+
+<style>
+   #shopify-section-{{ section.id }} .featured-collection__heading {
+    font-size: {{ ss.font_size_mobile }}px;
+   }
+
+   @media only screen and (min-width: 768px) {
+    #shopify-section-{{ section.id }} .featured-collection__heading {
+      font-size: {{ ss.font_size_desktop }}px;
+     }
+   }
+
+   #shopify-section-{{ section.id }} .featured-collections__wrapper {
+    gap: {{ ss.flex_gap }}px;
+   }
+</style>

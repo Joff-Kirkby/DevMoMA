@@ -1,0 +1,7 @@
+{% assign membership_discount_except = product.metafields.teamwork.membershipdiscountexcept.value %}
+
+{% if membership_discount_except != blank %}
+  <div class="{{ class }}">
+    {{ membership_discount_except }}
+  </div>
+{% endif %}

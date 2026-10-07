@@ -1,0 +1,54 @@
+{% comment %}
+  2-Up Featured Collections Section
+
+  @param {Object} section theme settings
+{% endcomment %}
+
+{%- assign ss = section.settings -%}
+
+<section class="featured-collections">
+  <div class="featured-collections__wrapper">
+    <a 
+      class="featured-collection"
+      href="{{ ss.cta_link_1 }}"
+      title="{{ ss.cta_text_1 }}"
+    >
+      <div class="featured-collection__image">
+        {% if ss.image_1 != blank %}
+          {% render 'c-responsive-image', {
+            image: ss.image_1,
+            image_class: 'image-css-class',
+            modifier: 'featured-collection-two-image',
+            wrapper_class: 'featured-collection__image',
+            inline_ir: true
+          } %}
+        {% endif %}
+      </div>
+      <div class="featured-collection__heading-container">
+        <p class="featured-collection__heading">{{ ss.header_1 }}</p>
+        <p class="featured-collection__cta">{{ ss.cta_text_1 }}</p>
+      </div>
+    </a>
+    <a 
+      class="featured-collection"
+      href="{{ ss.cta_link_2 }}"
+      title="{{ ss.cta_text_2 }}"
+    >
+      <div class="featured-collection__image">
+        {% if ss.image_2 != blank %}
+          {% render 'c-responsive-image', {
+            image: ss.image_2,
+            image_class: 'image-css-class',
+            modifier: 'featured-collection-two-image',
+            wrapper_class: 'featured-collection__image',
+            inline_ir: true
+          } %}
+        {% endif %}
+      </div>
+      <div class="featured-collection__heading-container">
+        <p class="featured-collection__heading">{{ ss.header_2 }}</p>
+        <p class="featured-collection__cta">{{ ss.cta_text_2 }}</p>
+      </div>
+    </a>
+  </div>
+</section>

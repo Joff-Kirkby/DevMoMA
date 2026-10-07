@@ -1,0 +1,68 @@
+<section class="pv-guarantee">
+  <button
+    type="button"
+    id="productGuaranteeModalTrigger"
+    class="pv-guarantee__modal-trigger btn btn-link"
+  >
+    {{- settings.product_satisfaction_guarantee_title -}}
+  </button>
+  {% if settings.yotpo_pdp_rewards_enable %}
+    <div class="pv-essentials__rewards-wrap">
+      <i class="icon icon--small-boxes" aria-hidden="true"></i>
+      <p class="pv-essentials__rewards-text">
+        You will earn
+        {{ global_data.product.rewards_text_array[0].text }}
+        <span
+          class="swell-product-helper pv-essentials__rewards-points"
+          data-mode="display-points"
+          data-product-id="{{ product.id }}"
+          data-price-cents="{{ product.selected_or_first_available_variant.price | money_without_currency | remove: '.' | remove: ',' | default: '0' }}"
+        >
+          <i class="icon icon--spinner" aria-hidden="true"></i>
+        </span> Rewards points.
+        {{ global_data.product.rewards_text_array[1].text }}
+      </p>
+    </div>
+  {% endif %}
+  <aside
+    id="productGuaranteeModal"
+    class="pv-guarantee__modal modal"
+  >
+    <button
+      id="productGuaranteeModalBackgroundClose"
+      class="pv-guarantee__modal-background-close-btn"
+    >
+    </button>
+    <div
+      id="productGuaranteeModalInner"
+      class="pv-guarantee__modal-inner modal__inner"
+    >
+      <button
+        class="pv-guarantee__modal-close-icon btn-icon modal__close"
+        id="productGuaranteeModalCloseIcon"
+        type="button"
+      >
+        <span class="screenreader">Close</span>
+        <i class="icon icon--close"></i>
+      </button>
+      <h3 class="pv-guarantee__modal-title">
+        {{- settings.product_satisfaction_guarantee_title -}}
+      </h3>
+      <p class="pv-guarantee__modal-text">
+        {{- settings.product_satisfaction_guarantee_text | newline_to_br -}}
+      </p>
+      <button
+        type="button"
+        id="productGuaranteeModalCloseBtn"
+        class="pv-guarantee__modal-close-btn btn btn--quaternary"
+      >
+        Close
+      </button>
+    </div>
+  </aside>
+  <div
+    id="productGuaranteeModalOverlay"
+    class="pv-guarantee__modal-overlay modal-overlay"
+  >
+  </div>
+</section>

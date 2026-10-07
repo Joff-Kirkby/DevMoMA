@@ -1,0 +1,120 @@
+{% comment %}
+  Checkout membership modal
+{% endcomment %}
+<aside id="checkoutMemberModal" class="checkout-member-modal modal js-modal">
+  <div class="checkout-member-modal__inner">
+    <button type="button" class="modal__close btn-icon js-modal-close" id="checkoutMemberModalClose">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div class="checkout-member-modal__inner-body">
+
+      {% comment %} First step of the modal {% endcomment %}
+      <div class="checkout-member-modal__step-one" id="checkoutMemberModalStepOne">
+        <form id="applyMembershipForm">
+          <h4 class="checkout-member-modal__header">MoMA Membership</h4>
+          <p class="checkout-member-modal__description">
+            Enter your information below to get your discount.
+          </p>
+          <div class="input-placeholder">
+            <input id="lastName" class="input" type="text" required>
+            <label for="lastName">Last name on Membership</label>
+          </div>
+          <div class="input-placeholder">
+            <input id="membershipNumber" class="input" type="text" required>
+            <label for="membershipNumber">MoMA Membership Number</label>
+          </div>
+          <button type="button" class="checkout-member-modal__forgot-member-number-btn" id="forgotMemberNumberBtn">
+            Forgot your Member number?
+          </button>
+          <div class="checkout-member-modal__apply-membership-btn-wrapper">
+            <button type="submit" class="checkout-member-modal__apply-membership-btn btn btn--quaternary" id="applyMembershipBtn">
+              Apply Membership
+            </button>
+          </div>
+          <p class="checkout-member-modal__error hide" id="invalidMembershipMessage">
+            Please check your membership credentials
+          </p>
+        </form>
+        <div class="checkout-member-modal__expired-container membership-upsell hide" id="checkoutMemberModalExpiredContainer">
+          <h4 class="checkout-member-modal__expired-header">Your MoMA Membership has expired!</h4>
+          <p class="checkout-member-modal__expired-description">
+            Would you like to renew your membership to take advantage of your discount on this order? If yes, choose a membership option below...
+          </p>
+          <form id="membershipUpsellForm" class="membership-upsell__form">
+            <div class="membership-upsell__products">
+              <ul class="membership-upsell__products-list list-reset">
+                {% render 'c-membership-upsell-product', {
+                  upsell_product: settings.membership_product_upsell_1,
+                  description: settings.membership_product_upsell_1_description,
+                  type: settings.membership_product_upsell_1_type,
+                  number: '1',
+                } %}
+                {% render 'c-membership-upsell-product', {
+                  upsell_product: settings.membership_product_upsell_2,
+                  description: settings.membership_product_upsell_2_description,
+                  type: settings.membership_product_upsell_2_type,
+                  number: '2',
+                } %}
+                {% render 'c-membership-upsell-product', {
+                  upsell_product: settings.membership_product_upsell_3,
+                  description: settings.membership_product_upsell_3_description,
+                  type: settings.membership_product_upsell_3_type,
+                  number: '3',
+                } %}
+              </ul>
+            </div>
+            <div class="membership-upsell__btn-wrap">
+              <button class="btn btn--quinary membership-upsell__btn" type="submit">Add Membership</button>
+            </div>
+            <div class="membership-upsell__links">
+              <a class="membership-upsell__text-underline" href="{% render 'h-href', href: '/pages/memberships' %}">
+                View All Memberships
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      {% comment %} Forgot Member Number Step {% endcomment %}
+      <div class="checkout-member-modal__forgot-member-number-step hide" id="checkoutMemberModalForgotNumberStep">
+        <h5 class="checkout-member-modal__forgot-member-number-header">
+          Forgot your member number?
+        </h5>
+        <p class="checkout-member-modal__forgot-member-number-description">How to find your MoMA member number</p>
+        <ol class="checkout-member-modal__forgot-member-number-ol">
+          <li class="checkout-member-modal__forgot-member-number-li">1) We'll email it to you instantly. Just click
+            <button
+              type="button"
+              class="checkout-member-modal__membership-recovery-btn"
+              id="membershipRecoveryBtn"
+            >
+              here
+            </button>
+          </li>
+          <li class="checkout-member-modal__forgot-member-number-li">2) Or you can find your member number on your membership card.</li>
+        </ol>
+      </div>
+
+      {% comment %} Recover Membership Step {% endcomment %}
+      <div class="checkout-member-modal__recover-membership-step hide" id="checkoutMemberModalRecoverMembershipStep">
+        <h4 class="checkout-member-modal__recover-membership-step-header">
+          Please enter the email Associated with your membership.
+        </h4>
+        <div class="checkout-member-modal__recover-membership-step-body">
+          <div class="input-placeholder">
+            <input id="forgotMembershipEmail" class="input" type="email">
+            <label for="forgotMembershipEmail">Email</label>
+          </div>
+          <button
+            type="button"
+            class="checkout-member-modal__recover-membership-step-submit btn"
+          >
+            Send
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</aside>
+<div id="checkoutMemberModalOverlay" class="modal-overlay"></div>

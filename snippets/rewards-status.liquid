@@ -1,0 +1,14 @@
+  {%- comment -%}
+    Rewards Status
+    Yotpo Modules
+  {%- endcomment -%}
+
+{% if customer %}
+  <div class="rewards-status">
+    <div class="rewards-status__wrapper container">
+      <h2 class="rewards-status__status-title">Welcome{% if customer and customer.first_name != blank %}, {{ customer.first_name }}{% endif %}</h2>
+      <div class="yotpo-widget-instance" data-yotpo-instance-id="325460"></div>
+      <div class="yotpo-widget-instance" data-yotpo-instance-id="256070"></div>
+    </div>
+  </div>
+{% endif %}

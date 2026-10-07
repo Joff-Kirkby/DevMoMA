@@ -1,0 +1,69 @@
+{%- liquid
+  assign valid_promotional_messages = ''
+  assign current_template = 'collection'
+
+  if template.name == 'collection'
+    assign collection_all_tags = collection.all_tags
+    assign collection_all_vendors = collection.all_vendors
+  elsif template.name == 'search'
+    assign all_tags = ''
+    assign all_vendors = ''
+
+    for product in search.results
+      assign all_tags = all_tags | concat: product.tags
+      assign all_vendors = all_vendors | append: product.vendor
+    endfor
+
+    assign collection_all_tags = all_tags
+    assign collection_all_vendors = all_vendors
+
+  elsif template.name == 'product'
+    assign collection_all_tags = product.tags
+    assign collection_all_vendors = product.vendor
+  endif
+
+  for promotional_message in shop.metaobjects['promotional_messaging'].values
+    if promotional_message.enable
+      assign filter_tags = promotional_message.filters_tags
+      assign filter_vendors = promotional_message.filters_vendor
+
+      assign is_valid = false
+      assign valid_tags_array = ''
+      assign valid_vendors_array = ''
+
+      for filter_tag in filter_tags.value
+        if collection_all_tags contains filter_tag
+          if valid_tags_array == ''
+            assign valid_tags_array = '"' | append: filter_tag | append: '"'
+          else
+            assign valid_tags_array = valid_tags_array | append: ',"' | append: filter_tag | append: '"'
+          endif
+          assign is_valid = true
+        endif
+      endfor
+
+      for filter_vendor in filter_vendors.value
+        if collection_all_vendors contains filter_vendor
+          if valid_vendors_array == ''
+            assign valid_vendors_array = '"' | append: filter_vendor | append: '"'
+          else
+            assign valid_vendors_array = valid_vendors_array | append: ',"' | append: filter_vendor | append: '"'
+          endif
+          assign is_valid = true
+        endif
+      endfor
+
+      if is_valid
+        assign promotional_message_object = '{"message": "' | append: promotional_message.promotional_message | append: '", "tags": [' | append: valid_tags_array | append: '], "vendors": [' | append: valid_vendors_array | append: ']}'
+
+        if valid_promotional_messages == ''
+          assign valid_promotional_messages = promotional_message_object
+        else
+          assign valid_promotional_messages = valid_promotional_messages | append: ',' | append: promotional_message_object
+        endif
+      endif
+    endif
+  endfor
+
+  echo '[' | append: valid_promotional_messages | append: ']'
+-%}

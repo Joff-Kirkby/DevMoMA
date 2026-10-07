@@ -1,0 +1,89 @@
+{%- comment -%}
+  Membership Product List Section
+{%- endcomment -%}
+
+{% render 'c-membership-product-list', {
+  section: section
+} %}
+
+{% schema %}
+{
+  "name": "Membership Product List",
+  "max_blocks": 10,
+  "blocks": [
+    {
+      "name": "Membership Product",
+      "type": "category",
+      "settings": [
+        {
+          "type": "product",
+          "id": "product",
+          "label": "Membership Product",
+          "info": "Please only select membership products."
+        },
+        {
+          "type": "text",
+          "id": "custom_title",
+          "label": "Custom Title"
+        },
+        {
+          "type": "text",
+          "id": "tax_deductible",
+          "label": "Tax Deductible"
+        },
+        {
+          "type": "radio",
+          "id": "member_count",
+          "label": "One or Two Members per Membership",
+          "options": [
+            {
+              "value": "one",
+              "label": "One Member"
+            },
+            {
+              "value": "two",
+              "label": "Two Members"
+            }
+          ],
+          "default": "one"
+        },
+        {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color",
+          "default": "#eeeeee"
+        },
+        {
+          "type": "text",
+          "id": "body",
+          "label": "Description: Intro",
+          "default": "Free admission every day, exhibition previews, 10% off in our stores, and more."
+        },
+        {
+          "type": "richtext",
+          "id": "description",
+          "label": "Description: Bullets",
+          "default": "<ul><li>Element</li></ul>"
+        },
+        {
+          "type": "richtext",
+          "id": "readmore",
+          "label": "Description: Read More",
+          "default": "<ul><li>Element</li></ul>"
+        },
+        {
+          "type": "text",
+          "id": "cta_copy",
+          "label": "CTA Copy",
+          "default": "Join or Renew"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Membership Product List"
+    }
+  ]
+}
+{% endschema %}

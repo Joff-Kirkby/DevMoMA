@@ -1,0 +1,36 @@
+{% comment %}
+  Country Selector
+  Coming from Shopify's documentation
+{% endcomment %}
+
+{% if localization.available_countries.size > 1 %}
+  <localization-form>
+    {% form 'localization' %}
+      <div class="localization">
+        <button
+          type="button"
+          class="localization-btn btn"
+          aria-expanded="false"
+          aria-controls="CountryList"
+          style="color: {{ section.settings.text_color }};"
+        >
+          Ship to {{ localization.country.name }}
+        </button>
+
+        <div class="localization-list-wrapper" id="CountryList" hidden>
+          <ul role="list" class="localization-list list-reset">
+            {% for country in localization.available_countries %}
+              <li class="disclosure__item" tabindex="-1">
+                <a href="#"{% if country.iso_code == localization.country.iso_code %} aria-current="true"{% endif %} data-value="{{ country.iso_code }}">
+                  {{ country.name }}
+                </a>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+
+        <input type="hidden" name="country_code" value="{{ localization.country.iso_code }}">
+      </div>
+    {% endform %}
+  </localization-form>
+{% endif %}

@@ -1,0 +1,71 @@
+<div class="grid-text-blocks">
+  {% for block in section.blocks %}
+    {% assign bs = block.settings %}
+    <{% if bs.url != blank %}a href="{{ bs.url }}"{% else %}div{% endif %} 
+      class="grid-text-blocks__block" style="color: {{ bs.text_color }}; background-color: {{ bs.bg_color}}; --font-mobile: {{ bs.font_size_mobile }}px; --font-desktop: {{ bs.font_size_desktop }}px;">
+      {{ bs.title }}
+    </{% if bs.url != blank %}a{% else %}div{% endif %}>
+  {% endfor %}
+</div>
+
+{% schema %}
+  {
+    "name": "Grid Text Blocks",
+    "class": "container",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "text",
+        "name": "Text Block",
+        "settings": [
+          {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Shop $25 & Under"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "URL"
+          },
+          {
+            "type": "color",
+            "id": "text_color",
+            "label": "Text Color",
+            "default": "#fff"
+          },
+          {
+            "type": "color",
+            "id": "bg_color",
+            "label": "Background Color",
+            "default": "#000"
+          },
+          {
+            "type": "range",
+            "label": "Font Size Desktop",
+            "id": "font_size_desktop",
+            "min": 12,
+            "max": 48,
+            "step": 1,
+            "default": 24
+          },
+          {
+            "type": "range",
+            "label": "Font Size Mobile",
+            "id": "font_size_mobile",
+            "min": 10,
+            "max": 40,
+            "step": 1,
+            "default": 14
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Grid Text Blocks"
+      }
+    ]
+  }
+{% endschema %}

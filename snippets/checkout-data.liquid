@@ -1,0 +1,141 @@
+{%- comment -%}
+  Checkout Data
+{%- endcomment -%}
+
+{%- assign has_membership = false -%}
+{% if customer.tags contains 'moma-membership-active' and customer %}
+  {% assign has_membership = true %}
+{% endif %}
+
+{%- for num in (0..9) -%}
+  {%- for discount_application in checkout.discount_applications -%}
+    {%- assign membership_starts_with = 'M' | append: num -%}
+    {%- assign discount_starts_with = discount_application.title | slice: 0, 2 -%}
+
+    {%- if discount_starts_with == membership_starts_with -%}
+      {%- assign has_membership = true -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endfor -%}
+
+{%- assign additional_delivery_charges = 0 -%}
+{%- assign has_membership_in_cart = false -%}
+{%- for item in checkout.line_items -%}
+  {%- assign item_shipping_value_per = item.variant.metafields.teamwork.additionalshipping.value | default: item.variant.metafields.teamwork.additionalshipping -%}
+  {%- if item_shipping_value_per != blank -%}
+    {%- assign item_shipping_value_total = item_shipping_value_per | times: item.quantity -%}
+    {%- assign additional_delivery_charges = additional_delivery_charges | plus: item_shipping_value_total -%}
+  {%- endif -%}
+  {%- if item.product.tags contains 'Department:REGULAR MEMBERSHIP' -%}
+    {%- assign has_membership_in_cart = true -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- comment -%} Only show additional delivery charges if amount is non-zero and for USD customers only {%- endcomment -%}
+{%- if additional_delivery_charges > 0 and checkout.currency == 'USD' -%}
+  {%- assign additional_delivery_charges_cents = additional_delivery_charges | times: 100 -%}
+  {%- assign new_subtotal = checkout.total_price | plus: additional_delivery_charges_cents -%}
+{%- endif -%}
+
+{%- assign bopis_location_data = shop.metafields.bopis.data.value | default: shop.metafields.bopis.data -%}
+{%- assign bopis_api_key =  shop.metafields.teamworkinsight.batch_token -%}
+
+{% assign original_total_price = 0 %}
+{% for line_item in checkout.line_items %}
+  {% assign original_total_price = original_total_price | plus: line_item.original_line_price %}
+{% endfor %}
+
+{% comment %}
+  Member discount
+{% endcomment %}
+{% assign total_membership_discount = 0 %}
+{% for discount_application in checkout.discount_applications %}
+  {% assign discount_title_downcase = discount_application.title | downcase %}
+  {% comment %}
+    Only use discounts with titles including 'member'
+  {% endcomment %}
+  {% if discount_title_downcase contains 'member' %}
+    {% assign total_membership_discount = total_membership_discount | plus: discount_application.total_allocated_amount %}
+  {% endif %}
+{% endfor %}
+
+{% assign is_new_member = false %}
+{% for discount_application in checkout.discount_applications %}
+  {% assign discount_application_title_downcase = discount_application.title | downcase %}
+  {% if discount_application_title_downcase == '20% new member discount' %}
+    {% assign is_new_member = true %}
+  {% endif %}
+{% endfor %}
+
+{%- comment -%} Checks if product has member discount properties applied {%- endcomment -%}
+{% assign member_discount_prop = false %}
+{% for line_item in checkout.line_items %}
+  {% for prop in line_item.properties %}
+    {% if prop.first == '_discount' %}
+      {% assign member_discount_prop = true %}
+    {% endif %}
+  {% endfor %}
+{% endfor %}
+
+<script>
+  SDG.Data = SDG.Data || {};
+  SDG.moneyFormat = {{ shop.money_format | json }};
+  SDG.rootUrl = '{{ routes.root_url }}';
+  SDG.bopisApiUrl = '{{ settings.bopis_api_url }}';
+  SDG.Data.verifyMembershipAuthorizationToken = "{{ shop.metafields.auth.membership_service_api_token }}";
+  SDG.Data.bopisLocationData = {{ bopis_location_data | json }};
+  SDG.Data.bopisApiKey = '{{ bopis_api_key }}';
+  SDG.Data.hasMembership = {{ has_membership }};
+  SDG.Data.hasMembershipInCart = {{ has_membership_in_cart }};
+  SDG.Data.hasMembershipAppliedProp = {{ member_discount_prop }};
+  SDG.Data.countrySelector = {
+    copy: {{ settings.checkout_country_selector_trigger_copy | json }},
+    cta: {{ settings.checkout_country_selector_trigger_cta | json }},
+  };
+  SDG.Data.RewardsMessage = {{ settings.checkout_confirmation_rewards | default: '' | json }};
+  SDG.Data.RewardsMessageTitle = {{ settings.checkout_confirmation_rewards_title | default: '' | json }};
+  SDG.Data.RewardsConfirmationEnable = {{ settings.checkout_confirmation_rewards_enable }};
+  SDG.Data.orderId = {% if order %}{{ order.id | json }}{% else %}null{% endif %};
+  SDG.Data.permanentDomain = '{{ shop.permanent_domain }}';
+  SDG.Data.giftWrapItemId = {{ settings.checkout_gift_wrap_item_id | default: '' | json }};
+  SDG.Data.checkout = {
+    attributes: {{ checkout.attributes | json }},
+    items: [],
+    giftWrapAvailable: false,
+    giftWrapIndexes: [],
+    originalTotalPrice: {{ original_total_price }},
+    isNewMember: {{ is_new_member }},
+    totalMembershipDiscount: {{ total_membership_discount }}
+  };
+  {%- for item in checkout.line_items -%}
+    {%- assign item_index = forloop.index0 -%}
+    SDG.Data.checkout.items.push({{ item.variant | json  }});
+    SDG.Data.checkout.items[{{ forloop.index0 }}].key = {{ item.key | json }};
+    SDG.Data.checkout.items[{{ forloop.index0 }}].properties = {{ item.properties | json }};
+    SDG.Data.checkout.items[{{ forloop.index0 }}].giftWrapAvailable = {{ item.product.metafields.teamwork.GiftWrapAvailable | default: item.product.metafields.teamwork.giftwrapavailable | json  }};
+    SDG.Data.checkout.items[{{ forloop.index0 }}].title = {{ item.product.title | json  }};
+    SDG.Data.checkout.items[{{ forloop.index0 }}].quantity = {{ item.quantity }};
+    SDG.Data.checkout.items[{{ forloop.index0 }}].productTags = [];
+    {%- for tag in item.product.tags -%}
+      SDG.Data.checkout.items[{{ item_index }}].productTags.push('{{ tag }}');
+    {%- endfor -%}
+    {%- if item.product.metafields.teamwork.giftwrapavailable == true or item.product.metafields.teamwork.GiftWrapAvailable == true -%}
+      SDG.Data.checkout.giftWrapAvailable = true;
+      SDG.Data.checkout.giftWrapIndexes.push({{ forloop.index0 }});
+    {%- endif -%}
+  {%- endfor -%}
+
+  SDG.Data.additionalDeliveryCharges = {
+    deliveryTotal: {{ additional_delivery_charges_cents | json }},
+    deliveryTotalFormat: {{ additional_delivery_charges_cents | money | json }},
+    newSubtotal: {{ new_subtotal | json }},
+    newSubtotalFormat: {{ new_subtotal | money | json }},
+  };
+
+  SDG.Data.specialDeliveryRequired = {
+    copy: {{ settings.checkout_special_delivery_required_copy | json }},
+    subcopy: {{ settings.checkout_special_delivery_required_subcopy | json }},
+  };
+
+  SDG.Data.customerLoggedIn = {% if customer.id != blank %}true{% else %}false{% endif %};
+</script>

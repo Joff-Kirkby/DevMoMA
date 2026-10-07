@@ -1,0 +1,139 @@
+{% comment %} Get product tags {% endcomment %}
+{%- assign tags = product.tags | join: '' | downcase -%}
+
+{%- assign bopis_location_data = shop.metafields.bopis.data.value | default: shop.metafields.bopis.data -%}
+{%- assign bopis_api_key =  shop.metafields.teamworkinsight.batch_token -%}
+{%- assign product_siblings =  product.metafields.teamwork.product_stitching.value -%}
+
+{% comment %}
+Capture and output product/image JSON
+{% endcomment %}
+<script>
+  SDG.Data.productJson = {{ product | json }};
+  SDG.Data.activeVariantJson = {{ product.selected_or_first_available_variant | json }};
+  SDG.Data.bopisLocationData = {{ bopis_location_data | json }};
+  SDG.Data.bopisApiKey = '{{ bopis_api_key }}';
+  SDG.Data.imageJson = [
+    {% for image in product.images %}
+      {% unless forloop.first %},{% endunless %}
+      {
+        src: '{{ image.src | product_img_url: "master" }}',
+        alt: '{{ image.alt | escape }}',
+        ratio: '{{ 100 | divided_by: image.aspect_ratio }}%'
+      }
+    {% endfor %}
+  ];
+  SDG.Data.productVariantsMeta = [
+    {% for variant in product.variants %}
+      {% assign variantQuantityLimit = variant.metafields.variant.quantity_limit %}
+      {% unless forloop.first %},{% endunless %}
+      {
+        id: {{ variant.id }},
+        metafields: {
+          teamwork: {
+            memberDiscount: '{{- variant.metafields.teamwork.memberdiscount.value | default: variant.metafields.teamwork.MemberDiscount.value -}}' === 'true' ? true : false,
+            care: '{{- variant.metafields.teamwork.care.value | escape -}}',
+            additionalShipping: '{{- variant.metafields.teamwork.AdditionalShipping.value | default: variant.metafields.teamwork.additionalshipping.value -}}',
+            flatRateShippingEligible: '{{- variant.metafields.teamwork.FlatRateShippingEligible.value -}}'.toLowerCase() === 'y' ? true : false,
+            shippingLeadTime: '{{- variant.metafields.teamwork.shippingleadtime.value | default: variant.metafields.teamwork.ShippingLeadTime.value -}}',
+            finalSale: '{{ variant.metafields.teamwork.FinalSale.value }}' === 'true' ? true : false,
+            shippingMethod: '{{ variant.metafields.teamwork.ShippingMethod.value }}',
+            momaExclusive: '{{ variant.metafields.teamwork.MoMAExclusive.value }}' === 'true' ? true : false,
+            inMomasCollection: '{{ variant.metafields.teamwork.InMoMAsCollection.value }}' === 'true' ? true : false,
+            onlineOnly: '{{ variant.metafields.teamwork.OnlineOnly.value }}' === 'true' ? true : false,
+            new: '{{ variant.metafields.teamwork.New.value | default: variant.metafields.teamwork.new.value }}' === 'true' ? true : false,
+          },
+          variant: {
+            quantityLimit: {% if variantQuantityLimit != nil %}{{ variantQuantityLimit.value }}{% else %}null{% endif %},
+            hideFromSearch: {{ variant.metafields.seo.hidden | default: 0 }},
+          },
+          clearance: '{{ variant.metafields.custom.clearance.value }}' === 'true' ? true : false,
+        },
+      }
+    {% endfor %}
+  ];
+  SDG.Data.productSiblings = {{ product_siblings | json }};
+</script>
+
+{% comment %}
+Swatch file extension
+{% endcomment %}
+{% assign swatch_file_extension = 'jpg' %}
+
+{% comment %}
+Meta Keys
+{% endcomment %}
+{% assign meta = product.metafields %}
+{% assign product_quantity_limit = meta.product.quantity_limit %}
+{% assign product_excluded_purchasers_customers = meta.product.excluded_purchasers_customers %}
+{% assign product_purchasble_by_staff = true %}
+
+{% if meta.custom.purchasable_by_staff.value == false %}
+  {% assign product_purchasble_by_staff = false %}
+{% endif %}
+
+{% assign customer_is_excluded_from_purchase = false %}
+
+{% if customer.id %}
+  {% for excluded_customer in product_excluded_purchasers_customers.value %}
+    {% if excluded_customer.email == customer.email %}
+      {% assign customer_is_excluded_from_purchase = true %}
+    {% endif %}
+    {% if excluded_customer.id == customer.id %}
+      {% assign customer_is_excluded_from_purchase = true %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+
+{%
+  liquid
+  assign staffLoggedIn = false
+  if customer and customer.email contains '@moma.org'
+    assign staffLoggedIn = true
+  endif
+%}
+
+<script>
+  SDG.Data.productMetafields = {
+    quantityLimit: {% if product_quantity_limit != nil %}{{ product_quantity_limit.value }}{% else %}null{% endif %},
+    purchasableByStaff: {{ product_purchasble_by_staff }},
+    customerIsExcludedFromPurchase: {{ customer_is_excluded_from_purchase }},
+    hideFromSearch: {{ meta.seo.hidden | default: 0 }},
+  }
+</script>
+
+{% comment %}
+  Customer
+{% endcomment %}
+{% if customer.id %}
+  <script>
+    SDG.Data.customer = {
+      id: {{ customer.id }},
+      email: '{{- customer.email -}}'
+    };
+  </script>
+{% endif %}
+
+{% comment %}
+Tags
+{% endcomment %}
+
+{% comment %}
+Related products
+{% endcomment %}
+{% assign has_related_product = false %}
+{%- capture related_products -%}
+  {% assign ri = 0 %}
+  {%- for tag in product.tags -%}
+    {% assign tag_downcase = tag | downcase %}
+    {%- if tag_downcase contains 'related:' -%}
+      {%- if ri < 3 -%}
+        {%- assign has_related_product = true -%}
+        {%- assign tag_format = tag_downcase | strip -%}
+        {%- capture related_tag -%}{{- tag_format | remove: 'related:' -}}{%- endcapture -%}
+        {%- render 'c-product-item', product: all_products[related_tag], namespace: 'related-item' -%}
+      {%- endif -%}
+      {%- assign ri = ri | plus: 1 -%}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}

@@ -1,0 +1,114 @@
+{%- comment -%}
+  Long Hero Image
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section class="long-hero-image container">
+  <div class="long-hero-image__item">
+    <div class="long-hero-image__item-image">
+      {% if ss.background_image_desktop != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.background_image_desktop,
+          modifier: 'long-hero-image',
+          wrapper_class: 'desktop-only',
+        } %}
+      {% endif %}
+      {% if ss.background_image_tablet != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.background_image_tablet,
+          modifier: 'long-hero-image',
+          wrapper_class: 'tablet-only',
+        } %}
+      {% endif %}
+      {% if ss.background_image_mobile != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.background_image_mobile,
+          modifier: 'long-hero-image',
+          wrapper_class: 'phone-only',
+        } %}
+      {% endif %}
+    </div>
+    <div class="long-hero-image__item-content">
+      <div class="long-hero-image__item-content__header-container">
+        {% if ss.header != blank %}
+          <div class="long-hero-image__item-content__heading">
+            <h1 class="long-hero-image__heading">{{ ss.header }}</h1>
+          </div>
+        {% endif %}
+        {% if ss.sub_header != blank %}
+          <div class="long-hero-image__item-content__sub-heading">
+            <p>{{ ss.sub_header | newline_to_br }}</p>
+          </div>
+        {% endif %}
+        {% if ss.description != blank %}
+          <div class="long-hero-image__item-content__description">
+            <p>{{ ss.description | newline_to_br }}</p>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  {% if ss.banner != blank %}
+    <div class="long-hero-image__banner">{{ ss.banner }}</div>
+  {% endif %}
+</section>
+
+{% schema %}
+  {
+    "name": "Long Hero Image",
+    "settings": [
+      {
+        "type": "image_picker",
+        "id": "background_image_desktop",
+        "label": "Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 1280px; height: 2767px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_tablet",
+        "label": "Background Image (Tablet)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 728px; height: 1693px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_mobile",
+        "label": "Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 470px; height: 2818px;"
+      },
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "textarea",
+        "id": "header",
+        "label": "Header Text"
+      },
+      {
+        "type": "textarea",
+        "id": "sub_header",
+        "label": "Sub-Header Text"
+      },
+      {
+        "type": "richtext",
+        "id": "description",
+        "label": "Description Text"
+      },
+      {
+        "type": "header",
+        "content": "Banner"
+      },
+      {
+        "type": "textarea",
+        "id": "banner",
+        "label": "Banner Text"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Long Hero Image"
+      }
+    ]
+  }
+{% endschema %}

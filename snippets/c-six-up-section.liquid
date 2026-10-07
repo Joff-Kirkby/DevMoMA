@@ -1,0 +1,63 @@
+{%- comment -%}
+  @param {object} image
+  @param {string} header - optional
+  @param {string} subheader - optional
+  @param {string} cta_text - optional
+  @param {string} cta_link - optional
+  @param {string} image_link - optional
+{%- endcomment -%}
+
+{%- assign ss = section.settings -%}
+
+{%- unless image == blank -%}
+  <div class="six-up-tile six-up-tile__{{ ss.mobile_block_type }}-cell">
+    <a
+      class="six-up-tile__cta-link"
+      href="{{ image_link }}"
+    >
+      {%- comment -%}
+        Designed for 1:1 images. Other images are cropped based on aspect ratio (max height or width, centered, overflow hidden).
+      {%- endcomment -%}
+      {% if image.aspect_ratio == 1 %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          modifier: 'swatch',
+          image_class: 'six-up-tile__ir-image',
+          wrapper_class: 'six-up-tile__ir-wrapper',
+        } %}
+      {% endif %}
+      {% if image.aspect_ratio > 1 %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          modifier: 'swatch',
+          image_class: 'six-up-tile__ir-image six-up-tile__ir-image--wide',
+          wrapper_class: 'six-up-tile__ir-wrapper six-up-tile__ir-wrapper--wide',
+        } %}
+      {% endif %}
+      {% if image.aspect_ratio < 1 %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          modifier: 'swatch',
+          image_class: 'six-up-tile__ir-image six-up-tile__ir-image--tall',
+          wrapper_class: 'six-up-tile__ir-wrapper six-up-tile__ir-wrapper--tall',
+        } %}
+      {% endif %}
+    </a>
+    <div class="six-up-tile__copy">
+      {% if header != blank %}
+        <h2 class="six-up-tile__header">{{ header }}</h2>
+      {% endif %}
+      {% if subheader != blank %}
+        <p class="six-up-tile__subheader">{{ subheader }}</p>
+      {% endif %}
+      {% if cta_link != blank %}
+      <a
+        class="six-up-tile__cta-text"
+        href="{{ cta_link }}"
+      >
+        {{ cta_text }}
+      </a>
+      {% endif %}
+    </div>
+  </div>
+{%- endunless -%}

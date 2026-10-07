@@ -1,0 +1,163 @@
+{%- liquid
+  assign s = section.settings
+
+  # Primary source: metaobject attached to the collection via metafield.
+  # Optional override: a metaobject picked directly in the section setting.
+  assign carousel = collection.metafields.collection.category_carousel.value
+  if s.carousel != blank
+    assign carousel = s.carousel
+  endif
+
+  assign tiles = carousel.tiles.value
+-%}
+
+{%- if carousel != blank and tiles != blank -%}
+  <section class="featured-collections featured-collections--blocks__wrapper featured-collections--{{ s.block_type }} category-carousel container">
+    {%- if carousel.heading != blank -%}
+      <h3
+        class="featured-collections__header-text featured-collections__header-text--gift-finder category-carousel__header desktop-font-size--{{ s.desktop_font_size }} mobile-font-size--{{ s.mobile_font_size }}"
+        style="
+          --mobile-header-align: {{ s.mobile_header_alignment }};
+          --desktop-header-align: {{ s.desktop_header_alignment }};
+        "
+      >
+        {{ carousel.heading }}
+      </h3>
+    {%- endif -%}
+
+    <div
+      class="featured-collections featured-collections--blocks featured-collections__collections-wrapper featured-collections__collections-wrapper--carousel category-carousel__wrapper{% if s.block_type == 'stacked' %} desktop-stacked{% endif %}"
+      style="margin-top: {{ s.section_spacing }}px;"
+    >
+      {%- for tile in tiles -%}
+        {% render 'c-category-carousel-tile', {
+          tile: tile,
+          image_ratio: s.image_ratio,
+          block_type: s.block_type,
+          mobile_flex_items: s.products_per_row_mobile,
+          desktop_flex_items: s.products_per_row_desktop,
+        } %}
+      {%- endfor -%}
+    </div>
+  </section>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Category Carousel (PLP)",
+  "tag": "section",
+  "class": "category-carousel-section",
+  "presets": [
+    {
+      "category": "Collection",
+      "name": "Category Carousel (PLP)"
+    }
+  ],
+  "settings": [
+    {
+      "type": "metaobject",
+      "id": "carousel",
+      "label": "Category carousel",
+      "metaobject_type": "category_carousel",
+      "info": "Optional override. By default the section uses the collection metafield collection.category_carousel. Set this only to force a specific entry on this template."
+    },
+    {
+      "type": "select",
+      "id": "image_ratio",
+      "label": "Tile image ratio",
+      "options": [
+        {
+          "value": "natural",
+          "label": "Natural (height adjusts to image)"
+        },
+        {
+          "value": "square",
+          "label": "Square (uniform 1:1)"
+        }
+      ],
+      "default": "natural"
+    },
+    {
+      "type": "range",
+      "id": "section_spacing",
+      "min": 0,
+      "max": 50,
+      "step": 1,
+      "unit": "px",
+      "label": "Spacing between title and tiles",
+      "default": 0
+    },
+    {
+      "type": "select",
+      "id": "desktop_font_size",
+      "label": "Desktop heading size",
+      "options": [
+        { "value": "big", "label": "Big" },
+        { "value": "small", "label": "Small" }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "select",
+      "id": "mobile_font_size",
+      "label": "Mobile heading size",
+      "options": [
+        { "value": "big", "label": "Big" },
+        { "value": "small", "label": "Small" }
+      ],
+      "default": "small"
+    },
+    {
+      "type": "select",
+      "id": "block_type",
+      "label": "Desktop layout",
+      "info": "Carousel = single non-wrapping row (swipeable on mobile). Stacked = wrapping grid on desktop.",
+      "options": [
+        { "value": "carousel", "label": "Carousel / single row" },
+        { "value": "stacked", "label": "Stacked grid" }
+      ],
+      "default": "carousel"
+    },
+    {
+      "type": "select",
+      "id": "mobile_header_alignment",
+      "label": "Mobile header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "select",
+      "id": "desktop_header_alignment",
+      "label": "Desktop header alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_mobile",
+      "label": "Tiles per row (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 1
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_desktop",
+      "label": "Tiles per row (desktop)",
+      "min": 2,
+      "max": 8,
+      "step": 1,
+      "default": 5
+    }
+  ]
+}
+{% endschema %}

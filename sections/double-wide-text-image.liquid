@@ -1,0 +1,45 @@
+<div class="double-wide__image">
+  {% render 'c-responsive-image', {
+    image: section.settings.image,
+    inline_ir: true,
+    wrapper_class: 'double-wide__image-wrapper',
+  } %}
+</div>
+<div class="double-wide__text">
+  <h2 class="double-wide__text-headline">{{ section.settings.copy }}</h2>
+</div>
+
+{% schema %}
+  {
+    "name": "Double Wide Text + Image",
+    "class": "double-wide container",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Recommended Image Format: JPG or PNG; Width: 742px; Height: 742px;"
+      },
+      {
+        "type": "textarea",
+        "id": "copy",
+        "label": "Copy",
+        "default": "In this ongoing story series, we are talking to designers and brand founders about their designs and companies: how they began, what inspires them, process and artisanship, sourcing of materials and more."
+      },
+      {
+        "type": "url",
+        "id": "url",
+        "label": "Link URL"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Double Wide Text + Image"
+      }
+    ]
+  }
+{% endschema %}

@@ -1,0 +1,179 @@
+{% layout none %}
+{% assign options_size =  product.options_with_values | size %}
+{% assign variants_size =  product.variants | size %}
+{% assign images_size =  product.images | size %}
+{%- assign current_variant = product.selected_or_first_available_variant -%}
+
+{% assign options_i =  0 %}
+{% assign variants_i =  0 %}
+{% assign images_i =  0 %}
+{% assign divided_price =  current_variant.price | divided_by: 100 %}
+{% assign modulo_price =  current_variant.price | modulo: 100 %}
+{% if modulo_price > 9 %}
+  {% assign modulo_price = '.' | append: modulo_price %}
+{% elsif modulo_price > 0 %}
+  {% assign modulo_price = '.0' | append: modulo_price %}
+{% else %}
+    {% assign modulo_price = '.00' %}
+{% endif %}
+{% assign price =  divided_price | append: modulo_price %}
+{%- capture product_title -%}
+  {%- render 'h-product-title-without-variant', product: product.title -%}
+{%- endcapture -%}
+
+{
+  "available": {{ product.available }},
+  "body_html": {{ product.description | json }},
+  "compare_at_price_min": {{ product.compare_at_price_min }},
+  "compare_at_price_max": {{ product.compare_at_price_max }},
+  "compare_at_price_varies": {{ product.compare_at_price_varies }},
+  "content": {{ product.content | json }},
+  "created_at": "{{ product.created_at }}",
+  "description": {{ product.description | json }},
+  "handle": {{ product.handle | json }},
+  "id": {{ product.id | json }},
+  "featured_image": {{ product.featured_image | json }},
+  "image": {
+  {% if images_size %}
+    {% assign image = product.images | first %}
+    "height": {{ image.height | json }},
+    "id": {{ image.id | json }},
+    "position": {{ image.position | json }},
+    "src": {{ image.src | json }},
+    "width": {{ image.width | json }}
+  {% endif %}
+  },
+  "images": [
+  {% for image in product.images %}
+    {% assign images_i = images_i | plus: 1 %}
+    {
+    "height": {{ image.height | json }},
+    "id": {{ image.id | json }},
+    "position": {{ image.position | json }},
+    "src": {{ image.src | json }},
+    "width": {{ image.width | json }}
+    }{% if images_i < images_size %},{% endif %}
+  {% endfor %}
+  ],
+  "media": [
+    {% for media in product.media %}
+      {
+        "alt": {{ media.alt | json }},
+        "id": {{ media.id | json }},
+        "position": {{ media.position | json }},
+        "preview_image": {{ media.preview_image | json }},
+        "aspect_ratio": {{ media.aspect_ratio | json }},
+        "height": {{ media.height | json }},
+        "media_type": {{ media.media_type | json }},
+        "src": {{ media.src | json }},
+        "width": {{ media.width | json }}
+      }{%- unless forloop.last -%},{%- endunless -%}
+    {% endfor %}
+  ],
+  "mfield_product_list": [
+    {% if sibling_product_list %}
+      {%- for product in sibling_product_list -%}
+        {{ product | json }}{%- unless forloop.last -%},{%- endunless -%}
+      {%- endfor -%}
+    {% endif%}
+  ],
+  "options": [
+  {% for option in product.options_with_values %}
+    {{ option | json }}{%- unless forloop.last -%},{%- endunless -%}
+    {% if option.name == 'Color' %}
+      {% assign has_colors = true %}
+    {% endif %}
+  {% endfor %}
+  ],
+  "price": {{ product.price }},
+  "price_min": {{ product.price_min }},
+  "price_max": {{ product.price_max }},
+  "price_varies": {{ product.price_varies }},
+  "product_type": {{ product.type | json }},
+  "published_at": "{{ product.published_at }}",
+  "requires_selling_plan": {{ product.requires_selling_plan | json }},
+  "selling_plan_groups": {{ product.selling_plan_groups | json }},
+  "tags": [{{ product.tags | join: ', ' | json }}],
+  "template_suffix": {{ product.template_suffix | json }},
+  "title": {{ product_title | strip_newlines | json }},
+  "type": {{ product.type | json }},
+  "updated_at": "{{ product.updated_at }}",
+  "variants": [
+    {% for variant in product.variants %}
+      {% assign variants_i = variants_i | plus: 1 %}
+      {% assign divided_price = variant.price | divided_by: 100 %}
+      {% assign modulo_price = variant.price | modulo: 100 %}
+      {% if modulo_price >9 %}
+        {% assign modulo_price = '.' | append: modulo_price %}
+      {% elsif modulo_price > 0 %}
+        {% assign modulo_price = '.0' | append: modulo_price %}
+      {% else %}
+        {% assign modulo_price = '.00' %}
+      {% endif %}
+      {% assign price =  divided_price | append: modulo_price %}
+      {% assign divided_compare_at_price =  variant.compare_at_price | divided_by: 100 %}
+      {% assign modulo_compare_at_price =  variant.compare_at_price | modulo: 100 %}
+      {% if modulo_compare_at_price > 0 %}
+        {% assign modulo_compare_at_price = '.' | append: modulo_compare_at_price %}
+      {% else %}
+        {% assign modulo_compare_at_price = '.00' %}
+      {% endif %}
+      {% assign compare_at_price =  divided_compare_at_price | append: modulo_compare_at_price %}
+      {% assign options = variant.options | split: ' / ' %}
+      {%- capture options -%}
+        {% for option in variant.options -%}
+          {{- option -}}{%- unless forloop.last -%}/{%- endunless -%}
+        {%- endfor %}
+      {%- endcapture -%}
+      {
+        "available": {{ variant.available | json }},
+        "barcode": {{ variant.barcode | json }},
+        "compare_at_price": {{ compare_at_price | json }},
+        "featured_image": {{ variant.featured_image | json }},
+        "featured_media": {{ variant.featured_media | json }},
+        "id": {{ variant.id | json }},
+        {% for image in product.images %}
+        {% if image.src == variant.image %}"image_id": {{ image.id | json }},{% endif %}
+        {% endfor %}
+        "image": {{ variant.image | json }},
+        "inventory_management": {{ variant.inventory_management | json }},
+        "inventory_quantity": {{ variant.inventory_quantity | json }},
+        "inventory_policy": {{ variant.inventory_policy | json }},
+        "name": {{ product.title | json }},
+        "options": {{ options | json }},
+        "option1": {{ variant.option1 | json }},
+        "option2": {{ variant.option2 | json }},
+        "option3": {{ variant.option3 | json }},
+        "price": {{ variant.price }},
+        "public_title": "{{ varirant.title | json }}",
+        "requires_selling_plan": {{ variant.requires_selling_plan | json }},
+        "requires_shipping": {{ variant.requires_shipping | json }},
+        "selling_plan_allocations": [
+          {% for allocattion in variant.selling_plan_allocations %}
+            {{ allocation | json}}{%- unless forloop.last -%},{%- endunless -%}
+          {% endfor %}
+        ],
+        "sku": {{ variant.sku | json }},
+        "title": {{ variant.title | json }},
+        "taxable": {{ variant.taxable | json }},
+        "weight": {{ variant.weight | json }}{% if has_colors %},{% endif %}
+        {% if has_colors %}
+          {% assign variant_color_handle = variant.option1 | handleize %}
+          {% assign variant_swatch_file_name = 'swatch-' | append: variant_color_handle | append: '.jpg' %}
+
+          {% assign swatch_image_object = images[variant_swatch_file_name] %}
+          {% assign swatch_image_url = swatch_image_object | img_url: '1x1' %}
+          {% if swatch_image_url contains 'no-image' %}
+            {% assign swatch_image_url = variant.featured_image.src %}
+          {% endif %}
+          "swatch_url": {{ swatch_image_url | json }}
+        {% endif %}
+      }{% if variants_i < variants_size %},{% endif %}
+    {% endfor %}
+  ],
+  "vendor": {{ product.vendor | json }},
+  {% assign membership_discount_except = product.metafields.teamwork.membershipdiscountexcept.value | default: product.metafields.teamwork.membershipdiscountexcept %}
+  "membership_discount_except": {% if membership_discount_except != blank %}{{ membership_discount_except | strip_html | strip | json }}{% else %}""{% endif %},
+  "json": {{ product | json }},
+  "options_with_values": {{ product.options_with_values | json }}
+}

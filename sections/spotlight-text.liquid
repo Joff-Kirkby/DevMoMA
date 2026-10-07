@@ -1,0 +1,101 @@
+{%- comment -%}
+  Spotlight + Text
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+{% assign text_left = false %}
+{% if ss.text_position == 'left' %}
+  {% assign text_left = true %}
+{% endif %}
+
+<section class="spotlight-text container {% if text_left %}spotlight-text--left{% endif %}">
+  <div class="spotlight-text__image {% if text_left %}spotlight-text__image--left{% endif %}">
+    <div class="spotlight-text__image-wrapper">
+      {% if ss.image != blank %}
+        {% render 'c-responsive-image', {
+          image: ss.image,
+          modifier: 'spotlight-text',
+        } %}
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="spotlight-text__content {% if text_left %}spotlight-text__content--left{% endif %}">
+    <div class="spotlight-text__content-wrapper">
+      {% if ss.title %}
+        <h2 class="spotlight-text__title {% if text_left %}spotlight-text__title--left{% endif %}">{{ ss.title }}</h2>
+      {% endif %}
+      {% if ss.description %}
+        <p class="spotlight-text__description {% if text_left %}spotlight-text__description--left{% endif %}">{{ ss.description }}</p>
+      {% endif %}
+      {% if ss.cta_url and ss.cta_text %}
+        <a
+          href="{{ ss.cta_link }}"
+          class="spotlight-text__cta {% if text_left %}spotlight-text__cta--left{% endif %}"
+          target="_blank"
+        >
+          {{ ss.cta_text }}
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Spotlight + Text",
+    "settings": [
+      {
+        "type": "select",
+        "id": "text_position",
+        "label": "Text Position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Text on Left"
+          },
+          {
+            "value": "right",
+            "label": "Text on Right"
+          }
+        ],
+        "default": "right",
+        "info": "Used to position the text on the left or right."
+      },
+      {
+        "type": "image_picker",
+        "id": "image",
+        "label": "Image",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 800px; height: 800px;"
+      },
+      {
+        "type": "text",
+        "id": "title",
+        "label": "Title"
+      },
+      {
+        "type": "textarea",
+        "id": "description",
+        "label": "Description"
+      },
+      {
+        "type": "url",
+        "id": "cta_url",
+        "label": "CTA Url",
+        "info": "Must also enter CTA Text"
+      },
+      {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text",
+        "info": "Must also enter CTA Url"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Spotlight + Text"
+      }
+    ]
+  }
+{% endschema %}

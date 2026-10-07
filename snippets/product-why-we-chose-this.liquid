@@ -1,0 +1,9 @@
+{% assign why_we_chose_this = product.metafields.teamwork.whywechosethis.value %}
+
+{% if why_we_chose_this != blank %}
+  <div class="pv-why-we-chose-this container">
+    <div class="pv-why-we-chose-this__background"></div>
+    <div class="pv-why-we-chose-this__header">Why We Chose This</div>
+    <div class="pv-why-we-chose-this__body">{{ why_we_chose_this }}</div>
+  </div>
+{% endif %}

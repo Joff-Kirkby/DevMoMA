@@ -1,0 +1,66 @@
+{%- comment -%}
+  2-Up + Text
+{%- endcomment -%}
+
+{% assign ss = section.settings %}
+
+<section
+  class="two-up-text container two-up-text--{{ ss.text_block_alignment }}"
+  style="
+    --cta-static-text-color: {{ ss.cta_static_text_color }};
+    --cta-static-bg-color: {% if ss.static_cta_style == 'transparent_background' %}transparent{% else %}{{ ss.cta_static_background_color }}{% endif %};
+    --cta-static-border-color: {% if ss.static_cta_style == 'transparent_background' %}{{ ss.cta_static_text_color }}{% else %}{{ ss.cta_static_background_color }}{% endif %};
+    --cta-hover-text-color: {{ ss.cta_hover_text_color }};
+    --cta-hover-bg-color: {% if ss.hover_cta_style == 'transparent_background' %}transparent{% else %}{{ ss.cta_hover_background_color }}{% endif %};
+    --cta-hover-border-color: {% if ss.hover_cta_style == 'transparent_background' %}{{ ss.cta_hover_text_color }}{% else %}{{ ss.cta_hover_background_color }}{% endif %};
+  "
+>
+  <div class="two-up-text__images">
+    {% render 'c-responsive-image', {
+      image: ss.image,
+      inline_ir: true,
+      wrapper_class: 'two-up-text__image-wrapper',
+      link: ss.cta_url,
+    } %}
+    {% render 'c-responsive-image', {
+      image: ss.image_2,
+      inline_ir: true,
+      wrapper_class: 'two-up-text__image-wrapper',
+      link: ss.cta_url,
+    } %}
+  </div>
+  <div class="two-up-text__text">
+    {% if ss.anchor != blank %}
+      <span id="{{ss.anchor}}" class="two-up-text__anchor-offset"></span>
+    {% endif %}
+    {% if ss.headline != blank %}
+      <h2 class="two-up-text__text-headline">{{ ss.headline }}</h2>
+    {% endif %}
+    {{ ss.text }}
+    {% if ss.cta_text != blank and ss.cta_url != blank %}
+      {% if ss.custom_cta_styles %}
+        <style>
+          .two-up-text .btn--primary {
+            background-color: {{ ss.cta_background_color }};
+            color: {{ ss.cta_text_color }};
+            border: 2px solid {{ ss.cta_border_color }};
+          }
+
+          .two-up-text .btn--primary:hover {
+            background-color: {{ ss.cta_hover_background_color }};
+            color: {{ ss.cta_hover_text_color }};
+            border: 2px solid {{ ss.cta_hover_border_color }};
+          }
+        </style>
+      {% endif %}
+      <a
+        class="btn btn--primary"
+        href="{{ ss.cta_url }}"
+        aria-label="{{ ss.cta_text }}"
+      >
+        {{ ss.cta_text }}
+      </a>
+    {% endif %}
+  </div>
+</section>
+

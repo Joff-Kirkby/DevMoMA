@@ -1,0 +1,83 @@
+{%- comment -%}
+  @param {object} image
+  @param {string} header - optional
+  @param {string} subheader - optional
+  @param {string} cta_text - optional
+  @param {string} cta_link - optional
+  @param {string} header_alignment_desktop - optional
+  @param {string} header_alignment_mobile - optional
+  @param {string} subheader_alignment_desktop - optional
+  @param {string} subheader_alignment_mobile - optional
+  @param {string} cta_alignment_desktop - optional
+  @param {string} cta_alignment_mobile - optional
+  @param {Number} mobile_flex_items - optional
+  @param {Number} desktop_flex_items - optional
+  @param {String} modifier - optional
+{%- endcomment -%}
+
+{%- assign s = section.settings -%}
+
+{%- unless image == blank -%}
+  <div
+    class="featured-collection featured-collection__{{ s.mobile_block_type }}-cell"
+    style="
+      --header-alignment-desktop: {{ header_alignment_desktop | default: 'center' }};
+      --header-alignment-mobile: {{ header_alignment_mobile | default: 'center' }};
+      --subheader-alignment-desktop: {{ subheader_alignment_desktop | default: 'center' }};
+      --subheader-alignment-mobile: {{ subheader_alignment_mobile | default: 'center' }};
+      --cta-alignment-desktop: {{ cta_alignment_desktop | default: 'center' }};
+      --cta-alignment-mobile: {{ cta_alignment_mobile | default: 'center' }};
+      --mobile-items: {{ mobile_flex_items }};
+      --desktop-items: {{ desktop_flex_items }};
+    "
+  >
+    <a
+      class="featured-collection__cta-link"
+      href="{{ cta_link }}"
+    >
+      {%- comment -%}
+        Designed for 1:1 images. Other images are cropped based on aspect ratio (max height or width, centered, overflow hidden).
+      {%- endcomment -%}
+      {% if modifier != blank %}
+        {% assign wrapper_class = 'featured-collection__ir-wrapper featured-collection__ir-wrapper--' | append: modifier %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          image_class: 'featured-collection__ir-image',
+          wrapper_class: wrapper_class,
+        } %}
+      {% elsif image.aspect_ratio == 1 %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          modifier: 'swatch',
+          image_class: 'featured-collection__ir-image',
+          wrapper_class: 'featured-collection__ir-wrapper',
+        } %}
+      {% elsif image.aspect_ratio > 1 %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          modifier: 'swatch',
+          image_class: 'featured-collection__ir-image featured-collection__ir-image--wide',
+          wrapper_class: 'featured-collection__ir-wrapper featured-collection__ir-wrapper--wide',
+        } %}
+      {% elsif image.aspect_ratio < 1 %}
+        {% render 'c-responsive-image', {
+          image: image.src,
+          modifier: 'swatch',
+          image_class: 'featured-collection__ir-image featured-collection__ir-image--tall',
+          wrapper_class: 'featured-collection__ir-wrapper featured-collection__ir-wrapper--tall',
+        } %}
+      {% endif %}
+      <div class="featured-collection__copy">
+        {% if header != blank %}
+          <h2 class="featured-collection__header">{{ header }}</h2>
+        {% endif %}
+        {% if subheader != blank %}
+          <p class="featured-collection__subheader">{{ subheader }}</p>
+        {% endif %}
+        {% if cta_link != blank %}
+          <p class="featured-collection__cta-text{% if header == blank %} featured-collection__cta-text--bold{% endif %}">{{ cta_text }}</p>
+        {% endif %}
+      </div>
+    </a>
+  </div>
+{%- endunless -%}

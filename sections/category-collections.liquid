@@ -1,0 +1,147 @@
+{% comment %}
+  Category Collections
+{% endcomment %}
+{%- assign desktop_navigation_meta = shop.metafields.navigation.desktop.value -%}
+{%- assign s = section.settings -%}
+
+{% comment %} Auto populate category list items {% endcomment %}
+{%- assign category_items = '' -%}
+{%- for nav_item in desktop_navigation_meta -%}
+  {%- assign nav_title_handleized = nav_item.title | handleize -%}
+
+  {%- if page.title == 'home' and nav_title_handleized == 'for-the-home' -%}
+    {%- assign category_items = nav_item.first.list_items -%}
+    {%- break -%}
+  {%- endif -%}
+
+  {%- if page.title == 'kitchen-dining' and nav_title_handleized == 'for-the-home' -%}
+    {%- assign category_items = nav_item[1].list_items -%}
+    {%- break -%}
+  {%- endif -%}
+
+  {%- if nav_title_handleized == page.handle -%}
+    {%- assign category_items = nav_item.columns.first.list_items -%}
+    {%- break -%}
+  {%- endif -%}
+{%- endfor -%}
+
+{%- unless s.image_1 == blank -%}
+  <section class="category-featured-collections category-featured-collections--{{ s.mobile_block_type }} container">
+    <div class="category-featured-collections__collections-wrapper category-featured-collections__collections-wrapper--{{ s.mobile_block_type }}">
+      <div class="category-featured-collections__categories hide-phone">
+        {%- if category_items.size > 0 -%}
+          <h3 class="category-featured-collections__category-header">Categories</h3>
+          <ul class="list-reset" class="category-featured-collections__category-list">
+            {%- for category_item in category_items -%}
+              <li class="category-featured-collections__category-list-item">
+                <a href="{{ category_item.url }}" class="category-featured-collections__category-link">
+                  {{ category_item.title }}
+                </a>
+              </li>
+            {%- endfor -%}
+          </ul>
+        {%- endif -%}
+      </div>
+      {% comment %} Featured Collection 1 {% endcomment %}
+      {% render 'c-featured-collection', {
+        image: s.image_1,
+        header: s.header_1,
+        subheader: s.subheader_1,
+        cta_text: s.cta_text_1,
+        cta_link: s.cta_link_1,
+      } %}
+      {% comment %} Featured Collection 2 {% endcomment %}
+      {% render 'c-featured-collection', {
+        image: s.image_2,
+        header: s.header_2,
+        subheader: s.subheader_2,
+        cta_text: s.cta_text_2,
+        cta_link: s.cta_link_2,
+      } %}
+    </div>
+  </section>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Category Collections",
+  "settings": [
+    {
+      "type": "select",
+      "id": "mobile_block_type",
+      "label": "Mobile Block Type",
+      "options": [
+        {
+          "value": "stacked",
+          "label": "Stacked"
+        },
+        {
+          "value": "carousel",
+          "label": "Carousel"
+        }
+      ],
+      "default": "stacked"
+    },
+    {
+      "type": "header",
+      "content": "Required 1st Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_1",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_1",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "subheader_1",
+      "label": "Subheader Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_1",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_1",
+      "label": "CTA Link"
+    },
+    {
+      "type": "header",
+      "content": "Optional 2nd Collection"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_2",
+      "label": "Image",
+      "info": "An image is required (1:1 recommended)."
+    },
+    {
+      "type": "text",
+      "id": "header_2",
+      "label": "Header Text"
+    },
+    {
+      "type": "text",
+      "id": "subheader_2",
+      "label": "Subheader Text"
+    },
+    {
+      "type": "text",
+      "id": "cta_text_2",
+      "label": "CTA Text"
+    },
+    {
+      "type": "url",
+      "id": "cta_link_2",
+      "label": "CTA Link"
+    }
+  ]
+}
+{% endschema %}

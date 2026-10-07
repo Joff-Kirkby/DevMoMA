@@ -1,0 +1,595 @@
+{% doc %}
+  Sticky Add to Cart bar for desktop product pages (body of the
+  "Sticky Add to Cart" section).
+
+  Layout (Figma "ATC Sticky Bar"): product title, one dropdown per product
+  option (Color with its swatch, Size…), quantity stepper, Add to Cart.
+  Products with a single default variant get no dropdowns. The Klarna
+  callout stays in the buy box only (removed from the bar in ECOM-1319).
+
+  Rendered as a `popover="manual"` element: once shown it lives in the top
+  layer, so it is never trapped under `main.page-wrap` (a `z-index: 0`
+  stacking context) or painted over by the footer, and it never fights
+  z-indexes. The <product-sticky-atc> element (assets/product-sticky-atc.js)
+  decides when it shows: desktop only, once the product section's buy box
+  (`.pv-actions`) has scrolled under the sticky header, and never while a
+  drawer has locked scrolling (mini cart); it stays up over the footer. While a
+  bottom-fixed overlay such as the cookie banner is on the page, the element
+  lifts the bar above it through `--pv-sticky-atc-offset`.
+
+  The bar owns no commerce logic. Its dropdowns are filled from the product
+  section's option lists (`.js-option-group`, including the sibling colors
+  lib/product-configurables.js injects) and a choice is forwarded by clicking
+  the matching option there, so the variant engine, the sibling redirect and
+  the availability UI run unchanged. Its Add to Cart proxies the click to the
+  product section's primary button (submit or back-in-stock trigger), and the
+  state the legacy modules write to that section (button text / disabled /
+  classes, quantity controls visibility, active option) is mirrored into the
+  `data-sticky-atc-*` hooks below.
+
+  @param {product} product - Product being sold (required)
+
+  @example
+  {% render 'product-sticky-atc', product: product %}
+{% enddoc %}
+
+{%- liquid
+  assign current_variant = product.selected_or_first_available_variant | default: product.variants.first
+-%}
+{%- capture bar_title -%}
+  {%- render 'h-product-title-without-variant', product: product -%}
+{%- endcapture -%}
+{%- assign bar_title = bar_title | strip -%}
+
+{%- if product != blank -%}
+  {%- comment -%}
+    `hidden` covers browsers without popover support; the element drops it
+    when it can use the popover API (a closed popover is not displayed).
+  {%- endcomment -%}
+  <product-sticky-atc
+    class="pv-sticky-atc"
+    popover="manual"
+    role="region"
+    aria-label="Add to cart"
+    hidden
+  >
+    <div class="pv-sticky-atc__inner">
+      {%- comment -%}
+        The inner span carries the ellipsis: `text-overflow` needs a block
+        container, and the flex <p> only centers it. The tooltip shows the
+        full name once it is truncated.
+      {%- endcomment -%}
+      <p class="pv-sticky-atc__title" title="{{ bar_title | escape }}">
+        <span class="pv-sticky-atc__title-text">{{ bar_title }}</span>
+      </p>
+
+      {%- unless product.has_only_default_variant -%}
+        {%- comment -%}
+          One dropdown per option: a button (aria-haspopup="listbox") showing
+          the option name, the active swatch for colors and the active value,
+          plus a listbox of role="option" buttons (with swatches). The element
+          re-fills the listbox from the product section and drives it
+          (open/close, keyboard, selection).
+        {%- endcomment -%}
+        <div class="pv-sticky-atc__selectors">
+          {%- for option in product.options_with_values -%}
+            {%- liquid
+              assign option_downcase = option.name | downcase
+              assign is_color = false
+              if option_downcase contains 'color' or option_downcase contains 'colour'
+                assign is_color = true
+              endif
+            -%}
+            <div
+              class="pv-sticky-atc__select{% if is_color %} pv-sticky-atc__select--swatch{% endif %}"
+              data-sticky-atc-select="{{ option.name | escape }}"
+            >
+              <button
+                type="button"
+                class="pv-sticky-atc__select-btn"
+                data-sticky-atc-select-btn
+                aria-haspopup="listbox"
+                aria-expanded="false"
+                aria-controls="sticky-atc-menu-{{ option.position }}"
+              >
+                <span class="pv-sticky-atc__select-label">{{ option.name | escape }}:</span>
+                {%- if is_color -%}
+                  <span class="pv-sticky-atc__swatch" data-sticky-atc-swatch aria-hidden="true"></span>
+                {%- endif -%}
+                <span class="pv-sticky-atc__select-value" data-sticky-atc-select-value>
+                  {{- option.selected_value | escape -}}
+                </span>
+                <svg class="pv-sticky-atc__chevron" width="14.294" height="8" viewBox="0 0 14.2939 8" aria-hidden="true" focusable="false">
+                  <path fill-rule="evenodd" clip-rule="evenodd" d="M7.13773 5.77364L1.13226 0L0 1.19549L7.13773 8L14.2939 1.19549L13.1616 0L7.13773 5.77364Z" fill="currentColor"/>
+                </svg>
+              </button>
+              <div
+                id="sticky-atc-menu-{{ option.position }}"
+                class="pv-sticky-atc__menu"
+                role="listbox"
+                aria-label="{{ option.name | escape }}"
+                data-sticky-atc-menu
+                hidden
+              >
+                {%- for value in option.values -%}
+                  <button
+                    type="button"
+                    class="pv-sticky-atc__option"
+                    role="option"
+                    tabindex="-1"
+                    data-value="{{ value | replace: '"', '%20' }}"
+                    aria-selected="{% if value == option.selected_value %}true{% else %}false{% endif %}"
+                  >
+                    {%- if is_color -%}
+                      <span class="pv-sticky-atc__swatch" aria-hidden="true"></span>
+                    {%- endif -%}
+                    <span class="pv-sticky-atc__option-text">{{ value | escape }}</span>
+                  </button>
+                {%- endfor -%}
+              </div>
+            </div>
+          {%- endfor -%}
+        </div>
+      {%- endunless -%}
+
+      <div
+        class="pv-sticky-atc__qty js-qty-controls{% unless current_variant.available %} hidden{% endunless %}"
+        data-sticky-atc-qty
+      >
+        <button
+          type="button"
+          class="pv-sticky-atc__qty-btn pv-sticky-atc__qty-btn--decrement js-qty-controls-btn"
+          data-action="decrement"
+          aria-label="Decrease quantity"
+        >
+          <span class="pv-sticky-atc__qty-minus" aria-hidden="true"></span>
+        </button>
+        <span class="pv-sticky-atc__qty-value js-qty-value" aria-live="polite" aria-atomic="true">1</span>
+        <button
+          type="button"
+          class="pv-sticky-atc__qty-btn pv-sticky-atc__qty-btn--increment js-qty-controls-btn"
+          data-action="increment"
+          aria-label="Increase quantity"
+        >
+          <svg class="pv-sticky-atc__qty-plus" width="7" height="7" viewBox="0 0 7 7" aria-hidden="true" focusable="false">
+            <path d="M4 3H7V4H4V7H3V4H0V3H3V0H4V3Z" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+
+      <div class="pv-sticky-atc__purchase">
+        <button
+          type="button"
+          class="pv-sticky-atc__add btn btn--quinary"
+          data-sticky-atc-add
+          {% unless current_variant.available %}disabled{% endunless %}
+        >
+          <span data-sticky-atc-add-text>Add to Cart</span>
+        </button>
+
+        {%- comment -%}
+          Mirrors the buy box's add-to-cart validation message (#quantityMessages),
+          which sits off-screen while the bar is up.
+        {%- endcomment -%}
+        <div class="pv-sticky-atc__messages" data-sticky-atc-messages role="status" aria-live="polite" hidden></div>
+      </div>
+    </div>
+  </product-sticky-atc>
+
+  <script type="module" src="{{ 'product-sticky-atc.js' | asset_url }}"></script>
+{%- endif -%}
+
+{% stylesheet %}
+  /**
+   * Sticky Add to Cart bar (desktop).
+   *
+   * Sizes are the Figma "ATC Sticky Bar - NEW" values (1440 frame, 1400
+   * content): 48px controls on one row, 25px apart.
+   *
+   * A manual popover: shown, it renders in the top layer, so the UA popover
+   * defaults (centered, bordered, padded box) are reset here into a bar fixed
+   * to the bottom edge. Closed, the UA hides it; `hidden` does the same in
+   * browsers without popover support, where `.is-visible` drives the slide.
+   * Only `transform` animates, and not at all under reduced motion.
+   */
+  .pv-sticky-atc {
+    --pv-sticky-atc-gap: 25px;
+    --pv-sticky-atc-control-height: 48px;
+    --pv-sticky-atc-border: 1px solid #000;
+    --pv-sticky-atc-focus: 2px solid #04009f;
+
+    position: fixed;
+    /* The element raises the offset to sit above bottom-fixed overlays (cookie banner) */
+    inset: auto 0 var(--pv-sticky-atc-offset, 0px) 0;
+    width: auto;
+    max-width: none;
+    height: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: visible;
+    /* Fallback stacking for browsers without the top layer (13 = z(header) in core/vars/_z-index.scss) */
+    z-index: 13;
+    color: #000;
+    background: #fff;
+    transform: translateY(100%);
+    transition:
+      transform 0.25s ease,
+      display 0.25s allow-discrete,
+      overlay 0.25s allow-discrete;
+  }
+
+  .pv-sticky-atc[hidden] {
+    display: none;
+  }
+
+  .pv-sticky-atc:popover-open,
+  .pv-sticky-atc.is-visible {
+    transform: translateY(0);
+  }
+
+  @starting-style {
+    .pv-sticky-atc:popover-open {
+      transform: translateY(100%);
+    }
+  }
+
+  /* Desktop and tablet only: up to $breakpoint-tablet (767px) the buy box itself is fixed (.pv-actions) */
+  @media only screen and (max-width: 767px) {
+    .pv-sticky-atc,
+    .pv-sticky-atc:popover-open {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pv-sticky-atc {
+      transition: none;
+    }
+  }
+
+  /*
+   * 1400px content in a 1440px frame: 20px gutters. Controls share one height
+   * and sit on one row; an add-to-cart message hangs under the button, so the
+   * row aligns to the top rather than the middle.
+   */
+  .pv-sticky-atc__inner {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--pv-sticky-atc-gap);
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 18px 20px;
+  }
+
+  /* 450px at the 1440 frame; takes whatever the controls leave */
+  .pv-sticky-atc__title {
+    display: flex;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    height: var(--pv-sticky-atc-control-height);
+    margin: 0;
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 25px;
+    letter-spacing: -0.2px;
+  }
+
+  /* Block container, so a long name ends in an ellipsis instead of a hard clip */
+  .pv-sticky-atc__title-text {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pv-sticky-atc__selectors {
+    display: flex;
+    flex: 0 0 auto;
+    gap: var(--pv-sticky-atc-gap);
+  }
+
+  /*
+   * Dropdown: a button + listbox, so the menu can carry swatches and looks
+   * the same in every browser. The bar sits at the bottom of the viewport,
+   * so the menu opens upwards; nothing clips it (the bar is overflow: visible
+   * in the top layer).
+   */
+  .pv-sticky-atc__select {
+    position: relative;
+    flex: 0 0 auto;
+  }
+
+  .pv-sticky-atc__select[hidden] {
+    display: none;
+  }
+
+  /* 48px tall, 12px / 13px side padding, 6px between label, swatch, value and chevron */
+  .pv-sticky-atc__select-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    height: var(--pv-sticky-atc-control-height);
+    margin: 0;
+    padding: 0 13px 0 12px;
+    border: var(--pv-sticky-atc-border);
+    border-radius: 0;
+    background: #fff;
+    color: #000;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: normal;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pv-sticky-atc__select-btn:focus-visible {
+    outline: var(--pv-sticky-atc-focus);
+    outline-offset: 2px;
+  }
+
+  .pv-sticky-atc__select-label {
+    flex: 0 0 auto;
+  }
+
+  /* Fixed 90px value column, so every dropdown keeps the Figma width */
+  .pv-sticky-atc__select-value {
+    flex: 0 0 auto;
+    width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .pv-sticky-atc__swatch {
+    display: none;
+    flex: 0 0 auto;
+    width: 18px;
+    height: 18px;
+    background-color: #ebe8e1;
+    background-size: cover;
+    background-position: center;
+  }
+
+  .pv-sticky-atc__swatch.has-image,
+  .pv-sticky-atc__option .pv-sticky-atc__swatch {
+    display: block;
+  }
+
+  .pv-sticky-atc__chevron {
+    flex: 0 0 auto;
+    width: 14.294px;
+    height: 8px;
+    pointer-events: none;
+    transition: transform 0.15s ease;
+  }
+
+  .pv-sticky-atc__select.is-open .pv-sticky-atc__chevron {
+    transform: rotate(180deg);
+  }
+
+  .pv-sticky-atc__menu {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 4px);
+    z-index: 1;
+    min-width: 100%;
+    max-height: 288px;
+    overflow-y: auto;
+    margin: 0;
+    padding: 4px 0;
+    border: var(--pv-sticky-atc-border);
+    background: #fff;
+    box-shadow: 0 4px 16px rgba(0 0 0 / 12%);
+  }
+
+  .pv-sticky-atc__menu[hidden] {
+    display: none;
+  }
+
+  .pv-sticky-atc__option {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    width: 100%;
+    min-height: 40px;
+    margin: 0;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: #000;
+    font: inherit;
+    font-size: 14px;
+    line-height: normal;
+    text-align: left;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pv-sticky-atc__option:hover,
+  .pv-sticky-atc__option:focus-visible {
+    background: #f2f2f2;
+    outline: none;
+  }
+
+  .pv-sticky-atc__option[aria-selected="true"] {
+    font-weight: 500;
+  }
+
+  .pv-sticky-atc__option[aria-disabled="true"] {
+    color: #999;
+    cursor: default;
+  }
+
+  .pv-sticky-atc__option[aria-disabled="true"]:hover {
+    background: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .pv-sticky-atc__chevron {
+      transition: none;
+    }
+  }
+
+  /*
+   * Quantity stepper: 100 x 48, #d4d4d4 border, 23px / 20px side padding,
+   * 18px between the minus (5 x 1), the value and the plus (7 x 7). The
+   * buttons stretch over the padding so the hit areas are usable; the icons
+   * still land where the design puts them.
+   */
+  .pv-sticky-atc__qty {
+    display: flex;
+    align-items: stretch;
+    flex: 0 0 auto;
+    box-sizing: border-box;
+    width: 100px;
+    height: var(--pv-sticky-atc-control-height);
+    border: 1px solid #d4d4d4;
+  }
+
+  .pv-sticky-atc__qty.hidden {
+    display: none;
+  }
+
+  .pv-sticky-atc__qty-btn {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    color: #000;
+    line-height: 0;
+    cursor: pointer;
+  }
+
+  .pv-sticky-atc__qty-btn--decrement {
+    padding: 0 9px 0 23px;
+  }
+
+  .pv-sticky-atc__qty-btn--increment {
+    justify-content: flex-end;
+    padding: 0 20px 0 9px;
+  }
+
+  .pv-sticky-atc__qty-minus {
+    display: block;
+    width: 5px;
+    height: 1px;
+    background: currentColor;
+  }
+
+  .pv-sticky-atc__qty-plus {
+    display: block;
+    width: 7px;
+    height: 7px;
+  }
+
+  .pv-sticky-atc__qty-value {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
+    min-width: 0;
+    font-size: 19px;
+    line-height: normal;
+  }
+
+  /* Buy box: the button with the add-to-cart message 15px under it, right-aligned */
+  .pv-sticky-atc__purchase {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    flex: 0 0 auto;
+    gap: 15px;
+  }
+
+  /* 370 x 48 black button (.btn--quinary supplies colors and the hover invert) */
+  .pv-sticky-atc__add {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 370px;
+    height: var(--pv-sticky-atc-control-height);
+    margin: 0;
+    padding: 0;
+    font-size: 16px;
+    line-height: normal;
+    white-space: nowrap;
+  }
+
+  .pv-sticky-atc__add:disabled:hover {
+    background-color: #000;
+    color: #fff;
+    cursor: default;
+  }
+
+  /* Right-aligned under the button; $red-1 for errors, like .message--error */
+  .pv-sticky-atc__messages {
+    max-width: 370px;
+    font-size: 12px;
+    line-height: 16px;
+    text-align: right;
+  }
+
+  .pv-sticky-atc__messages--error {
+    color: #cb312e;
+  }
+
+  .pv-sticky-atc__messages[hidden] {
+    display: none;
+  }
+
+  /*
+   * Compact layout below $breakpoint-large (1280px), i.e. tablets and small
+   * laptops. The fixed-width controls alone take ~970px with two dropdowns,
+   * which left the title with nothing and pushed the button off-screen in the
+   * 768–970px range, and only a few letters of title up to ~1200px. Here the
+   * title goes (the page shows it anyway), the gaps tighten and the button
+   * takes what is left up to its 370px, kept on the right. Should a row still
+   * not fit (long option labels), the purchase column wraps onto its own
+   * full-width line rather than clipping the button.
+   */
+  @media only screen and (max-width: 1279px) {
+    .pv-sticky-atc {
+      --pv-sticky-atc-gap: 15px;
+    }
+
+    .pv-sticky-atc__inner {
+      flex-wrap: wrap;
+    }
+
+    .pv-sticky-atc__title {
+      display: none;
+    }
+
+    .pv-sticky-atc__purchase {
+      flex: 1 1 200px;
+      align-items: stretch;
+      max-width: 370px;
+      margin-left: auto;
+    }
+
+    .pv-sticky-atc__add {
+      width: 100%;
+    }
+
+    .pv-sticky-atc__messages {
+      max-width: none;
+    }
+  }
+
+  .pv-sticky-atc__qty-btn:focus-visible,
+  .pv-sticky-atc__add:focus-visible {
+    outline: var(--pv-sticky-atc-focus);
+    outline-offset: 2px;
+  }
+{% endstylesheet %}

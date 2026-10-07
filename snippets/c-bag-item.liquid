@@ -1,0 +1,495 @@
+{%- comment -%}
+  Params:
+  - item {Object} Line item object
+  - is_member {Boolean} is customer logged in and has moma membership
+  - has_membership_in_cart {Boolean} has moma membership in cart
+
+  IMPORTANT:
+    - Accesing 2.0 metafields with ".value" is currently not working in checkout
+    - Please add fallback to the metafield without ".value"
+    - Number metafields will be converted to strings and will need to be parsed to a number
+    - Ex:
+      {% assign additional_shipping_value = item.variant.metafields.teamwork.additionalshipping.value | default: item.variant.metafields.teamwork.additionalshipping | times: 1 %}
+{%- endcomment -%}
+{% assign title = item.product.title %}
+{% assign price = item.original_price %}
+{% assign compare_at_price = item.variant.compare_at_price %}
+{% assign variant_id = item.variant_id %}
+{% assign current_qty = item.quantity %}
+{% assign sku = item.sku %}
+{% assign url = item.url %}
+{% assign sku_variant_id = sku | split: '-' | last %}
+{% assign sku_product_id = sku | split: '-' | first %}
+{% assign variant_featured_img_src = sku_variant_id | append: '_' %}
+{% assign product_featured_img_src = sku_product_id | append: '_' %}
+{% assign giftcard_chooseamount_sku = '84466-84466' %}
+{% assign is_available = item.variant.available %}
+{% assign price_display = price | money_without_trailing_zeros %}
+{% assign total_price = item.final_line_price %}
+{% assign total_price_display = total_price | money_without_trailing_zeros %}
+{% assign compare_at_price_display = compare_at_price | money_without_trailing_zeros %}
+{% assign giftwrap_id = settings.checkout_gift_wrap_item_id | times: 1 %}
+{% assign has_compare_at_price = false %}
+{% if compare_at_price > price and compare_at_price %}
+  {% assign has_compare_at_price = true %}
+{% endif %}
+{% assign img = blank %}
+{% for product_image in item.product.images %}
+  {% if product_image.src contains variant_featured_img_src %}
+    {% assign img = product_image %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+{%- comment -%} If variant does not have an image, check product {%- endcomment -%}
+{% if img == blank %}
+  {% for product_image in item.product.images %}
+    {% if product_image.src contains product_featured_img_src %}
+      {% assign img = product_image %}
+      {% break %}
+    {% endif %}
+  {% endfor %}
+{% endif %}
+{%- comment -%} If product does not have an image, check featured {%- endcomment -%}
+{% if img == blank %}
+  {% assign img = item.variant.featured_image | default: item.product.featured_image %}
+{% endif %}
+{% assign flat_rate_shipping_eligible = item.variant.metafields.teamwork.FlatRateShippingEligible | downcase %}
+{% assign additional_shipping_value = item.variant.metafields.teamwork.additionalshipping.value | default: item.variant.metafields.teamwork.additionalshipping | times: 1 %}
+{% unless item.variant.metafields.teamwork.additionalshipping != blank %}
+  {% assign additional_shipping_value = item.variant.metafields.teamwork.AdditionalShipping.value | default: item.variant.metafields.teamwork.AdditionalShipping | times: 1 %}
+{% endunless %}
+{% assign member_discount = item.variant.metafields.teamwork.memberdiscount.value | default: item.variant.metafields.teamwork.memberdiscount %}
+{% unless member_discount != blank %}
+  {% assign member_discount = item.variant.metafields.teamwork.MemberDiscount.value | default: item.variant.metafields.teamwork.MemberDiscount %}
+{% endunless %}
+{% assign has_member_discount = false %}
+{% if member_discount == true and is_member %}
+  {% assign has_member_discount = true %}
+{% endif %}
+{% assign membership_discount_except = item.properties._MembershipDiscountExcept %}
+{% assign member_discount = item.variant.metafields.teamwork.memberdiscount.value | default: item.variant.metafields.teamwork.memberdiscount %}
+{% unless member_discount != blank %}
+  {% assign member_discount = item.variant.metafields.teamwork.MemberDiscount.value | default: item.variant.metafields.teamwork.MemberDiscount %}
+{% endunless %}
+{%- comment -%} Note: The metafield key "ElgibleForDiscount" is misspelled and not the same as the metafield name "EligibleForDiscount" {%- endcomment -%}
+{% assign eligible_for_discount = item.variant.metafields.teamwork.ElgibleForDiscount.value | default: item.variant.metafields.teamwork.ElgibleForDiscount %}
+{% assign additional_ec_message = item.product.metafields.teamwork.additionalecmessage %}
+{% assign gift_wrap_available = item.product.metafields.teamwork.GiftWrapAvailable | default: item.product.metafields.teamwork.giftwrapavailable %}
+{% assign shipping_lead_time = item.variant.metafields.teamwork.shippingleadtime.value | default: item.variant.metafields.teamwork.shippingleadtime %}
+{% assign shipping_method = item.variant.metafields.teamwork.ShippingMethod %}
+{% assign ship_from_vendor = item.variant.metafields.teamwork.shipfromvendor | downcase %}
+{% assign final_sale = item.variant.metafields.teamwork.FinalSale.value | default: item.variant.metafields.teamwork.FinalSale %}
+{% assign domestic_shipping_only = false %}
+{% for tag in item.product.tags %}
+  {% if tag contains 'DomesticShippingOnly' %}
+    {% assign domestic_shipping_only = true %}
+    {% break %}
+  {% endif %}
+{% endfor %}
+
+{% assign is_membership_item = false %}
+{% for tag in item.product.tags %}
+  {%- if tag contains 'Department:REGULAR MEMBERSHIP' -%}
+    {% assign is_membership_item = true %}
+    {% break %}
+  {%- endif -%}
+{% endfor %}
+
+{%- assign ships_from_vendor = false -%}
+{%- if item.product.tags contains 'ShipFromVendor:Ok' or item.product.tags contains 'ShipFromVendor:Always' -%}
+  {%- assign ships_from_vendor = true -%}
+{%- endif -%}
+
+{% capture get_item_variants %}
+  {% assign variants = item.variant.options %}
+  {% assign count = blank %}
+  {% assign variant = blank %}
+  {% if item.product.variants.size > 1 and variants != blank %}
+    {% assign count = variants.size %}
+    {% for i in (0..count) %}
+      {% if i >= count %}
+        {% break %}
+      {% endif %}
+
+      {% assign variant = variants[i] %}
+      {% if variant and variant != 'Default Title' %}
+        {% if item.product.options[i] == 'Amount' and sku == giftcard_chooseamount_sku %}
+          {% if item.properties.giftcard_chooseamount %}
+            {% assign variant = item.properties.giftcard_chooseamount | append: '00' | times: 1 | money_without_trailing_zeros %}
+          {% else %}
+            {% assign variant = item.variant.price | money_without_trailing_zeros %}
+          {% endif %}
+        {% endif %}
+        <div class="bag-item__variant">{{ item.product.options[i] }}: {{ variant }}</div>
+      {% endif %}
+    {% endfor %}
+  {% endif %}
+{% endcapture %}
+
+{% assign properties = item.properties | reverse %}
+
+{%- capture get_e_gift_card_properties -%}
+  {%- for property in properties -%}
+    {%- capture property_name -%}
+      {%- case property.first -%}
+        {%- when 'giftcard_sender_name' -%}
+          Gifted By
+        {%- when 'giftcard_sender_email' -%}
+          Sender Email
+        {%- when 'giftcard_recipient_name' -%}
+          Gifted To
+        {%- when 'giftcard_recipient_email' -%}
+          Recipient Email
+        {%- when 'giftcard_send_on_date_time' -%}
+          Send On
+        {%- when 'giftcard_message' -%}
+          Message
+        {%- else -%}
+          {{ blank }}
+      {%- endcase -%}
+    {%- endcapture -%}
+    {%- if property_name != blank -%}
+      {% assign property_value = property.last %}
+      {% if property_name == 'Send On' %}
+        {% assign property_value = property.last | date: format: 'date_at_time' %}
+      {% endif %}
+      <div class="bag-item__property">{{ property_name }}: {{ property_value }}</div>
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{%- capture get_membership_properties -%}
+  {%- for property in properties -%}
+    {%- capture property_name -%}
+      {%- case property.first -%}
+        {%- when 'firstName1' -%}
+          Member First Name
+        {%- when 'lastName1' -%}
+          Member Last Name
+        {%- when '_autoRenew' -%}
+          {% if is_membership_item == false %}
+            Automatic Renewal
+          {% endif %}
+        {%- when 'email2' -%}
+          Second Member Email
+        {%- when 'firstName2' -%}
+          Second Member First Name
+        {%- when 'lastName2' -%}
+          Second Member Last Name
+        {%- else -%}
+          {{ blank }}
+      {%- endcase -%}
+    {%- endcapture -%}
+    {%- if property_name != blank -%}
+      {% assign property_value = property.last %}
+      {% if property_name == 'Automatic Renewal' %}
+        {% if property_value == true %}
+          {% assign property_value = 'On' %}
+        {% else %}
+          {% assign property_value = 'Off' %}
+        {% endif %}
+      {% endif %}
+      {% if property_value != blank %}
+        <div class="bag-item__property">{{ property_name }}: {{ property_value }}</div>
+      {% endif %}
+    {%- endif -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
+{% assign is_employee = false %}
+{% if customer != nil %}
+  {% assign customer_email_domain = customer.email | split: '@' | last | downcase %}
+  {% if customer_email_domain == 'moma.org' %}
+    {% assign is_employee = true %}
+  {% endif %}
+{% endif %}
+
+{% comment %} Used to get locale {% endcomment %}
+{%- assign root_url = routes.root_url | replace: '/', '' | downcase -%}
+
+<tr
+  class="bag-item js-bag-item"
+  id="bagItem{{ variant_id }}"
+  data-variant-id="{{ variant_id }}"
+  data-variant-qty-limit="{{ item.variant.metafields.variant.quantity_limit }}"
+  data-variant-title="{{ item.variant.title }}"
+  data-product-id="{{ item.product.id }}"
+  data-product-qty-limit="{{ item.product.metafields.product.quantity_limit }}"
+  data-product-title="{{ item.product.title }}"
+  data-qty="{{ current_qty }}"
+  data-sku="{{ sku }}"
+>
+  <td class="bag-item__photo">
+    {%- comment -%}
+      Get the product/variant SKUs and use them to check for Teamwork/GlobalEdit image files
+    {%- endcomment -%}
+    {% if item.variant.sku != blank %}
+      {%- assign sku_variant_id = item.sku | split: '-' | last -%}
+    {% endif %}
+
+    {%- comment -%}
+      Build primary image string from variant SKU
+    {%- endcomment -%}
+    {%- assign variant_primary_image_string = '' -%}
+    {%- if sku_variant_id != '' -%}
+      {%- assign variant_primary_image_string = sku_variant_id | append: '_a' -%}
+    {%- endif -%}
+
+    {% assign media_has_variant_image = false %}
+
+    {%- comment -%}
+      Look for an image in product media with the primary image string in the file name or alt text
+    {%- endcomment -%}
+    {% for media in item.product.media %}
+      {% assign filename = media.src | split: '/' | last -%}
+
+      {% if filename contains variant_primary_image_string or media.alt contains variant_primary_image_string %}
+        <{% render 'h-conditional-tag', href: url, type: 'opening' %} class="bag-item__photo-inner">
+          {% render 'c-responsive-image', {
+            image: media,
+            modifier: 'swatch',
+            wrapper_class: 'bag-item__photo-img',
+          } %}
+        </{% render 'h-conditional-tag', href: url, type: 'closing' %}>
+
+        {% assign media_has_variant_image = true %}
+        {% break %}
+
+      {% endif %}
+    {% endfor %}
+
+    {%- comment -%}
+      Fall back to default product image (old implementation)
+    {%- endcomment -%}
+    {% unless media_has_variant_image %}
+      {% if img != blank %}
+        <{% render 'h-conditional-tag', href: url, type: 'opening' %} class="bag-item__photo-inner">
+          {% render 'c-responsive-image', {
+            image: img,
+            modifier: 'swatch',
+            wrapper_class: 'bag-item__photo-img',
+          } %}
+        </{% render 'h-conditional-tag', href: url, type: 'closing' %}>
+      {% endif %}
+    {% endunless %}
+  </td>
+
+  <td class="bag-item__info">
+    <div class="bag-item__details">
+      <header class="bag-item__header">
+        {% if item.id == giftwrap_id %}
+          {% if settings.gift_wrapping_text != empty %}
+            <div class="bag-item__gift-message" style="color: {{ settings.gift_wrapping_color }}">
+              {{ settings.gift_wrapping_text }}
+            </div>
+          {% endif %}
+          <div class="bag-item__wrap-message">Item: {{ sku }}</div>
+        {% endif %}
+        <h4 class="bag-item__title js-bag-item-title">
+          <{% render 'h-conditional-tag', href: url, type: 'opening', tag: 'span' %}>
+            {{ title }}
+          </{% render 'h-conditional-tag', href: url, type: 'closing' %}>
+        </h4>
+        <div class="bag-item__sku">Item: {{ sku }}</div>
+      </header>
+      <div class="bag-item__variants">
+        {{ get_item_variants }}
+      </div>
+      {% if get_e_gift_card_properties != blank %}
+        <div class="bag-item__properties">
+          {{ get_e_gift_card_properties }}
+        </div>
+      {% endif %}
+      {% if get_membership_properties != blank %}
+        <div class="bag-item__properties">
+          {{ get_membership_properties }}
+        </div>
+      {% endif %}
+      {% if is_employee %}
+        <div class="bag__red-text">
+          MoMA Employee Discount Applied at Checkout
+        </div>
+      {% endif %}
+      {% if has_member_discount %}
+        <div class="bag__red-text">
+          MoMA Member Discount Applied
+        </div>
+      {% endif %}
+      {% if member_discount == true and has_membership_in_cart %}
+        <div class="bag__red-text">
+          20% First Time Member Discount Applied
+        </div>
+      {% endif %}
+      {% if is_available and ships_from_vendor == false and is_membership_item == false %}
+        <div class="bag-item__ready-to-ship">
+          In Stock and Ready to Ship
+        </div>
+      {% endif %}
+
+      {% unless settings.oos_messaging == blank %}
+        <div class="bag-item__oos" style="display: none;" aria-hidden="true">
+          {{ settings.oos_messaging }}
+        </div>
+      {% endunless %}
+    </div>
+
+    {% if membership_discount_except != blank and root_url == blank %}
+      <div class="bag-item__discount-except">
+        {{ membership_discount_except }}
+      </div>
+    {% endif %}
+
+    {% if is_membership_item == false %}
+      {% if flat_rate_shipping_eligible == 'y' %}
+        {% unless is_member %}
+          <div class="bag-item__flat-rate-shipping">
+            {{ settings.flat_shipping_fee_message }}
+          </div>
+        {% endunless is_member %}
+      {% endif %}
+
+      {% if additional_shipping_value > 0 and additional_shipping_value != blank %}
+        <div class="bag-item__addtional-shipping">
+          Shipping charge of {{ additional_shipping_value | times: 100 | money_without_trailing_zeros }} for delivery.
+        </div>
+      {% endif %}
+
+      {% if domestic_shipping_only %}
+        <div class="bag-item__intl-shipping">
+          Cannot be shipped outside the contiguous U.S.
+        </div>
+      {% endif %}
+
+      {% if shipping_method != blank %}
+        <div class="bag-item__shipping-method">
+          {{ shipping_method }}
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {% if additional_ec_message != blank %}
+      <div class="bag-item__additional-ec-message">
+        {{ additional_ec_message }}
+      </div>
+    {% endif %}
+
+    {% if shipping_lead_time != blank %}
+      <div class="bag-item__shipping-lead-time">
+        {{ shipping_lead_time }}
+      </div>
+    {% endif %}
+
+    {% if member_discount == true and flat_rate_shipping_eligible == 'y' %}
+      <div class="bag-item__members-discount-message bag__blue-text">
+        {{ settings.product_membership_savings_text }}
+      </div>
+    {% endif %}
+
+    {% if final_sale == true and ship_from_vendor == 'ok' %}
+      <div class="bag-item__final-sale">
+        This special order item is final sale and non-returnable.
+      </div>
+    {% endif %}
+
+    {% if final_sale == true and ship_from_vendor != 'ok' %}
+      <div class="bag-item__final-sale">
+        This item is final sale and non-returnable.
+      </div>
+    {% endif %}
+
+    {% if checkout != blank %}
+      {% if member_discount == true and has_membership_in_cart %}
+        <span class="bag-item__checkout-price bag-item__price-original--sale">
+          {{ price_display }}
+        </span>
+        <span class="bag__red-text">
+          {{ total_price_display }}
+        </span>
+      {% else %}
+        <div class="bag-item__checkout-price">
+          {{ total_price_display }}
+        </div>
+      {% endif %}
+
+    {% endif %}
+  </td>
+  <td class="bag-item__price">
+    <span class="bag-item__price-original{% if has_compare_at_price or has_member_discount %} bag-item__price-original--sale{% endif %}">
+      {% if item.properties.giftcard_chooseamount and sku == giftcard_chooseamount_sku %}
+        {{ item.properties.giftcard_chooseamount | append: '00' | times: 1 | money_without_trailing_zeros }}
+      {% elsif has_compare_at_price %}
+        {{ compare_at_price_display }}
+      {% else %}
+        {{ price_display }}
+      {% endif %}
+    </span>
+    {% if has_compare_at_price %}
+        <span class="bag__red-text">
+          {{ price_display }}
+        </span>
+    {% endif %}
+    <div class="bag-item__price-label">Non-Member</div>
+    {% if member_discount == true %}
+      <div class="bag-item__price-member-discount bag__blue-text">
+        <span class="bag-item__price-member-discount-text">
+          {% render 'h-member-discount-text', {
+            price: price
+          } %}
+        </span>
+        <span class="bag-item__price-label">Member</span>
+      </div>
+    {% endif %}
+
+    <div class="bag-item__gift">
+      {% if gift_wrap_available %}
+        <div class="input-wrapper checkbox gift__wrapping-checkbox bag-item__gift-checkbox">
+          <input
+            id="giftWrappingCheckbox{{ item.id }}"
+            class="input input-checkbox gift__wrapping-checkbox-input"
+            type="checkbox"
+            name="customer[emailList]"
+            data-variant-id="{{ item.id }}"
+            data-sku="{{ item.sku }}"
+            {% if gifted_skus contains item.sku %}
+              checked
+            {% endif %}
+          >
+          <label class="input-checkbox-label gift__wrapping-checkbox-label" for="giftWrappingCheckbox{{ item.id }}">
+            <p class="bag-item__gift-label">Add gift wrap ($5)</p>
+            <p class="bag-item__gift-label bag__blue-text">(Free for members)</p>
+          </label>
+        </div>
+      {% else %}
+        {% unless item.id == giftwrap_id %}
+          <div class="bag-item__gift-unavailable">
+            <i class="icon icon--unavailable-check"></i>
+            <p class="bag-item__gift-label">Gift wrap unavailable</p>
+          </div>
+        {% endunless %}
+      {% endif %}
+    </div>
+  </td>
+
+  <td class="bag-item__actions {% if item.id == giftwrap_id %}hide-actions{% endif %}">
+    <div class="bag-item__qty increment js-increment{% if is_membership_item %} hide{% endif %}">
+      <input type="number" name="quantity" value="{{ current_qty }}" size="3" class="bag-item__qty-input increment__input js-increment-input" tabindex="-1" />
+      <button type="button" class="bag-item__qty-btn bag-item__qty-btn--add increment__btn increment__add js-increment-btn" data-action="add">
+        <span class="bag-item__qty-btn-text bag-item__qty-btn-text--add"></span>
+        <span class="screenreader">Add</span>
+      </button>
+      <button type="button" class="bag-item__qty-btn bag-item__qty-btn--subtr increment__btn increment__subtr js-increment-btn" data-action="remove">
+        <span class="bag-item__qty-btn-text bag-item__qty-btn-text--subtr"></span>
+        <span class="screenreader bag-item__qty-btn-text">Subtract</span>
+      </button>
+    </div>
+    <a href="{{ routes.root_url }}cart/change/{{ variant_id }}?quantity=0" title="Remove item" class="bag__underline-link bag-item__remove js-bag-item-remove btn-icon" role="button" data-variant-id="{{ variant_id }}" data-sku="{{ sku }}"><span class="bag-item__remove-label">Remove</span></a>
+    <div class="bag-item__messages messages js-bag-item-messages"></div>
+  </td>
+
+  <td class="bag-item__total js-bag-item-total-price">
+    <div class="bag-item__total-price js-bag-item-total-price">
+      <span class="bag-item__total-label">Total: </span>{{ total_price_display }}
+    </div>
+
+    <div class="bag-item__save"></div>
+</tr>

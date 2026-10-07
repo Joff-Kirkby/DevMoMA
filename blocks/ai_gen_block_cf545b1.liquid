@@ -1,0 +1,540 @@
+{% doc %}
+  @prompt
+    Please create a custom Shopify Liquid and schema module for a "Horizontal Promo Cards" section based on the design style in "Screenshot 2026-06-23 at 5.46.08 PM.jpg".
+    
+    The section should have the following specifications:
+    
+    1. Layout & Spacing:
+       - On desktop, it must display exactly 3 cards lined up horizontally in a single row.
+       - The total width of the 3 blocks combined must align perfectly with the theme's standard page margins/container width.
+       - There must be exactly 30px of spacing (gap) between each of the 3 blocks.
+    
+    2. Design & Styling (Text Overlay):
+       - The copy (Heading, Subheading, and CTA) for each block must overlay directly on top of the image, exactly like the layout in "Screenshot 2026-06-23 at 5.46.08 PM.jpg".
+       - All text within this module must use the "MoMA Sans" font, which is hosted locally/uploaded within Shopify. Please include the appropriate CSS font-family rules.
+    
+    3. Responsiveness:
+       - On mobile devices, the 3 cards must automatically stack vertically while maintaining the text-over-image overlay style.
+    
+    4. Customizable Blocks (Per Card):
+       I need to be able to edit the following elements for EACH of the 3 cards independently in the Shopify Theme Editor:
+       - Image: An image picker for the background image.
+       - Heading text: A text input (e.g., "FREE SHIPPING ON 1000+ ITEMS").
+       - Subheading/Body text: A rich text or textarea field for details.
+       - CTA Link: A URL picker for the link.
+       - CTA Text: A text input to customize the link text (e.g., "SHOP NOW").
+    
+    5. Limits:
+       - Restrict the section settings so it allows a maximum of 3 blocks/cards, up to 4 cards., Left align all text, leave 30 px margin on top and one the side. Use same font for Body copy and CTA. use less font weight for the title for each block., Cards should be fixed width, but flexible with height based on thw image input., Cards should use the page margins. The overall width of the section should be bound by the global page margins—for example, a max-width of 1340px when the page is fully extended on desktop viewports., Add 30 px padding on each side of the module. change the font size of body coy & CTA to be 16 px.
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-promo-cards-container-{{ ai_gen_id }} {
+    width: 100%;
+    max-width: 1340px;
+    margin: 0 auto;
+    padding: 0 30px;
+    box-sizing: border-box;
+  }
+
+  .ai-promo-cards-grid-{{ ai_gen_id }} {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+  }
+
+  .ai-promo-card-{{ ai_gen_id }} {
+    position: relative;
+    overflow: hidden;
+    border-radius: {{ block.settings.border_radius }}px;
+    display: block;
+    text-decoration: none;
+    flex: 0 0 calc((100% - 60px) / 3);
+  }
+
+  .ai-promo-card-image-{{ ai_gen_id }} {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  .ai-promo-card-placeholder-{{ ai_gen_id }} {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .ai-promo-card-placeholder-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    max-width: 200px;
+    max-height: 200px;
+  }
+
+  .ai-promo-card-overlay-{{ ai_gen_id }} {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+    right: 30px;
+    bottom: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    text-align: left;
+    background: {{ block.settings.overlay_background }};
+  }
+
+  .ai-promo-card-heading-{{ ai_gen_id }} {
+    font-family: 'MoMA Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: {{ block.settings.heading_font_size }}px;
+    font-weight: {{ block.settings.heading_font_weight }};
+    color: {{ block.settings.heading_color }};
+    margin: 0 0 {{ block.settings.heading_spacing }}px 0;
+    line-height: 1.2;
+    letter-spacing: {{ block.settings.heading_letter_spacing }}px;
+    text-transform: {{ block.settings.heading_text_transform }};
+  }
+
+  .ai-promo-card-subheading-{{ ai_gen_id }} {
+    font-family: 'MoMA Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: {{ block.settings.subheading_font_size }}px;
+    font-weight: {{ block.settings.subheading_font_weight }};
+    color: {{ block.settings.subheading_color }};
+    margin: 0 0 {{ block.settings.subheading_spacing }}px 0;
+    line-height: 1.4;
+  }
+
+  .ai-promo-card-cta-{{ ai_gen_id }} {
+    font-family: 'MoMA Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    font-size: {{ block.settings.subheading_font_size }}px;
+    font-weight: {{ block.settings.subheading_font_weight }};
+    color: {{ block.settings.cta_color }};
+    text-decoration: {{ block.settings.cta_text_decoration }};
+    letter-spacing: {{ block.settings.cta_letter_spacing }}px;
+    text-transform: {{ block.settings.cta_text_transform }};
+    display: inline-block;
+    transition: opacity 0.3s ease;
+  }
+
+  .ai-promo-card-{{ ai_gen_id }}:hover .ai-promo-card-cta-{{ ai_gen_id }} {
+    opacity: 0.8;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-promo-cards-container-{{ ai_gen_id }} {
+      padding: 0 20px;
+    }
+
+    .ai-promo-cards-grid-{{ ai_gen_id }} {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .ai-promo-card-{{ ai_gen_id }} {
+      flex: 0 0 auto;
+      width: 100%;
+    }
+
+    .ai-promo-card-heading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.heading_font_size | times: 0.8 }}px;
+    }
+
+    .ai-promo-card-subheading-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_font_size | times: 0.9 }}px;
+    }
+
+    .ai-promo-card-cta-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subheading_font_size | times: 0.9 }}px;
+    }
+
+    .ai-promo-card-overlay-{{ ai_gen_id }} {
+      top: 20px;
+      left: 20px;
+      right: 20px;
+      bottom: 20px;
+    }
+  }
+{% endstyle %}
+
+<div class="ai-promo-cards-container-{{ ai_gen_id }}" {{ block.shopify_attributes }}>
+  <div class="ai-promo-cards-grid-{{ ai_gen_id }}">
+    {% for i in (1..3) %}
+      {% liquid
+        assign image_key = 'card_' | append: i | append: '_image'
+        assign heading_key = 'card_' | append: i | append: '_heading'
+        assign subheading_key = 'card_' | append: i | append: '_subheading'
+        assign cta_text_key = 'card_' | append: i | append: '_cta_text'
+        assign cta_link_key = 'card_' | append: i | append: '_cta_link'
+
+        assign card_image = block.settings[image_key]
+        assign card_heading = block.settings[heading_key]
+        assign card_subheading = block.settings[subheading_key]
+        assign card_cta_text = block.settings[cta_text_key]
+        assign card_cta_link = block.settings[cta_link_key]
+      %}
+
+      <a
+        href="{{ card_cta_link }}"
+        class="ai-promo-card-{{ ai_gen_id }}"
+        {% if card_cta_link == blank %}aria-disabled="true"{% endif %}
+      >
+        {% if card_image %}
+          <img
+            src="{{ card_image | image_url: width: 800 }}"
+            alt="{{ card_image.alt | escape }}"
+            loading="lazy"
+            width="{{ card_image.width }}"
+            height="{{ card_image.height }}"
+            class="ai-promo-card-image-{{ ai_gen_id }}"
+          >
+        {% else %}
+          <div class="ai-promo-card-placeholder-{{ ai_gen_id }}">
+            {{ 'image' | placeholder_svg_tag }}
+          </div>
+        {% endif %}
+
+        <div class="ai-promo-card-overlay-{{ ai_gen_id }}">
+          {% if card_heading != blank %}
+            <h3 class="ai-promo-card-heading-{{ ai_gen_id }}">{{ card_heading }}</h3>
+          {% endif %}
+
+          {% if card_subheading != blank %}
+            <div class="ai-promo-card-subheading-{{ ai_gen_id }}">{{ card_subheading }}</div>
+          {% endif %}
+
+          {% if card_cta_text != blank %}
+            <span class="ai-promo-card-cta-{{ ai_gen_id }}">{{ card_cta_text }}</span>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Horizontal promo cards",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Card 1"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "card_1_heading",
+      "label": "Heading",
+      "default": "FREE SHIPPING ON 1000+ ITEMS"
+    },
+    {
+      "type": "textarea",
+      "id": "card_1_subheading",
+      "label": "Subheading",
+      "default": "Enjoy complimentary shipping on select products"
+    },
+    {
+      "type": "text",
+      "id": "card_1_cta_text",
+      "label": "CTA text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "card_1_cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Card 2"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "card_2_heading",
+      "label": "Heading",
+      "default": "NEW ARRIVALS"
+    },
+    {
+      "type": "textarea",
+      "id": "card_2_subheading",
+      "label": "Subheading",
+      "default": "Discover our latest collection"
+    },
+    {
+      "type": "text",
+      "id": "card_2_cta_text",
+      "label": "CTA text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "card_2_cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Card 3"
+    },
+    {
+      "type": "image_picker",
+      "id": "card_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "text",
+      "id": "card_3_heading",
+      "label": "Heading",
+      "default": "MEMBER EXCLUSIVE"
+    },
+    {
+      "type": "textarea",
+      "id": "card_3_subheading",
+      "label": "Subheading",
+      "default": "Save 20% on your first purchase"
+    },
+    {
+      "type": "text",
+      "id": "card_3_cta_text",
+      "label": "CTA text",
+      "default": "SHOP NOW"
+    },
+    {
+      "type": "url",
+      "id": "card_3_cta_link",
+      "label": "CTA link"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 20,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "color",
+      "id": "overlay_background",
+      "label": "Background overlay",
+      "default": "rgba(0, 0, 0, 0)"
+    },
+    {
+      "type": "header",
+      "content": "Heading style"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Font size",
+      "min": 12,
+      "max": 48,
+      "step": 2,
+      "unit": "px",
+      "default": 30
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "300",
+          "label": "Light"
+        },
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        },
+        {
+          "value": "700",
+          "label": "Bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "heading_color",
+      "label": "Color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "heading_letter_spacing",
+      "label": "Letter spacing",
+      "min": 0,
+      "max": 5,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0.5
+    },
+    {
+      "type": "select",
+      "id": "heading_text_transform",
+      "label": "Text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        },
+        {
+          "value": "capitalize",
+          "label": "Capitalize"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "range",
+      "id": "heading_spacing",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 10
+    },
+    {
+      "type": "header",
+      "content": "Body and CTA style"
+    },
+    {
+      "type": "range",
+      "id": "subheading_font_size",
+      "label": "Font size",
+      "min": 10,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "subheading_font_weight",
+      "label": "Font weight",
+      "options": [
+        {
+          "value": "400",
+          "label": "Normal"
+        },
+        {
+          "value": "500",
+          "label": "Medium"
+        },
+        {
+          "value": "600",
+          "label": "Semi-bold"
+        }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "subheading_color",
+      "label": "Body color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "subheading_spacing",
+      "label": "Bottom spacing",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "color",
+      "id": "cta_color",
+      "label": "CTA color",
+      "default": "#000000"
+    },
+    {
+      "type": "range",
+      "id": "cta_letter_spacing",
+      "label": "CTA letter spacing",
+      "min": 0,
+      "max": 3,
+      "step": 0.5,
+      "unit": "px",
+      "default": 0.5
+    },
+    {
+      "type": "select",
+      "id": "cta_text_transform",
+      "label": "CTA text transform",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "uppercase",
+          "label": "Uppercase"
+        },
+        {
+          "value": "lowercase",
+          "label": "Lowercase"
+        }
+      ],
+      "default": "uppercase"
+    },
+    {
+      "type": "select",
+      "id": "cta_text_decoration",
+      "label": "CTA text decoration",
+      "options": [
+        {
+          "value": "none",
+          "label": "None"
+        },
+        {
+          "value": "underline",
+          "label": "Underline"
+        }
+      ],
+      "default": "underline"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Horizontal promo cards"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,45 @@
+{{ 'style.css' | asset_url | stylesheet_tag }}
+
+{% if template == 'cart' %}
+  {{ 'locale-selectors.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'index' %}
+  {{ 'index.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template contains 'product' %}
+  {{ 'product.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'page.gifts' or template == 'page.gift-guide' %}
+  {{ 'gifts.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template contains 'collection' or template contains 'search' %}
+  {{ 'collection.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template contains 'customer' %}
+  {{ 'account.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'page.email-sign-up' %}
+  {{ 'email-signup.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'page.store' %}
+  {{ 'stores.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'page.gift-finder' %}
+  {{ 'gift-finder.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'page.sitemap' %}
+  {{ 'sitemap.css' | asset_url | stylesheet_tag }}
+{% endif %}
+
+{% if template == 'page.rewards' %}
+  {{ 'rewards.css' | asset_url | stylesheet_tag }}
+{% endif %}

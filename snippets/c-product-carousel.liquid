@@ -1,0 +1,96 @@
+{% comment %}
+  Product Carousel Section
+
+  @param {Object} section theme settings
+{% endcomment %}
+
+{%- assign ss = section.settings -%}
+{%- assign blocks = section.blocks -%}
+
+<section
+  class="
+    product-carousel
+    product-carousel--{{ section.id }}
+    container
+    js-product-carousel-wrapper
+    {%- if ss.layout == "header_top_cta_bottom" %} product-carousel--header-top-cta-bottom{% endif -%}
+  "
+  data-searchspring-tag="{{- ss.searchspring_tag -}}"
+  style="
+    --cta-static-text-color: {{ ss.cta_static_text_color }};
+    --cta-static-bg-color: {% if ss.static_cta_style == 'transparent_background' %}transparent{% else %}{{ ss.cta_static_background_color }}{% endif %};
+    --cta-static-border-color: {% if ss.static_cta_style == 'transparent_background' %}{{ ss.cta_static_text_color }}{% else %}{{ ss.cta_static_background_color }}{% endif %};
+    --cta-hover-text-color: {{ ss.cta_hover_text_color }};
+    --cta-hover-bg-color: {% if ss.hover_cta_style == 'transparent_background' %}transparent{% else %}{{ ss.cta_hover_background_color }}{% endif %};
+    --cta-hover-border-color: {% if ss.hover_cta_style == 'transparent_background' %}{{ ss.cta_hover_text_color }}{% else %}{{ ss.cta_hover_background_color }}{% endif %};
+  "
+>
+  <div class="product-carousel__wrapper">
+    <div
+      class="product-carousel__heading-container"
+      style="
+        --heading-alignment-desktop: {{ ss.heading_alignment_desktop }};
+        --heading-alignment-mobile: {{ ss.heading_alignment_mobile }};
+      "
+    >
+      {% if ss.heading_text != blank %}
+        <h2 class="product-carousel__heading">{{ ss.heading_text }}</h2>
+      {% endif %}
+      {% if ss.cta_text != blank and ss.layout != "header_top_cta_bottom" %}
+        <div class="product-carousel__cta hide-mobile">
+          <a
+            class="product-carousel__cta-link"
+            href="{{ ss.cta_url }}"
+            title="{{ ss.cta_text }}"
+            aria-label="{{ ss.cta_text }}"
+          >
+            {{ ss.cta_text }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+    {%- if ss.searchspring_tag == blank -%}
+      {% if blocks.size > 0 %}
+        <div class="product-carousel__inner js-product-carousel">
+          {% for block in blocks limit: ss.limit %}
+            {% assign bs = block.settings %}
+
+            <a
+              class="product-carousel__cell js-product-carousel-cell"
+              href="{{ bs.product.url }}"
+              title="{%- render 'h-product-title-without-variant', product: bs.product -%}"
+            >
+              {% render 'c-responsive-image', {
+                image: bs.product.featured_image,
+                image_class: 'image-css-class',
+                modifier: 'swatch',
+                wrapper_class: 'product-carousel__image-mobile',
+                inline_ir: true
+              } %}
+              <p class="product-carousel__cell-title">
+                {%- render 'h-product-title-without-variant', product: bs.product -%}
+              </p>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <h2>No products to display</h2>
+      {% endif %}
+    {%- else -%}
+      <div class="product-carousel__inner js-product-carousel" data-limit="{{ ss.limit }}">
+      </div>
+    {%- endif -%}
+  </div>
+  {% if ss.cta_text != blank %}
+    <div class="product-carousel__cta{% if ss.layout != "header_top_cta_bottom" %} hide-desktop{% endif %}">
+      <a
+        class="btn btn--primary"
+        href="{{ ss.cta_url }}"
+        title="{{ ss.cta_text }}"
+        aria-label="{{ ss.cta_text }}"
+      >
+        {{ ss.cta_text }}
+      </a>
+    </div>
+  {% endif %}
+</section>

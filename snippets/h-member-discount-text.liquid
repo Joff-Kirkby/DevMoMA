@@ -1,0 +1,5 @@
+{%- assign member_discount_ratio = shop.metafields.global.pdp_member_discount.value | default: 10 -%}
+{% assign member_discount_difference = price | divided_by: member_discount_ratio %}
+{% assign member_discount_price = price | minus: member_discount_difference %}
+{% assign member_discount_text = member_discount_price | money_without_trailing_zeros %}
+{{- member_discount_text -}}

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="{{ locale }}" dir="{{ direction }}" class="{{ checkout_html_classes }}">
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, height=device-height, minimum-scale=1.0">
+    <meta name="referrer" content="origin">
+
+    {% comment %} Favicons {% endcomment %}
+    {% render 'favicons' %}
+
+    <title>{{ page_title }}</title>
+
+    {{ content_for_header }}
+
+    {{ checkout_stylesheets }}
+    {{ checkout_scripts }}
+
+    <script>
+      window.SDG = window.SDG || {};
+      window._ = window._ || {};
+    </script>
+    {%- render 'checkout-data' -%}
+
+    {{ 'checkout.css' | asset_url | stylesheet_tag }}
+
+    {% comment %} Yotpo library {% endcomment %}
+    <script src="https://cdn-widgetsrepository.yotpo.com/v1/loader/FYFMgnh-TMastBprKsic_A" async></script>
+  </head>
+  <body
+    class="checkout-body"
+  >
+    {% section 'top-banner' %}
+    <header class="header header--checkout" data-header role="banner">
+      <div class="header__container container">
+        <a
+          class="header__logo-link"
+          href="{{ routes.root_url }}"
+        >
+          <i class="header__icon icon icon--logo">
+            <span class="screenreader">{{ shop.name }}</span>
+          </i>
+        </a>
+        <a
+          class="header__logo-link"
+          href="tel:1.800.851.4509"
+        >
+          1.800.851.4509
+        </a>
+      </div>
+    </header>
+    {{ order_summary_toggle }}
+    <div class="content" data-content>
+      <div class="container main__container">
+        <div class="main">
+          {{ alternative_payment_methods }}
+          <header class="main__header" role="banner">
+            {{ breadcrumb }}
+          </header>
+          <main class="main__content" role="main">
+            {{ content_for_layout }}
+          </main>
+          <footer class="main__footer" role="contentinfo">
+            {{ content_for_footer }}
+          </footer>
+        </div>
+        <aside class="sidebar" role="complementary">
+          <a href="{{ routes.root_url }}" id="continueShoppingLink" class="sidebar__continue-shopping">
+            Continue Shopping
+          </a>
+          {{ skip_to_content_link }}
+          <h3 class="sidebar__heading">
+            Order Summary
+          </h3>
+          <p class="sidebar__count">
+            {{ checkout.line_items | size }} item{% if checkout.line_items.size > 1 %}s{% endif %}
+          </p>
+          <div class="sidebar__header">
+            {{ content_for_logo }}
+          </div>
+          <div class="sidebar__content">
+            {{ content_for_order_summary }}
+            {% if settings.yotpo_checkout_rewards_enable %}
+              <div class="yotpo-widget-instance" data-yotpo-instance-id="218387"></div>
+            {% endif %}
+            {% render 'checkout-bag-items' %}
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    {% comment %} Modals {% endcomment %}
+    {% render 'checkout-modals' %}
+
+    {% comment %}
+      Set extension
+    {% endcomment %}
+    {% if settings.env_enable_js_minify %}
+      {% assign extension = '.min.js' %}
+    {% else %}
+      {% assign extension = '.js' %}
+    {% endif %}
+    <script src="{{ 'runtime' | append: extension | asset_url }}" defer></script>
+    <script src="{{ 'checkout' | append: extension | asset_url }}" defer></script>
+
+    {{ tracking_code }}
+
+    <div class="checkout-shipping-modal">
+      {%- render 'bag-shipping-details-modal' -%}
+    </div>
+
+    {% render 'member-number-script' %}
+
+    <script>
+      var checkoutDividerText = document.getElementsByClassName('alternative-payment-separator__content')[0];
+      if (checkoutDividerText) {
+        checkoutDividerText.innerHTML = '<strong style=\'color:#000;\'>OR CONTINUE BELOW TO PAY WITH CREDIT CARD</strong>';
+      }
+
+      window.addEventListener('load', (event) => {
+        document.querySelector('.order-summary-toggle').click();
+      });
+    </script>
+    <style type="text/css">
+      html.handheld button#checkoutShippingReturnsModalTrigger { display: none !important; }
+    </style>
+    <script>
+      const element = document.querySelector(".main__content .step form");
+      {% for attribute in checkout.attributes %}
+          var input = document.createElement("input");
+          input.type = "hidden";
+          input.name = "checkout[attributes][{{ attribute.first }}]";
+          input.value = "{{ attribute.last}}";
+          element.appendChild(input);
+      {% endfor %}
+    </script>
+  </body>
+</html>

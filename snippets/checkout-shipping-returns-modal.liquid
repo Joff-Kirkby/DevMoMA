@@ -1,0 +1,15 @@
+{% comment %}
+  Checkout shipping and returns policy modal
+{% endcomment %}
+<aside id="checkoutShippingReturnsModal" class="checkout-shipping-returns-modal modal js-modal">
+  <div class="checkout-shipping-returns-modal__inner">
+    <button type="button" class="modal__close btn-icon js-modal-close" id="checkoutShippingReturnsModalClose">
+      <span class="screenreader">Close</span>
+      <i class="icon icon--close"></i>
+    </button>
+    <div class="checkout-shipping-returns-modal__inner-body">
+      {{- settings.checkout_shipping_and_returns_modal_content -}}
+    </div>
+  </div>
+</aside>
+<div id="checkoutShippingReturnsModalOverlay" class="modal-overlay"></div>

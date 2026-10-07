@@ -1,0 +1,33 @@
+{%- comment -%}
+  Rewards - Your Rewards
+  Standalone "Your Rewards" Yotpo module (points balance + Shop Online /
+  Redeem For Store Purchase) so it can be placed on any page via the editor.
+  Visible to logged-in customers only. On templates other than page.rewards
+  it also loads the rewards stylesheet and the redeem modal, which are
+  otherwise wired up globally for page.rewards only.
+{%- endcomment -%}
+
+{% if customer %}
+  <div class="rewards-status rewards-status--standalone">
+    <div class="rewards-status__wrapper container">
+      <div class="yotpo-widget-instance" data-yotpo-instance-id="256070"></div>
+    </div>
+  </div>
+
+  {% unless template == 'page.rewards' %}
+    {{ 'rewards.css' | asset_url | stylesheet_tag }}
+    {% render 'rewards-redeem-modal' %}
+  {% endunless %}
+{% endif %}
+
+{% schema %}
+{
+  "name": "Rewards - Your Rewards",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Rewards - Your Rewards"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,46 @@
+{%- assign s = section.settings -%}
+
+<div class="section-spacer">
+  <div
+    class="section-spacer__spacer mobile-only"
+    style="margin-top: {{ s.section_spacer_mobile_size }}px"
+  >
+  </div>
+  <div
+    class="section-spacer__spacer desktop-only"
+    style="margin-top: {{ s.section_spacer_desktop_size }}px"
+  >
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Section Spacer",
+  "settings": [
+    {
+      "type": "range",
+      "id": "section_spacer_mobile_size",
+      "label": "Mobile Margin Size",
+      "min": 0,
+      "max": 100,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "section_spacer_desktop_size",
+      "label": "Desktop Margin Size",
+      "min": 0,
+      "max": 100,
+      "unit": "px",
+      "default": 0
+    }
+  ],
+  "presets": [
+    {
+      "category": "Components",
+      "name": "Section Spacer"
+    }
+  ]
+}
+{% endschema %}

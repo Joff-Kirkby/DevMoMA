@@ -1,0 +1,144 @@
+{% comment %}
+  Gifting Product Grid Section
+
+  @param {Object} section theme settings
+{% endcomment %}
+{%- liquid
+  assign is_dynamic = is_dynamic | default: false
+  assign ss = section.settings
+  assign sb = section.blocks
+  capture selector_style
+    if ss.category_selector_type == 'inline'
+    echo 'gifting-product-grid__inner--inline'
+    else
+    echo 'gifting-product-grid__inner--dropdown'
+    endif
+  endcapture
+-%}
+<section class="gifting-product-grid container" data-is-dynamic="{{ is_dynamic }}">
+  <div class="gifting-product-grid__inner {{ selector_style }}">
+    <h2 class="gifting-product-grid__heading gifting-product-grid__heading--{{ ss.heading_alignment }}">
+      <span class="js-category-block-title{% if ss.heading_text != blank %} phone-only{% endif %}">{{ ss.mobile_heading_text }}</span>
+      <span class="js-category-block-title{% if ss.mobile_heading_text != blank %} desktop-and-tablet{% endif %}">{{ ss.heading_text }}</span>
+    </h2>
+
+    {%- if sb.size > 0 -%}
+      {%- for block in sb -%}
+        {%- assign bs = block.settings -%}
+        <div class="gifting-product-grid__current-category">
+          <button type="button" class="gifting-product-grid__current-category-btn btn btn-link">
+            {%- comment -%} Initial category title {%- endcomment -%}
+            <span class="gifting-product-grid__current-category-btn-text">{{ bs.title }}</span>
+          </button>
+        </div>
+      {%- endfor -%}
+      <div class="gifting-product-grid__category-list">
+        {%- for block in sb -%}
+          {%- liquid
+            assign bs = block.settings
+          -%}
+          {%- if bs.title != blank -%}
+            <button
+              type="button"
+              class="gifting-product-grid__category-item btn btn-link {% if forloop.index == 1 %}is-active{% endif %}"
+              {% if is_dynamic %}data-ss-profile-handle="{{ bs.searchspring_tag }}"{% endif  %}
+              data-gifting-product-grid-block-index="{{ forloop.index }}"
+            >
+              {{ bs.title }}
+            </button>
+          {%- endif -%}
+        {%- endfor -%}
+      </div>
+      {%- if is_dynamic -%}
+        {%- for block in sb -%}
+          {%- assign bs = block.settings -%}
+            <div
+              class="gifting-product-grid__product-list {% if forloop.index == 1 %}is-active{% endif %}"
+              data-source="{{ bs.search_results_source | default: 'recommendations' }}"
+              data-gifting-product-grid-block-index="{{ forloop.index }}"
+            >
+              <div class="gifting-product-grid__product-list-heading desktop-only">
+                {{ bs.title }}
+              </div>
+
+              <div class="gifting-product-grid__product-collection dynamic-product-grid js-dynamic-products{% if ss.enable_product_carousel %} js-dynamic-products-carousel{% endif %}"></div>
+
+              {%- if bs.cta_url -%}
+                <div class="gifting-product-grid__cta-wrapper">
+                  <a
+                    class="gifting-product-grid__cta-link btn btn--primary"
+                    href="{{ bs.cta_url }}"
+                  >
+                    Shop All {{ bs.title }}
+                  </a>
+                </div>
+              {%- endif -%}
+            </div>
+        {%- endfor -%}
+      {%- else -%}
+        {%- for block in sb -%}
+          {%- assign bs = block.settings -%}
+            <div
+              class="gifting-product-grid__product-list {% if forloop.index == 1 %}is-active{% endif %}"
+              data-gifting-product-grid-block-index="{{ forloop.index }}"
+              {% if bs.use_collection %}data-collection-handle="{{ bs.collection_handle }}"{% endif %}
+            >
+              <div class="gifting-product-grid__product-list-heading desktop-only">
+                {{ bs.title }}
+              </div>
+
+              {%- if bs.use_collection -%}
+
+                <div class="gifting-product-grid__product-collection js-gifting-products{% if ss.enable_product_carousel %} gifting-product-grid__product-collection--block js-gifting-products-carousel{% endif %}"></div>
+              {%- else -%}
+                {% if ss.enable_product_carousel %}
+                  <div class="js-gifting-products-carousel">
+                {% endif %}
+                {% for i in (1..8) -%}
+                  {% assign product_key = i | prepend: 'product_' %}
+                  {% assign product = bs[product_key] %}
+                  {% if product != blank %}
+                    <a
+                      href="{{ product.url }}"
+                      title="{{ product.title }}"
+                      class="gifting-product-grid__product-item"
+                    >
+                      {% render 'c-responsive-image', {
+                        image: product.featured_image,
+                        image_class: 'image-css-class',
+                        modifier: 'swatch',
+                        wrapper_class: '_gifting-product-grid__product-item-image',
+                        inline_ir: true
+                      } %}
+                      <p class="gifting-product-grid__product-item-title">
+                        {{ product.title }}
+                      </p>
+                      <p class="gifting-product-grid__product-item-price">
+                        {{ product.price | money_without_trailing_zeros }}
+                      </p>
+                    </a>
+                  {% endif %}
+                {% endfor %}
+                {% if ss.enable_product_carousel %}
+                  </div>
+                {% endif %}
+              {%- endif -%}
+
+              {%- if bs.cta_url -%}
+                <div class="gifting-product-grid__cta-wrapper">
+                  <a
+                    class="gifting-product-grid__cta-link btn btn--primary"
+                    href="{{ bs.cta_url }}"
+                  >
+                    Shop All {{ bs.title }}
+                  </a>
+                </div>
+              {%- endif -%}
+            </div>
+        {%- endfor -%}
+      {%- endif -%}
+    {%- else -%}
+      <h2>No categories to display</h2>
+    {%- endif -%}
+  </div>
+</section>

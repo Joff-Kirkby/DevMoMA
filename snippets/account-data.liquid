@@ -1,0 +1,105 @@
+<script>
+  SDG.Data.accountCountryOptionTags = `{{ country_option_tags }}`;
+  SDG.Data.accountOrders = [];
+  SDG.Data.customerEmail = '{{ customer.email }}';
+  SDG.Data.customerID = '{{ customer.id }}';
+  SDG.Data.customerFirstName = '{{ customer.first_name }}';
+  SDG.Data.customerLastName = '{{ customer.last_name }}';
+  SDG.Data.customerFullName = '{{ customer.first_name }} {{ customer.last_name }}';
+  SDG.Data.customerMarketing = '{{ customer.accepts_marketing }}';
+  SDG.Data.accountAddresses = [];
+  SDG.Data.customerMembership = {
+    number: '{{ customer.metafields.membership.member_number }}',
+    type: '{{ customer.metafields.membership.category }}',
+    expirationDate: '{{ customer.metafields.membership.member_expiration_date }}',
+  };
+  SDG.Data.membershipLookUp = '{{ shop.metafields.membership_service_api_token }}';
+
+  {% for address in customer.addresses %}
+    SDG.Data.accountAddress = {{ address | json }};
+    SDG.Data.accountAddress.displayIndex = {{ forloop.index }};
+    SDG.Data.accountAddresses.push(SDG.Data.accountAddress);
+  {% endfor %}
+
+  {% for order in customer.orders %}
+    SDG.Data.accountOrders.push({
+      created_at: '{{ order.created_at | date: format: "month_day_year_time" }}',
+      fulfillment_status_label: '{{ order.fulfillment_status_label }}',
+      name: '{{ order.name }}',
+      order_number: '{{ order.order_number }}',
+      order_status_url: '{{ order.order_status_url }}'
+    });
+  {% endfor %}
+
+  SDG.Data.saltKey = '{{ shop.metafields.teamworkinsight.salt.value }}';
+  SDG.Data.verifyMembershipAuthorizationToken = "{{ shop.metafields.auth.membership_service_api_token }}";
+  SDG.Data.logoutURL = '{% render 'h-auth0-url', type: 'logout' %}';
+  SDG.Dashboard = SDG.Dashboard || {};
+  SDG.Dashboard.AddressCookie = {
+    added: {
+      exdays: 1000,
+      name: 'address_added',
+      value: 'set',
+    },
+    deleted: {
+      exdays: 1000,
+      name: 'address_deleted',
+      value: 'set',
+    },
+    edited: {
+      exdays: 1000,
+      name: 'address_edited',
+      value: 'set',
+    },
+  };
+
+  SDG.Data.accountSidebar = {
+    heading: {{ settings.account_page_sidebar_heading | json }},
+    menuLabel: {{ settings.account_page_sidebar_menu_label | json }},
+    settingsHeading: {{ settings.account_page_sidebar_settings_heading | json }},
+    membershipsHeading: {{ settings.account_page_sidebar_memberships_heading | json }},
+    orderInformationHeading: {{ settings.account_page_sidebar_order_information_heading | json }},
+  };
+  SDG.Data.accountSidebarLinks = {};
+  SDG.Data.accountSidebarLinks.heading = ={{ settings.account_page_sidebar_links_heading | json }};
+  SDG.Data.accountSidebarLinks.links = [];
+  SDG.Data.accountSidebarHelp = {};
+  SDG.Data.accountSidebarHelp.usOrders = {
+    heading: {{ settings.account_page_sidebar_help_us_orders_heading | json }},
+    subheading: {{ settings.account_page_sidebar_help_us_orders_subheading | json }},
+    body: {{ settings.account_page_sidebar_help_us_orders_body | json }},
+    scheduleDays: {{ settings.account_page_sidebar_help_us_orders_schedule_days | json }},
+    scheduleHours: {{ settings.account_page_sidebar_help_us_orders_schedule_hours | json }},
+    phoneNumber: {{ settings.account_page_sidebar_help_us_orders_phone_number | json }},
+  };
+  SDG.Data.accountSidebarHelp.internationalOrders = {
+    heading: {{ settings.account_page_sidebar_help_international_orders_heading | json }},
+    phoneNumber: {{ settings.account_page_sidebar_help_international_phone_number | json }},
+  };
+
+  (() => {
+    const sidebar_link_1 = {
+      text: {{ settings.account_page_sidebar_link_1_text | json }},
+      url: '{{ settings.account_page_sidebar_link_1_url }}'
+    };
+
+    const sidebar_link_2 = {
+      text: {{ settings.account_page_sidebar_link_2_text | json }},
+      url: '{{ settings.account_page_sidebar_link_2_url }}'
+    };
+
+    if (sidebar_link_1.text && sidebar_link_1.url) {
+      SDG.Data.accountSidebarLinks.links.push(sidebar_link_1);
+    }
+
+    if (sidebar_link_2.text && sidebar_link_2.url) {
+      SDG.Data.accountSidebarLinks.links.push(sidebar_link_2);
+    }
+
+    const usPhoneNumberHref = `tel:+1${SDG.Data.accountSidebarHelp.usOrders.phoneNumber.replace(/\D/g,'')}`;
+    const internationalPhoneNumberHref = `tel:+1${SDG.Data.accountSidebarHelp.internationalOrders.phoneNumber.replace(/\D/g,'')}`;
+
+    SDG.Data.accountSidebarHelp.usOrders.phoneNumberHref = usPhoneNumberHref;
+    SDG.Data.accountSidebarHelp.internationalOrders.phoneNumberHref = internationalPhoneNumberHref;
+  })();
+</script>

@@ -1,0 +1,484 @@
+{%- comment -%}
+Banner Section
+{%- endcomment -%}
+
+{%- render 'c-banner', {
+  section: section
+  } -%}
+
+{% schema %}
+  {
+    "name": "Banner",
+    "settings": [
+      {
+        "type": "checkbox",
+        "id": "is_page_hero",
+        "label": "Is banner a page hero?"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_desktop",
+        "label": "Background Image (Desktop)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 3840px; height: 1371px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_tablet",
+        "label": "Background Image (Tablet)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 3840px; height: 1371px;"
+      },
+      {
+        "type": "image_picker",
+        "id": "background_image_mobile",
+        "label": "Background Image (Mobile)",
+        "info": "Format: JPG or GIF. Recommended dimensions: width: 750px; height: 1075px;"
+      }, {
+        "type": "color",
+        "id": "image_overlay_color",
+        "label": "Image Overlay Color",
+        "info": "Optional image overlay to enable text readability.",
+        "default": "#000"
+      }, {
+        "type": "range",
+        "id": "image_overlay_opacity",
+        "min": 0,
+        "max": 1,
+        "step": 0.1,
+        "unit": "pts",
+        "label": "Image Overlay Opacity",
+        "info": "Sets the opacity of the overlay. Range 0-1. Increments by 0.1.",
+        "default": 0
+      }, {
+        "type": "header",
+        "content": "Content"
+      }, {
+        "type": "url",
+        "id": "link_wrapper",
+        "label": "Wraps Image with Link"
+      }, {
+        "type": "checkbox",
+        "id": "mobile_stack",
+        "label": "Mobile Text Stack",
+        "info": "Used to stack content block (sub-heading, heading, body text, CTA) above image instead of overlaying image on mobile.",
+        "default": false
+      }, {
+        "type": "color",
+        "id": "mobile_stack_color",
+        "label": "Mobile Text Stack Background Color",
+        "info": "Optional background color on content block when Mobile Text Stack option is selected",
+        "default": "#fff"
+      }, {
+        "type": "select",
+        "id": "content_position_horizontal_desktop",
+        "label": "Desktop Horizontal Content Position",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to horizontally align the content block (sub-heading, heading, body text, CTA) left, center, or right in the banner on desktop."
+      }, {
+        "type": "select",
+        "id": "content_position_vertical_desktop",
+        "label": "Desktop Vertical Content Position",
+        "options": [
+          {
+            "value": "start",
+            "label": "Align Top"
+          }, {
+            "value": "center",
+            "label": "Align Middle"
+          }, {
+            "value": "end",
+            "label": "Align Bottom"
+          }
+        ],
+        "default": "center",
+        "info": "Used to vertically align the content block (sub-heading, heading, body text, CTA) top, middle, or bottom in the banner on desktop."
+      }, {
+        "type": "select",
+        "id": "content_position_vertical_mobile",
+        "label": "Mobile Vertical Content Position",
+        "options": [
+          {
+            "value": "start",
+            "label": "Align Top"
+          }, {
+            "value": "center",
+            "label": "Align Middle"
+          }, {
+            "value": "end",
+            "label": "Align Bottom"
+          }
+        ],
+        "default": "start",
+        "info": "Used to vertically align the content block (sub-heading, heading, body text, CTA) top, middle, or bottom in the banner on mobile."
+      }, {
+        "type": "header",
+        "content": "Sub-Heading"
+      }, {
+        "type": "textarea",
+        "id": "sub_heading_text",
+        "label": "Sub-Heading Text",
+        "default": "Sub-Heading text here",
+        "info": "Descriptive keyword or phrase placed above the main heading. Return/enter can be used to create line breaks in content."
+      }, {
+        "type": "textarea",
+        "id": "screen_reader_text",
+        "label": "Screen Reader Text",
+        "default": "Sub-Heading text here",
+        "info": "Descriptive keyword or phrase for sreen readers. Return/enter can be used to create line breaks in content."
+      }, {
+        "type": "select",
+        "id": "sub_heading_position_desktop",
+        "label": "Sub-Heading Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the sub-heading left, right, or center in the banner on desktop."
+      }, {
+        "type": "select",
+        "id": "sub_heading_position_mobile",
+        "label": "Sub-Heading Position (Mobile)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the sub-heading left, right, or center in the banner on mobile."
+      }, {
+        "type": "color",
+        "id": "sub_heading_color",
+        "label": "Sub-Heading Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Heading"
+      }, {
+        "type": "textarea",
+        "id": "heading_text",
+        "label": "Heading Text",
+        "default": "Heading text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      }, {
+        "type": "select",
+        "id": "heading_position_desktop",
+        "label": "Heading Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the heading left, right, or center in the banner on desktop."
+      }, {
+        "type": "select",
+        "id": "heading_position_mobile",
+        "label": "Heading Position (Mobile)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the heading left, right, or center in the banner on mobile."
+      }, {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Body Text"
+      }, {
+        "type": "textarea",
+        "id": "body_text",
+        "label": "Body Text",
+        "default": "Body text here",
+        "info": "Return/enter can be used to create line breaks in content."
+      }, {
+        "type": "select",
+        "id": "body_text_position_desktop",
+        "label": "Body Text Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the body text left, right, or center in the banner."
+      }, {
+        "type": "select",
+        "id": "body_text_position_mobile",
+        "label": "Body Text Position (Mobile)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the body text left, right, or center in the banner."
+      }, {
+        "type": "color",
+        "id": "body_text_color",
+        "label": "Body Text Color",
+        "default": "#000"
+      }, {
+        "type": "range",
+        "label": "Body Text Max Width",
+        "id": "body_max_width",
+        "min": 0,
+        "max": 500,
+        "step": 5,
+        "default": 500
+      }, {
+        "type": "radio",
+        "id": "max_width_unit",
+        "label": "Max Width Unit",
+        "options": [
+          {
+            "value": "%",
+            "label": "Percentage"
+          }, {
+            "value": "px",
+            "label": "Pixel"
+          }
+        ],
+        "default": "px"
+      }, {
+        "type": "header",
+        "content": "CTA"
+      }, {
+        "type": "text",
+        "id": "cta_text",
+        "label": "CTA Text",
+        "default": "Default CTA text"
+      }, {
+        "type": "text",
+        "id": "cta_url",
+        "label": "CTA URL",
+        "default": "https://moma-design-store.myshopify.com"
+      }, {
+        "type": "select",
+        "id": "cta_position_desktop",
+        "label": "CTA Position (Desktop)",
+        "options": [
+          {
+            "value": "left",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "right",
+            "label": "Align Right"
+          }
+        ],
+        "default": "left",
+        "info": "Used to align the cta button left, right, or center in the banner."
+      }, {
+        "type": "select",
+        "id": "cta_position_mobile",
+        "label": "CTA Position (Mobile)",
+        "options": [
+          {
+            "value": "flex-start",
+            "label": "Align Left"
+          }, {
+            "value": "center",
+            "label": "Align Center"
+          }, {
+            "value": "flex-end",
+            "label": "Align Right"
+          }
+        ],
+        "default": "flex-start",
+        "info": "Used to align the cta button left, right, or center in the banner."
+      }, {
+        "type": "header",
+        "content": "Static CTA Options"
+      }, {
+        "type": "select",
+        "id": "static_cta_style",
+        "label": "Static CTA Style",
+        "options": [
+          {
+            "value": "transparent_background",
+            "label": "Transparent Background"
+          }, {
+            "value": "solid_background",
+            "label": "Solid Background"
+          }
+        ],
+        "default": "solid_background"
+      }, {
+        "type": "color",
+        "id": "cta_static_background_color",
+        "label": "CTA Background Color",
+        "default": "#FFF"
+      }, {
+        "type": "color",
+        "id": "cta_static_text_color",
+        "label": "CTA Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Hover CTA Options"
+      }, {
+        "type": "select",
+        "id": "hover_cta_style",
+        "label": "Hover CTA Style",
+        "options": [
+          {
+            "value": "transparent_background",
+            "label": "Transparent Background"
+          }, {
+            "value": "solid_background",
+            "label": "Solid Background"
+          }
+        ],
+        "default": "solid_background"
+      }, {
+        "type": "color",
+        "id": "cta_hover_background_color",
+        "label": "CTA Background Color",
+        "default": "#FFF"
+      }, {
+        "type": "color",
+        "id": "cta_hover_text_color",
+        "label": "CTA Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Secondary CTA (optional)"
+      }, {
+        "type": "checkbox",
+        "id": "secondary_cta",
+        "label": "Enable the Secondary CTA",
+        "default": false
+      }, {
+        "type": "text",
+        "id": "cta_text_2",
+        "label": "Secondary CTA Text",
+        "default": "Default CTA text"
+      }, {
+        "type": "url",
+        "id": "cta_url_2",
+        "label": "Secondary CTA URL"
+      }, {
+        "type": "header",
+        "content": "Secondary Static CTA Options"
+      }, {
+        "type": "select",
+        "id": "static_cta_style_2",
+        "label": "Secondary Static CTA Style",
+        "options": [
+          {
+            "value": "transparent_background",
+            "label": "Transparent Background"
+          }, {
+            "value": "solid_background",
+            "label": "Solid Background"
+          }
+        ],
+        "default": "solid_background"
+      }, {
+        "type": "color",
+        "id": "cta_static_background_color_2",
+        "label": "Secondary CTA Background Color",
+        "default": "#FFF"
+      }, {
+        "type": "color",
+        "id": "cta_static_text_color_2",
+        "label": "Secondary CTA Text Color",
+        "default": "#000"
+      }, {
+        "type": "header",
+        "content": "Secondary Hover CTA Options"
+      }, {
+        "type": "select",
+        "id": "hover_cta_style_2",
+        "label": "Secondary Hover CTA Style",
+        "options": [
+          {
+            "value": "transparent_background",
+            "label": "Transparent Background"
+          }, {
+            "value": "solid_background",
+            "label": "Solid Background"
+          }
+        ],
+        "default": "solid_background"
+      }, {
+        "type": "color",
+        "id": "cta_hover_background_color_2",
+        "label": "Secondary CTA Background Color",
+        "default": "#FFF"
+      }, {
+        "type": "color",
+        "id": "cta_hover_text_color_2",
+        "label": "Secondary CTA Text Color",
+        "default": "#000"
+      }
+    ],
+    "presets": [
+      {
+        "name": "Banner"
+      }
+    ]
+  }
+{% endschema %}

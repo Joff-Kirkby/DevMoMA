@@ -1,0 +1,37 @@
+{% assign youtube_video_id = product.metafields.teamwork.youtubevideoid_full.value %}
+{% assign youtube_video_thumbnail = product.metafields.pdp.youtube_video_thumbnail %}
+
+{% if youtube_video_thumbnail != blank %}
+  {% assign youtube_video_thumbnail_url = youtube_video_thumbnail | img_url: 'original' %}
+  <div
+    id="product-video-full"
+    class="pv-video-full js-product-video-full"
+  >
+    {%- comment -%} Thumbnail {%- endcomment -%}
+    <div class="pv-video-full__thumbnail js-product-video-full-thumbnail">
+      <div class="ir ir--video is-loading pv-video-full__image-wrapper">
+        <img
+          class="lazyload"
+          data-src="{{ youtube_video_thumbnail_url }}"
+          data-sizes="auto"
+          alt="YouTube video thumbail"
+        >
+      </div>
+      <div class="pv-video-full__play-btn">
+        <i class="icon icon--play"></i>
+        <span class="screenreader">Play video</span>
+      </div>
+    </div>
+    {%- comment -%} Video {%- endcomment -%}
+    <div class="ir ir--video is-loading pv-video-full__iframe-wrapper js-product-video-full-iframe-wrapper hide">
+      <iframe
+        class="lazyload pv-video-full__video-iframe"
+        data-src="https://www.youtube.com/embed/{{ youtube_video_id }}?playlist={{ youtube_video_id }}&loop=1&rel=0"
+        title="YouTube video player"
+        frameborder="0"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+{% endif %}

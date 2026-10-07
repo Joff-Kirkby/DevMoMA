@@ -1,0 +1,191 @@
+{% for block in section.blocks %}
+  {% assign bs = block.settings %}
+  {% if block.type == 'logged_out' %}
+    {% unless customer %}
+      {% render 'c-rewards-hero-2', bs: bs %}
+    {% endunless %}
+  {% elsif block.type == 'logged_in' %}
+    {% if customer %}
+      {% render 'c-rewards-hero-2', bs: bs %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+
+{% schema %}
+  {
+    "name": "Rewards Hero 2",
+    "settings": [],
+    "max_blocks": 2,
+    "blocks": [
+      {
+        "name": "Logged out view",
+        "type": "logged_out",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "background_image_desktop",
+            "label": "Background Image (Desktop)",
+            "info": "Format: JPG or GIF. Recommended dimensions: width: 3840px; height: 1371px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "background_image_mobile",
+            "label": "Background Image (Mobile)",
+            "info": "Format: JPG or GIF. Recommended dimensions: width: 750px; height: 1075px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo",
+            "info": "Format: PNG, JPG. Recommended dimensions: width: 560px; height: 280px;"
+          },
+          {
+            "type": "textarea",
+            "id": "sub_heading_text",
+            "label": "Sub-Heading Text",
+            "default": "Welcome to",
+            "info": "Descriptive keyword or phrase placed above the main heading. Return/enter can be used to create line breaks in content."
+          },
+          {
+            "type": "textarea",
+            "id": "body_text_1",
+            "label": "Body Text 1",
+            "default": "Body text here",
+            "info": "Return/enter can be used to create line breaks in content."
+          },
+          {
+            "type": "textarea",
+            "id": "body_text_2",
+            "label": "Body Text 2",
+            "default": "Body text here",
+            "info": "Return/enter can be used to create line breaks in content."
+          },
+          {
+            "type": "header",
+            "content": "CTA 1"
+          },
+          {
+            "type": "text",
+            "id": "cta_text",
+            "label": "CTA Text",
+            "default": "Sign in or create an account"
+          },
+          {
+            "type": "text",
+            "id": "cta_url",
+            "label": "CTA URL",
+            "info": "If this is not provided, CTA 1 Button will trigger sidebar with create an account"
+          },
+          {
+            "type": "header",
+            "content": "CTA 2"
+          },
+          {
+            "type": "text",
+            "id": "cta_text_2",
+            "label": "CTA Text",
+            "default": "Sign in or create an account"
+          },
+          {
+            "type": "text",
+            "id": "cta_url_2",
+            "label": "CTA URL",
+            "info": "If this is not provided, CTA 2 Button will trigger sidebar with create an account"
+          }
+        ]
+      },
+      {
+        "name": "Logged in view",
+        "type": "logged_in",
+        "limit": 1,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "background_image_desktop",
+            "label": "Background Image (Desktop)",
+            "info": "Format: JPG or GIF. Recommended dimensions: width: 3840px; height: 1371px;"
+          },
+          {
+            "type": "image_picker",
+            "id": "background_image_mobile",
+            "label": "Background Image (Mobile)",
+            "info": "Format: JPG or GIF. Recommended dimensions: width: 750px; height: 1075px;"
+          },
+          {
+            "type": "textarea",
+            "id": "sub_heading_text",
+            "label": "Sub-Heading Text",
+            "default": "Welcome to",
+            "info": "Descriptive keyword or phrase placed above the main heading. Return/enter can be used to create line breaks in content."
+          },
+          {
+            "type": "image_picker",
+            "id": "logo",
+            "label": "Logo",
+            "info": "Format: PNG, JPG. Recommended dimensions: width: 560px; height: 280px;"
+          },
+          {
+            "type": "textarea",
+            "id": "body_text_1",
+            "label": "Body Text 1",
+            "default": "Body text here",
+            "info": "Return/enter can be used to create line breaks in content."
+          },
+          {
+            "type": "textarea",
+            "id": "body_text_2",
+            "label": "Body Text 2",
+            "default": "Body text here",
+            "info": "Return/enter can be used to create line breaks in content."
+          },
+          {
+            "type": "header",
+            "content": "CTA 1"
+          },
+          {
+            "type": "text",
+            "id": "cta_text",
+            "label": "CTA Text",
+            "default": "Sign in or create an account"
+          },
+          {
+            "type": "text",
+            "id": "cta_url",
+            "label": "CTA URL",
+            "info": "If this is not provided, CTA 1 Button will trigger sidebar with create an account"
+          },
+          {
+            "type": "header",
+            "content": "CTA 2"
+          },
+          {
+            "type": "text",
+            "id": "cta_text_2",
+            "label": "CTA Text",
+            "default": "Sign in or create an account"
+          },
+          {
+            "type": "text",
+            "id": "cta_url_2",
+            "label": "CTA URL",
+            "info": "If this is not provided, CTA 2 Button will trigger sidebar with create an account"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Rewards Hero 2",
+        "blocks": [
+          {
+            "type": "logged_in"
+          },
+          {
+            "type": "logged_out"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}

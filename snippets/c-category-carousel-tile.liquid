@@ -1,0 +1,54 @@
+{%- comment -%}
+  Renders a single Category Carousel tile from a `category_carousel_tile` metaobject entry.
+
+  @param {object} tile - category_carousel_tile metaobject entry (required)
+  @param {string} image_ratio - 'natural' | 'square' (optional, default 'natural')
+  @param {string} block_type - 'carousel' | 'stacked' (optional, default 'carousel') - cell class
+  @param {Number} mobile_flex_items - optional (tiles per row on mobile)
+  @param {Number} desktop_flex_items - optional (tiles per row on desktop)
+{%- endcomment -%}
+
+{%- liquid
+  assign tile_image = tile.image.value
+  assign tile_label = tile.label
+  assign tile_link = tile.link.value.url | default: tile.link.value
+  assign cell_type = block_type | default: 'carousel'
+  assign ratio = image_ratio | default: 'natural'
+-%}
+
+{%- if tile_image != blank -%}
+  <div
+    class="featured-collection featured-collection__{{ cell_type }}-cell category-carousel__cell"
+    style="
+      --mobile-items: {{ mobile_flex_items | default: 1 }};
+      --desktop-items: {{ desktop_flex_items | default: 5 }};
+    "
+  >
+    <a
+      class="featured-collection__cta-link"
+      href="{{ tile_link | default: '#' | escape }}"
+    >
+      {%- if ratio == 'square' -%}
+        {%- comment -%} Uniform square tiles: image cropped to 1:1, centered. {%- endcomment -%}
+        {% render 'c-responsive-image', {
+          image: tile_image,
+          image_class: 'featured-collection__ir-image',
+          wrapper_class: 'featured-collection__ir-wrapper category-carousel__image-wrapper category-carousel__image-wrapper--square',
+        } %}
+      {%- else -%}
+        {%- comment -%} Height adjusts to the uploaded image (intrinsic ratio). {%- endcomment -%}
+        {% render 'c-responsive-image', {
+          image: tile_image,
+          inline_ir: true,
+          image_class: 'featured-collection__ir-image',
+          wrapper_class: 'featured-collection__ir-wrapper category-carousel__image-wrapper',
+        } %}
+      {%- endif -%}
+      <div class="featured-collection__copy">
+        {%- if tile_label != blank -%}
+          <h2 class="featured-collection__header">{{ tile_label }}</h2>
+        {%- endif -%}
+      </div>
+    </a>
+  </div>
+{%- endif -%}
