@@ -11,7 +11,7 @@
         {
           "@type": "ListItem",
           "position": {{ forloop.index }},
-          "name": "{{ b.text | strip }}",
+          "name": {{ b.text | strip | json }},
           "item": "{{ shop.url | append: b.url }}"
         }{% unless forloop.last %},{% endunless %}
       {% endfor %}
@@ -24,17 +24,42 @@
 <!-- Product schema -->
 <script type="application/ld+json">
 {
-  "@context": "http://schema.org/",
+  "@context": "https://schema.org/",
   "@type": "Product",
   "name": "{{ product.title | escape }}",
-  "image": "https:{{ product.featured_image | img_url: '348x' }}",
-  {% if page_description %}
-  "description": "{{ product.description | strip_html | escape | strip_newlines }}",
+  {%- if product.images.size > 0 -%}
+  "image": [
+    {%- for image in product.images -%}
+    {{ image | image_url: width: 1200 | prepend: 'https:' | json }}{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ],
+  {%- endif -%}
+  {% assign schema_variant = product.selected_or_first_available_variant %}
+  {% if schema_variant.sku != blank %}
+  "sku": {{ schema_variant.sku | json }},
+  "mpn": {{ schema_variant.sku | json }},
+  {% endif %}
+  {% if schema_variant.barcode != blank %}
+    {% assign barcode_length = schema_variant.barcode | size %}
+    {% case barcode_length %}
+      {% when 8 %}
+  "gtin8": {{ schema_variant.barcode | json }},
+      {% when 12 %}
+  "gtin12": {{ schema_variant.barcode | json }},
+      {% when 13 %}
+  "gtin13": {{ schema_variant.barcode | json }},
+      {% when 14 %}
+  "gtin14": {{ schema_variant.barcode | json }},
+    {% endcase %}
+  {% endif %}
+  {% assign schema_description = page_description | default: product.description | strip_html | strip_newlines %}
+  {% if schema_description != blank %}
+  "description": {{ schema_description | json }},
   {% endif %}
   {% if product.vendor %}
   "brand": {
     "@type": "Brand",
-    "name": "{{ product.vendor | escape }}"
+    "name": {{ product.vendor | json }}
   },
   {% endif %}
   {% if product.metafields.yotpo.reviews_count and
@@ -50,6 +75,7 @@
     "url": "{{ shop.url | append: product.url }}",
     "priceCurrency": "{{ cart.currency.iso_code }}",
     "price": "{{ product.price | money_without_currency | remove: ',' | remove: ' ' }}",
+    "priceValidUntil": "{{ 'now' | date: '%s' | plus: 31536000 | date: '%Y-%m-%d' }}",
     {%- if product.available == true %}
     "availability": "https://schema.org/InStock",
     {% else -%}
@@ -123,19 +149,15 @@
     {%- if settings.merchant_return_days != blank and settings.merchant_return_days > 0 -%}
     "merchantReturnDays": {{ settings.merchant_return_days }},
     {%- endif %}
-    "returnMethod": "{{ settings.return_method }}",
-    "nonReturnable": [
-      "Sale items",
-      "Special order items",
-      "Gift cards",
-      "Items marked non‑returnable"
-    ],
-    "returnShippingFees": {
+    "returnMethod": "{{ settings.return_method }}"
+    {%- if settings.return_shipping_fee_amount != blank %},
+    "returnShippingFeesAmount": {
       "@type": "MonetaryAmount",
-      "value": "9.95",
-      "currency": "USD",
-      "description": "Pre‑paid return label fee per package (deducted from refund)"
+      "value": "{{ settings.return_shipping_fee_amount }}",
+      "currency": "{{ shop.currency }}",
+      "description": {{ settings.return_shipping_fee_description | json }}
     }
+    {%- endif %}
   }
 }
 </script>

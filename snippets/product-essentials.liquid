@@ -16,9 +16,7 @@
         {% render 'product-configurable', section: section %}
         {% render 'product-details' %}
         {% if youtube_video_id != blank %}
-          {% render 'product-video', {
-            youtube_video_id: youtube_video_id
-          } %}
+          {% render 'product-video', youtube_video_id: youtube_video_id %}
         {% endif %}
         {% render 'product-guarantee' %}
         {% if template contains 'malachyte' %}
@@ -29,7 +27,7 @@
           </script>
         {% endif %}
         {% if has_related_product %}
-          {% render 'product-related' %}
+          {% render 'product-related', related_products: related_products %}
         {% endif %}
       </div>
     </div>

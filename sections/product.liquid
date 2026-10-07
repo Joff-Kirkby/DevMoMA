@@ -1,7 +1,32 @@
 <section id="product" class="pv{% if template contains 'e-gift-card' %} pv--e-gift-card{% endif %}">
   {% render 'product-data' %}
   {% render 'product-meta' %}
-  {% render 'product-essentials', section: section %}
+
+  {%- comment -%}
+    Computed here, not inside product-data.liquid: {% render %} creates an
+    isolated scope per call, so a variable assigned inside product-data.liquid
+    never reaches product-essentials.liquid (a separate render call). Both
+    need has_related_product/related_products, so this lives in the shared
+    parent scope and gets passed down explicitly instead.
+  {%- endcomment -%}
+  {% assign has_related_product = false %}
+  {%- capture related_products -%}
+    {% assign ri = 0 %}
+    {%- for tag in product.tags -%}
+      {% assign tag_downcase = tag | downcase %}
+      {%- if tag_downcase contains 'related:' -%}
+        {%- if ri < 3 -%}
+          {%- assign has_related_product = true -%}
+          {%- assign tag_format = tag_downcase | strip -%}
+          {%- capture related_tag -%}{{- tag_format | remove: 'related:' -}}{%- endcapture -%}
+          {%- render 'c-product-item', product: all_products[related_tag], namespace: 'related-item' -%}
+        {%- endif -%}
+        {%- assign ri = ri | plus: 1 -%}
+      {%- endif -%}
+    {%- endfor -%}
+  {%- endcapture -%}
+
+  {% render 'product-essentials', section: section, has_related_product: has_related_product, related_products: related_products %}
   {% render 'product-why-we-chose-this' %}
   {% render 'product-tout-three' %}
   {% render 'product-video-full' %}

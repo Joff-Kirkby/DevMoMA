@@ -29,3 +29,36 @@
     </div>
   {% endif %}
 </section>
+
+{%- liquid
+  assign faq_schema_items = ''
+  assign faq_schema_count = 0
+  for block in section.blocks
+    assign bs = block.settings
+    if bs.title != blank and bs.answer != blank
+      assign faq_schema_count = faq_schema_count | plus: 1
+      capture faq_schema_item
+        echo '{"@type":"Question","name":'
+        echo bs.title | json
+        echo ',"acceptedAnswer":{"@type":"Answer","text":'
+        echo bs.answer | strip_html | json
+        echo '}}'
+      endcapture
+      if faq_schema_count > 1
+        assign faq_schema_items = faq_schema_items | append: ','
+      endif
+      assign faq_schema_items = faq_schema_items | append: faq_schema_item
+    endif
+  endfor
+-%}
+{%- if faq_schema_count > 0 -%}
+<!-- FAQPage schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{{ faq_schema_items }}]
+}
+</script>
+<!-- END FAQPage schema -->
+{%- endif -%}

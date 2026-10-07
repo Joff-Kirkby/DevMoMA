@@ -4,14 +4,15 @@
 {% assign ss = section.settings %}
 
 <div class="sitemap container">
-  {% render 'c-page-navigation', {
+  <h1 class="sitemap__title screenreader">{{ page.title }}</h1>
+  {% render 'c-page-navigation',
     title: ss.sidebar_title,
     store_links: ss.linklist,
     store_links_title: ss.links_title,
     wrapper_id: 'sitemapAcc'
-  } %}
+  %}
   <div class="sitemap__right">
-    <h3 class="sitemap__subheading">{{ shop.name }}</h3>
+    <h2 class="sitemap__subheading">{{ shop.name }}</h2>
     <ul class="sitemap__list">
       {% for link in linklists['sitemap'].links %}
         <li class="sitemap__list-line">

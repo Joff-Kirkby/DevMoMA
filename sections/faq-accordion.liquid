@@ -34,6 +34,8 @@
   # markup come from a single pass over the metafield.
   assign product_faq_rows = ''
   assign product_faq_count = 0
+  assign faq_schema_items = ''
+  assign faq_schema_count = 0
   if ss.use_product_metafield and product.metafields.custom.faq != blank
     assign faq_html = product.metafields.custom.faq | metafield_tag
     assign faq_html = faq_html | replace: '<h1>', '<h2>' | replace: '</h1>', '</h2>'
@@ -54,6 +56,19 @@
           assign product_faq_count = product_faq_count | plus: 1
           assign answer_id = 'faq-answer-' | append: section.id | append: '-' | append: product_faq_count
           render 'c-faq-accordion-item', question: faq_question, answer: faq_answer, id: answer_id
+
+          assign faq_schema_count = faq_schema_count | plus: 1
+          capture faq_schema_item
+            echo '{"@type":"Question","name":'
+            echo faq_question | json
+            echo ',"acceptedAnswer":{"@type":"Answer","text":'
+            echo faq_answer_text | json
+            echo '}}'
+          endcapture
+          if faq_schema_count > 1
+            assign faq_schema_items = faq_schema_items | append: ','
+          endif
+          assign faq_schema_items = faq_schema_items | append: faq_schema_item
         endif
       endfor
     endcapture
@@ -72,6 +87,28 @@
     elsif product != blank and ss.use_product_metafield and ss.hide_without_product_faq
       assign hide_section = true
     endif
+  endif
+
+  # Same block source as the fallback markup below, kept in sync for the
+  # FAQPage schema when the product metafield isn't the active source.
+  if has_product_faq == false and hide_section == false
+    for block in section.blocks
+      assign bs = block.settings
+      if bs.title != blank and bs.answer != blank
+        assign faq_schema_count = faq_schema_count | plus: 1
+        capture faq_schema_item
+          echo '{"@type":"Question","name":'
+          echo bs.title | json
+          echo ',"acceptedAnswer":{"@type":"Answer","text":'
+          echo bs.answer | strip_html | json
+          echo '}}'
+        endcapture
+        if faq_schema_count > 1
+          assign faq_schema_items = faq_schema_items | append: ','
+        endif
+        assign faq_schema_items = faq_schema_items | append: faq_schema_item
+      endif
+    endfor
   endif
 -%}
 
@@ -112,6 +149,17 @@
     {%- endif -%}
   </div>
 </faq-accordion>
+{%- if faq_schema_count > 0 -%}
+<!-- FAQPage schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [{{ faq_schema_items }}]
+}
+</script>
+<!-- END FAQPage schema -->
+{%- endif -%}
 {%- endunless -%}
 
 

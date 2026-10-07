@@ -1,10 +1,17 @@
 <!doctype html>
-<html lang="{{ shop.locale }}">
+<html lang="{{ request.locale.iso_code }}">
 <head>
   {% comment %} Sentry {% endcomment %}
   {% render 'sentry' %}
 
-  {%- if product.metafields.seo.hidden == 1 or (product and product.selected_variant and product.selected_variant.metafields.seo.hidden == 1) -%}
+  {%- assign hide_from_seo = false -%}
+  {%- if product.metafields.seo.hidden == 1 -%}
+    {%- assign hide_from_seo = true -%}
+  {%- endif -%}
+  {%- if product and product.selected_variant and product.selected_variant.metafields.seo.hidden == 1 -%}
+    {%- assign hide_from_seo = true -%}
+  {%- endif -%}
+  {%- if hide_from_seo -%}
     <meta name="robots" content="noindex">
   {%- endif -%}
   {% comment %} Cookie Banner {% endcomment %}
@@ -22,8 +29,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   {% if template contains 'customers' and template.name == 'login' %}
     <meta http-equiv="refresh" content="0; url='{% render 'h-auth0-url' %}'" />
+    <meta name="robots" content="noindex">
   {% endif %}
+  {%- assign request_path_no_query = request.path | split: '?' | first -%}
+  {%- if request_path_no_query == '/products' -%}
+  <link rel="canonical" href="{{ shop.url }}/collections/all">
+  {%- else -%}
   <link rel="canonical" href="{{ canonical_url }}">
+  {%- endif -%}
 
   {%- capture seo_title -%}
     {{ page_title }}{% if current_tags %}{% assign meta_tags = current_tags | join: ', ' %} &ndash; {{ 'general.meta.tags' | t: tags: meta_tags }}{% endif %}{% if current_page != 1 %} &ndash; {{ 'general.meta.page' | t: page: current_page }}{% endif %}{% assign escaped_page_title = page_title | escape %}{% unless escaped_page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless %}
@@ -42,17 +55,24 @@
     {% endif %}
   {% endif %}
 
-  {% comment %} Homepage Redirects {% endcomment %}
-  {% assign path = canonical_url | replace: shop.url, '' %}
-  {% if path == '/collections' or path == '/products' %}
-    <meta http-equiv="refresh" content="0;URL='{{ shop.url }}'" />
-  {% endif %}
 
   {% comment %} Social Meta {% endcomment %}
   {% render 'social-meta-tags' %}
 
   {% comment %} Favicons {% endcomment %}
   {% render 'favicons' %}
+
+  {% comment %} Font preloading {% endcomment %}
+  <link rel="preload" href="{{ 'MoMASans-Regular-Web.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ 'MoMASans-RegularItalic-Web.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ 'MoMASans-Medium-Web.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ 'MoMASans-Store-Web.woff2' | asset_url }}" as="font" type="font/woff2" crossorigin>
+
+  {% comment %} Third-party preconnect hints {% endcomment %}
+  <link rel="preconnect" href="https://cdn-widgetsrepository.yotpo.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.searchspring.net" crossorigin>
+  <link rel="preconnect" href="https://static.zdassets.com" crossorigin>
+  <link rel="preconnect" href="https://crossborder-integration.global-e.com" crossorigin>
 
   {% comment %} JS Namespaces {% endcomment %}
   {% assign asset_url = 'temp' | asset_url | split: 'temp?' | first %}
@@ -162,17 +182,24 @@
 
   {% comment %} IntelliSuggest {% endcomment %}
   {% if template contains 'cart' or template contains 'product' %}
-    <script type="text/javascript" src="//cdn.searchspring.net/intellisuggest/is.min.js"></script>
+    <script type="text/javascript" src="https://cdn.searchspring.net/intellisuggest/is.min.js" async></script>
   {% endif %}
 
-  <link rel="alternate" hreflang="en" href="https://store.moma.org{{ request.path }}">
+  {%- if localization.available_countries.size > 0 -%}
+    {%- for country in localization.available_countries -%}
+      {%- assign country_alternate_url = country.url | append: request.path -%}
+      {%- unless country_alternate_url contains '://' -%}
+        {%- assign country_alternate_url = shop.url | append: country_alternate_url -%}
+      {%- endunless -%}
+  <link rel="alternate" hreflang="{{ localization.language.iso_code }}-{{ country.iso_code }}" href="{{ country_alternate_url }}">
+    {%- endfor -%}
+  {%- endif -%}
+  <link rel="alternate" hreflang="x-default" href="{{ shop.url }}{{ request.path }}">
 
   {{ content_for_header }}
 
   {% include "globale-js.liquid" %}
   {% render 'ss-script' %}
-  {% comment %} Commented out as this is in GTM {% endcomment %}
-  {% comment %} {% render 'heap-snippet' %} {% endcomment %}
 </head>
 
 {%- comment -%} Hide body when redirecting {%- endcomment -%}
@@ -202,7 +229,36 @@
   {% render 'header' %}
   <main id="main" class="page-wrap" role="main">
     {%- render 'c-breadcrumbs' -%}
-    {{ content_for_layout }}
+    {%- if request_path_no_query == '/products' -%}
+      {%- comment -%}
+        /products has no native Shopify template (product listings live at
+        /collections/{handle} or the automatic /collections/all). Rendering
+        real content here instead of a 404/redirect; canonical above points
+        to /collections/all, the actual indexable equivalent.
+      {%- endcomment -%}
+      <div class="page container">
+        <h1>All Products</h1>
+        <ul class="list-collections" style="list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2rem; padding: 0;">
+          {%- for product in collections.all.products -%}
+            <li>
+              <a href="{{ product.url }}">
+                {%- if product.featured_image -%}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 400 }}"
+                    alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                    width="400"
+                    loading="lazy"
+                  />
+                {%- endif -%}
+                <p>{{ product.title | escape }}</p>
+              </a>
+            </li>
+          {%- endfor -%}
+        </ul>
+      </div>
+    {%- else -%}
+      {{ content_for_layout }}
+    {%- endif -%}
   </main>
   {% liquid
     section 'footer'
@@ -228,7 +284,9 @@
       "@context": "https://schema.org",
       "@type": "Organization",
       "url": "{{ shop.url }}",
-      "logo": "{{ settings.structured_data_logo | img_url: 'original' }}",
+      {%- if settings.structured_data_logo != blank %}
+      "logo": "{{ settings.structured_data_logo | image_url }}",
+      {%- endif %}
       "sameAs": [
           "https://www.instagram.com/momadesignstore/",
           "https://www.facebook.com/momadesignstore/",
@@ -286,9 +344,24 @@
   </script>
   <!-- END LocalBusiness Schema -->
 
+  <!-- WebSite Schema -->
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "url": "{{ shop.url }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ shop.url }}/search?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+  <!-- END WebSite Schema -->
+
   {% render 'tracking' %}
   <!-- Start of moma Zendesk Widget script -->
-  <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=fc6bfd3e-5faa-47cc-a6d0-43ef4ed40016"> </script>
+  <script id="ze-snippet" src="https://static.zdassets.com/ekr/snippet.js?key=fc6bfd3e-5faa-47cc-a6d0-43ef4ed40016" async></script>
   <!-- End of moma Zendesk Widget script -->
   {% render 'forter-snippet' %}
   </body>

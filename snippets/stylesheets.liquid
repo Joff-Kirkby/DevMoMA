@@ -1,45 +1,68 @@
-{{ 'style.css' | asset_url | stylesheet_tag }}
+{%- liquid
+  assign stylesheet_handles = 'style.css' | split: ','
 
-{% if template == 'cart' %}
-  {{ 'locale-selectors.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'cart'
+    assign next_handle = 'locale-selectors.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'index' %}
-  {{ 'index.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'index'
+    assign next_handle = 'index.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template contains 'product' %}
-  {{ 'product.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template contains 'product'
+    assign next_handle = 'product.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'page.gifts' or template == 'page.gift-guide' %}
-  {{ 'gifts.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'page.gifts' or template == 'page.gift-guide'
+    assign next_handle = 'gifts.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template contains 'collection' or template contains 'search' %}
-  {{ 'collection.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template contains 'collection' or template contains 'search'
+    assign next_handle = 'collection.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template contains 'customer' %}
-  {{ 'account.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template contains 'customer'
+    assign next_handle = 'account.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'page.email-sign-up' %}
-  {{ 'email-signup.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'page.email-sign-up'
+    assign next_handle = 'email-signup.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'page.store' %}
-  {{ 'stores.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'page.store'
+    assign next_handle = 'stores.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'page.gift-finder' %}
-  {{ 'gift-finder.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'page.gift-finder'
+    assign next_handle = 'gift-finder.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'page.sitemap' %}
-  {{ 'sitemap.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'page.sitemap'
+    assign next_handle = 'sitemap.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
 
-{% if template == 'page.rewards' %}
-  {{ 'rewards.css' | asset_url | stylesheet_tag }}
-{% endif %}
+  if template == 'page.rewards'
+    assign next_handle = 'rewards.css' | split: ','
+    assign stylesheet_handles = stylesheet_handles | concat: next_handle
+  endif
+-%}
+{%- comment -%}
+  Non-blocking stylesheet loading: preload + swap to stylesheet on load
+  instead of a plain render-blocking <link rel="stylesheet">, with a
+  <noscript> fallback so non-JS clients still get the CSS.
+{%- endcomment -%}
+{%- for handle in stylesheet_handles -%}
+  {%- assign stylesheet_url = handle | asset_url -%}
+  <link rel="preload" href="{{ stylesheet_url }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="{{ stylesheet_url }}"></noscript>
+{%- endfor -%}

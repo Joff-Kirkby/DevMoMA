@@ -162,7 +162,7 @@
           {% assign variant_swatch_file_name = 'swatch-' | append: variant_color_handle | append: '.jpg' %}
 
           {% assign swatch_image_object = images[variant_swatch_file_name] %}
-          {% assign swatch_image_url = swatch_image_object | img_url: '1x1' %}
+          {% assign swatch_image_url = swatch_image_object | image_url: width: 1, height: 1 %}
           {% if swatch_image_url contains 'no-image' %}
             {% assign swatch_image_url = variant.featured_image.src %}
           {% endif %}

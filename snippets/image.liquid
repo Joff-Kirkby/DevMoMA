@@ -5,25 +5,28 @@
 
 {% if image != blank %}
   <picture>
-    {% if mobile_image != false %}
+    {% if mobile_image != false and mobile_image != blank %}
+      {% assign mobile_image_width_2x = mobile_image_width | times: 2 %}
       <source
         media="(max-width: 767px)"
         srcset="{{ mobile_image | image_url: width: mobile_image_width }} 1x,
-                      {{ mobile_image | image_url: width: mobile_image_width }} 2x">
+                      {{ mobile_image | image_url: width: mobile_image_width_2x }} 2x">
     {% endif %}
 
-    {% if image != false %}
+    {% if image != false and image != blank %}
+      {% assign image_width_2x = image_width | times: 2 %}
       <source
         media="(min-width: 1024px)"
         srcset="{{ image | image_url: width: image_width }} 1x,
-                      {{ image | image_url: width: image_width }} 2x">
+                      {{ image | image_url: width: image_width_2x }} 2x">
     {% endif %}
 
-    {% if tablet_image != false %}
+    {% if tablet_image != false and tablet_image != blank %}
+      {% assign tablet_image_width_2x = tablet_image_width | times: 2 %}
       <source
         media="(min-width: 768px)"
-        srcset="{{ tablet_image | image_url: width: image_width }} 1x,
-                      {{ tablet_image | image_url: width: image_width }} 2x">
+        srcset="{{ tablet_image | image_url: width: tablet_image_width }} 1x,
+                      {{ tablet_image | image_url: width: tablet_image_width_2x }} 2x">
     {% endif %}
 
 

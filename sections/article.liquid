@@ -166,49 +166,46 @@
 
 <script type="application/ld+json">
 {
-  "@context": "http://schema.org",
+  "@context": "https://schema.org",
   "@type": "Article",
-  "articleBody": "{{ article.content | strip_html }}",
+  "articleBody": {{ article.content | strip_html | json }},
   "mainEntityOfPage": {
     "@type": "WebPage",
-    "@id": "{{ shop.url }}{{ page.url }}"
+    "@id": "{{ shop.url }}{{ article.url }}"
   },
-  "headline": "{{ article.title }}",
+  "headline": {{ article.title | json }},
   {% if article.excerpt != blank %}
-    "description": "{{ article.excerpt | strip_html }}",
+    "description": {{ article.excerpt | strip_html | json }},
   {% endif %}
   {% if article.image %}
-    {% assign image_size = article.image.width | append: 'x' %}
     "image": [
-      "https:{{ article | img_url: image_size }}"
+      "https:{{ article | image_url: width: article.image.width }}"
     ],
   {% endif %}
   "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
   "dateCreated": "{{ article.created_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
   "author": {
     "@type": "Person",
-    "name": "{{ article.author }}"
+    "name": {{ article.author | json }}
   },
   "publisher": {
     "@type": "Organization",
     {% if settings.share_image %}
-      {% assign image_size = settings.share_image.width | append: 'x' %}
       "logo": {
         "@type": "ImageObject",
         "height": "{{ settings.share_image.height }}",
-        "url": "https:{{ settings.share_image | img_url: image_size }}",
+        "url": "https:{{ settings.share_image | image_url: width: settings.share_image.width }}",
         "width": "{{ settings.share_image.width }}"
       },
     {% elsif article.image %}
-      {% assign image_size = article.image.width | append: 'x' %}
       "logo": {
         "@type": "ImageObject",
         "height": "{{ article.image.height }}",
-        "url": "https:{{ article.image | img_url: image_size }}",
+        "url": "https:{{ article.image | image_url: width: article.image.width }}",
         "width": "{{ article.image.width }}"
       },
     {% endif %}
-    "name": "{{ shop.name }}",
+    "name": {{ shop.name | json }},
     "sameAs": [
         "https://www.instagram.com/momadesignstore/",
         "https://www.facebook.com/momadesignstore/",

@@ -20,22 +20,42 @@
   {% endif %}
 {% endfor %}
 
-<article class="{% render 'h-module', class: 'pi' %}" itemscope itemtype="http://schema.org/Product">
+{% assign pi_card_url = product.url | within: collection | prepend: shop.url %}
 
-  <meta itemprop="name" content="{{ product.title }}" />
-  <link itemprop="image" href="{{ product | img_url: '271x' }}" />
-  <meta itemprop="url" content="{{ shop.url }}{{ product.url | within: collection }}" />
+<article class="{% render 'h-module', class: 'pi' %}">
 
-  <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
-    <meta itemprop="priceCurrency" content="{{ shop.currency }}">
-    <meta itemprop="price" content="{{ product.price | money_without_currency | strip_html }}">
-    <meta itemprop="availability" content="In Stock">
-    <meta itemprop="itemCondition" itemtype="http://schema.org/OfferItemCondition" content="http://schema.org/NewCondition" />
-  </div>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org/",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "image": {{ product | image_url: width: 271 | json }},
+    "url": {{ pi_card_url | json }},
+    "offers": {
+      "@type": "Offer",
+      "priceCurrency": {{ shop.currency | json }},
+      "price": {{ product.price | money_without_currency | strip_html | json }},
+      {%- if product.available == true %}
+      "availability": "https://schema.org/InStock",
+      {%- elsif product.selected_or_first_available_variant.metafields.teamwork.po_date.value != blank %}
+      "availability": "https://schema.org/BackOrder",
+      {%- else %}
+      "availability": "https://schema.org/OutOfStock",
+      {%- endif %}
+      "itemCondition": "https://schema.org/NewCondition"
+    }
+  }
+  </script>
 
   <div class="pi__img">
-    <a class="{% render 'h-module', class: 'pi__link' %} is-loading ir{% unless has_variable_img_ratio %} ir--product{% endunless %}" href="{{ product.url | within: collection }}">
-      <img class="lazyload" data-srcset="{{ product | img_url: '285x' }} 1x, {{ product | img_url: '570x' }} 2x" alt="{{ product.title | escape }}" />
+    <a class="{% render 'h-module', class: 'pi__link' %} ir{% unless has_variable_img_ratio %} ir--product{% endunless %}" href="{{ product.url | within: collection }}">
+      <img
+        class="pi__image"
+        src="{{ product | image_url: width: 285 }}"
+        srcset="{{ product | image_url: width: 285 }} 1x, {{ product | image_url: width: 570 }} 2x"
+        alt="{{ product.title | escape }}"
+        loading="lazy"
+      />
     </a>
   </div>
 

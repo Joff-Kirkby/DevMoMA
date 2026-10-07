@@ -1,2 +1,2 @@
-{%- assign img_url = image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+{%- assign img_url = image | image_url: width: 1, height: 1 | replace: '_1x1.', '_{width}x.' -%}
 {{- img_url -}}
