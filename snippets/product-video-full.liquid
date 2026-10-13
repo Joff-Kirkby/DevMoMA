@@ -2,7 +2,7 @@
 {% assign youtube_video_thumbnail = product.metafields.pdp.youtube_video_thumbnail %}
 
 {% if youtube_video_thumbnail != blank %}
-  {% assign youtube_video_thumbnail_url = youtube_video_thumbnail | img_url: 'original' %}
+  {% assign youtube_video_thumbnail_url = youtube_video_thumbnail | image_url %}
   <div
     id="product-video-full"
     class="pv-video-full js-product-video-full"

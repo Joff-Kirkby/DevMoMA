@@ -119,21 +119,7 @@ Tags
 {% endcomment %}
 
 {% comment %}
-Related products
+  Related products: computed in sections/product.liquid instead of here, since
+  {% render %} scope is isolated per call and product-essentials.liquid (a
+  separate render call) needs the result too.
 {% endcomment %}
-{% assign has_related_product = false %}
-{%- capture related_products -%}
-  {% assign ri = 0 %}
-  {%- for tag in product.tags -%}
-    {% assign tag_downcase = tag | downcase %}
-    {%- if tag_downcase contains 'related:' -%}
-      {%- if ri < 3 -%}
-        {%- assign has_related_product = true -%}
-        {%- assign tag_format = tag_downcase | strip -%}
-        {%- capture related_tag -%}{{- tag_format | remove: 'related:' -}}{%- endcapture -%}
-        {%- render 'c-product-item', product: all_products[related_tag], namespace: 'related-item' -%}
-      {%- endif -%}
-      {%- assign ri = ri | plus: 1 -%}
-    {%- endif -%}
-  {%- endfor -%}
-{%- endcapture -%}

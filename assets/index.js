@@ -1,1 +1,0 @@
-(self.webpackChunkmoma_design_store=self.webpackChunkmoma_design_store||[]).push([["index"],{"./src/js/build/index.js":function(){eval("{/**\n * Index\n */\n\n//# sourceURL=webpack://moma-design-store/./src/js/build/index.js?\n}")}},function(s){var n;n="./src/js/build/index.js",s(s.s=n)}]);

@@ -26,7 +26,7 @@
       width it picks out of `widths`. A tile never renders wider than 344px
       (172 at 2x), so anything above that would only waste bandwidth.
     {%- endcomment -%}
-    {%- assign tile_image_url = tile_image | img_url: '1x1' | replace: '_1x1.', '_{width}x.' -%}
+    {%- assign tile_image_url = tile_image | image_url: width: 1, height: 1 | replace: '_1x1.', '_{width}x.' -%}
     {%- capture tile_widths -%}
       {%- if tile_image.width > 180 -%}180,{%- endif -%}
       {%- if tile_image.width > 360 -%}360{%- else -%}{{ tile_image.width }}{%- endif -%}

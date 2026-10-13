@@ -1,0 +1,105 @@
+{% comment %}
+  Collection grid SSR shell
+  @param {Array} products - collection.products or search.results, already paginated
+  @param {Object} paginate - the enclosing {% paginate %} tag's object
+  @param {Array} filters - collection.filters or search.filters
+{% endcomment %}
+
+{%- if products.size > 0 -%}
+<!-- ItemList schema -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ItemList",
+  "itemListElement": [
+    {%- for item in products -%}
+    {
+      "@type": "ListItem",
+      "position": {{ forloop.index }},
+      "name": {{ item.title | json }},
+      "url": {{ shop.url | append: item.url | json }},
+      "image": {{ item.featured_image | image_url: width: 600 | prepend: 'https:' | json }}
+    }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+<!-- END ItemList schema -->
+{%- endif -%}
+
+{%- if filters.size > 0 -%}
+<nav class="collection-filters" aria-label="{{ 'collections.filters.title_tags' | t }}">
+  {%- for filter in filters -%}
+    {%- if filter.values.size > 0 -%}
+    <div class="collection-filters__accordion">
+      <span class="collection-filters__accordion-title">{{ filter.label | escape }}</span>
+      <ul class="collection-filters__accordion-list">
+        {%- for value in filter.values -%}
+          <li class="collection-filters__accordion-subtext-list-item">
+            <a href="{{ value.url_to_add }}">
+              {{- value.label | escape -}}
+              {%- if value.count %} ({{ value.count }}){% endif -%}
+            </a>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </div>
+    {%- endif -%}
+  {%- endfor -%}
+</nav>
+{%- endif -%}
+
+{%- if products.size > 0 -%}
+<div class="collection-grid">
+  <div class="collection-grid__product-items">
+    {%- for product in products -%}
+    <div class="collection-grid-item">
+      <a href="{{ product.url }}" class="collection-grid-item__link-wrapper collection-grid-item__link-wrapper--no-badge">
+        <div class="collection-grid-item__image-wrapper">
+          {%- if product.featured_image -%}
+          <img
+            class="collection-grid-item__image"
+            src="{{ product.featured_image | image_url: width: 600 }}"
+            srcset="{{ product.featured_image | image_url: width: 400 }} 400w, {{ product.featured_image | image_url: width: 600 }} 600w, {{ product.featured_image | image_url: width: 900 }} 900w"
+            sizes="(min-width: 990px) 25vw, 50vw"
+            alt="{{ product.featured_image.alt | default: product.title | escape }}"
+            width="{{ product.featured_image.width }}"
+            height="{{ product.featured_image.height }}"
+            loading="lazy"
+          >
+          {%- endif -%}
+        </div>
+        <div class="collection-grid-item__details">
+          <p class="collection-grid-item__product-title">{{ product.title | escape }}</p>
+          <p class="collection-grid-item__product-price">
+            {%- if product.price_varies -%}
+              {{ product.price_min | money }} - {{ product.price_max | money }}
+            {%- else -%}
+              {{ product.price | money }}
+            {%- endif -%}
+          </p>
+        </div>
+      </a>
+    </div>
+    {%- endfor -%}
+  </div>
+
+  {%- if paginate.pages > 1 -%}
+  <nav class="collection-grid__pagination" aria-label="Pagination">
+    {%- if paginate.previous -%}
+      <a href="{{ paginate.previous.url }}" class="collection-grid__pagination-prev">{{ 'general.pagination.previous' | t }}</a>
+    {%- endif -%}
+    {%- for part in paginate.parts -%}
+      {%- if part.is_link -%}
+        <a href="{{ part.url }}" class="collection-grid__pagination-item">{{ part.title }}</a>
+      {%- else -%}
+        <span class="collection-grid__pagination-item is-current">{{ part.title }}</span>
+      {%- endif -%}
+    {%- endfor -%}
+    {%- if paginate.next -%}
+      <a href="{{ paginate.next.url }}" class="collection-grid__pagination-btn">{{ 'general.pagination.next' | t }}</a>
+    {%- endif -%}
+  </nav>
+  {%- endif -%}
+</div>
+{%- endif -%}

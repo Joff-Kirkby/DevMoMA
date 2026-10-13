@@ -10,37 +10,64 @@
   {%- endif -%}
 {% endfor %}
 
+{%- comment -%}
+  Named AI user-agent groups below use a bare "Allow: /", which
+  replaces Shopify's default rules for those bots instead of adding
+  to them. Without repeating the same disallow rules here, these
+  bots are free to crawl cart, checkout, account and other utility
+  URLs the wildcard group above blocks for everyone else. Reusing
+  Shopify's own dynamic default rules (instead of hardcoding them)
+  keeps this in sync if Shopify's defaults ever change.
+{%- endcomment -%}
+{%- capture ai_bot_rules -%}
+  {%- for group in robots.default_groups -%}
+    {%- for rule in group.rules -%}
+      {{ rule }}
+    {%- endfor -%}
+  {%- endfor -%}
+{%- endcapture -%}
+
 # Google Gemini & AI Overviews
 User-agent: Google-Extended
 Allow: /
+{{ ai_bot_rules }}
 
 # OpenAI / ChatGPT
 User-agent: GPTBot
 Allow: /
+{{ ai_bot_rules }}
 User-agent: OAI-SearchBot
 Allow: /
+{{ ai_bot_rules }}
 User-agent: ChatGPT-User
 Allow: /
+{{ ai_bot_rules }}
 
 # Anthropic / Claude
 User-agent: ClaudeBot
 Allow: /
+{{ ai_bot_rules }}
 User-agent: Claude-Web
 Allow: /
+{{ ai_bot_rules }}
 
 # Perplexity AI Search
 User-agent: PerplexityBot
 Allow: /
+{{ ai_bot_rules }}
 User-agent: Perplexity-User
 Allow: /
+{{ ai_bot_rules }}
 
 # Apple Intelligence
 User-agent: Applebot-Extended
 Allow: /
+{{ ai_bot_rules }}
 
 # Amazon (Powers Alexa & Rufus Shopping AI)
 User-agent: Amazonbot
 Allow: /
+{{ ai_bot_rules }}
 
 User-agent: *
 Disallow: /vendor

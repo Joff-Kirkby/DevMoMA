@@ -1,2 +1,22 @@
 <section class="page">
+  <div class="container">
+    <h1>Collections</h1>
+    <ul class="list-collections" style="list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 2rem; padding: 0;">
+      {%- for collection in collections -%}
+        <li>
+          <a href="{{ collection.url }}">
+            {%- if collection.image -%}
+              <img
+                src="{{ collection.image | image_url: width: 400 }}"
+                alt="{{ collection.image.alt | default: collection.title | escape }}"
+                width="400"
+                loading="lazy"
+              />
+            {%- endif -%}
+            <p>{{ collection.title | escape }}</p>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
 </section>

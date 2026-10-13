@@ -23,19 +23,25 @@
 <article class="{% render 'h-module', class: 'pi' %}" itemscope itemtype="http://schema.org/Product">
 
   <meta itemprop="name" content="{{ product.title }}" />
-  <link itemprop="image" href="{{ product | img_url: '271x' }}" />
+  <link itemprop="image" href="{{ product | image_url: width: 271 }}" />
   <meta itemprop="url" content="{{ shop.url }}{{ product.url | within: collection }}" />
 
   <div itemprop="offers" itemscope="" itemtype="http://schema.org/Offer">
     <meta itemprop="priceCurrency" content="{{ shop.currency }}">
     <meta itemprop="price" content="{{ product.price | money_without_currency | strip_html }}">
-    <meta itemprop="availability" content="In Stock">
+    {%- if product.available == true -%}
+    <meta itemprop="availability" content="https://schema.org/InStock">
+    {%- elsif product.selected_or_first_available_variant.metafields.teamwork.po_date.value != blank -%}
+    <meta itemprop="availability" content="https://schema.org/BackOrder">
+    {%- else -%}
+    <meta itemprop="availability" content="https://schema.org/OutOfStock">
+    {%- endif -%}
     <meta itemprop="itemCondition" itemtype="http://schema.org/OfferItemCondition" content="http://schema.org/NewCondition" />
   </div>
 
   <div class="pi__img">
     <a class="{% render 'h-module', class: 'pi__link' %} is-loading ir{% unless has_variable_img_ratio %} ir--swatch{% endunless %}" href="{{ product.url | within: collection }}">
-      <img class="lazyload" data-srcset="{{ product | img_url: '285x' }} 1x, {{ product | img_url: '570x' }} 2x" alt="{{ product.title | escape }}" />
+      <img class="lazyload" data-srcset="{{ product | image_url: width: 285 }} 1x, {{ product | image_url: width: 570 }} 2x" alt="{{ product.title | escape }}" />
     </a>
   </div>
 

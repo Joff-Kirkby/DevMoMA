@@ -1197,6 +1197,19 @@
         "default": "https://schema.org/MerchantReturnFiniteReturnWindow"
       },
       {
+        "type": "text",
+        "id": "return_shipping_fee_amount",
+        "label": "Return Shipping Fee Amount",
+        "info": "Numeric value only, e.g. 9.95",
+        "default": "9.95"
+      },
+      {
+        "type": "text",
+        "id": "return_shipping_fee_description",
+        "label": "Return Shipping Fee Description",
+        "default": "Pre-paid return label fee per package (deducted from refund)"
+      },
+      {
         "type": "header",
         "content": "Cookie Banner"
       },

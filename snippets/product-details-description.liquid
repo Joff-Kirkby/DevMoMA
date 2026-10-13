@@ -4,8 +4,11 @@
 >
   <div class="pv-details__content-section-inner--truncated js-product-details-content-section-truncated">
     {%- comment -%}
-      Truncated desciption created with JS
+      Server-rendered fallback so there's always real, crawlable text here
+      by default (with or without JS). JS overwrites this with its own
+      truncation on load for the interactive Read More/Read Less behavior.
     {%- endcomment -%}
+    <p>{{- product.description | strip_html | truncate: 500 -}}</p>
   </div>
   <div class="pv-details__content-section-inner--full js-product-details-content-section-full hide">
     {%- render 'h-description', description: product.description -%}
